@@ -43,8 +43,8 @@ export const customerSidebar = [
         icon: <BsServer />,
       },
       {
-        title: "Shift Incharge",
-        // path: "/production/setup/machine",
+        title: "StoppageList",
+        path:"/machine/StoppageList",
         icon: <FiCpu/>,
       },
       {
@@ -56,104 +56,104 @@ export const customerSidebar = [
     ],
   },
 
-  {
-    title: "Maintenance",
-    // path: "/production/production",
-    icon: <AiFillCreditCard/>,
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav: [
-      {
-        title: "Schedule List",
-        // path: "/production/production/schedulelist",
-        icon: <BsListCheck />,
-        subNav: [
-          {
-            title: "Profile",
-            // path: "/production/production/schedulelistprofile",
-            icon: <AiIcons.AiOutlineArrowRight />            
-          },{
-            title: "Fabrication",
-            // path: "/production/production/schedulelistfabrication",
-            icon: <AiIcons.AiOutlineArrowRight />            
-          },{
-            title: "Services",
-            // path: "/production/production/schedulelistservice",
-            icon: <AiIcons.AiOutlineArrowRight />            
-          }]
-      },
-      {
-        title: "Machine Allotment",
-        // path: "/production/production/machineallotementprofile",
-        icon: <BiGitMerge/>,
-        subNav: [
-          {
-            title: "Profile",
-            // path: "/production/production/machineallotmentProfile",
-            icon: <AiIcons.AiOutlineArrowRight />            
-          },
-          {
-            title: "Service",
-            // path: "/production/production/machineallotmentservice",
-            icon: <AiIcons.AiOutlineArrowRight />            
-          }
-        ]
+  // {
+  //   title: "Maintenance",
+  //   // path: "/production/production",
+  //   icon: <AiFillCreditCard/>,
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
+  //   subNav: [
+  //     {
+  //       title: "Schedule List",
+  //       // path: "/production/production/schedulelist",
+  //       icon: <BsListCheck />,
+  //       subNav: [
+  //         {
+  //           title: "Profile",
+  //           // path: "/production/production/schedulelistprofile",
+  //           icon: <AiIcons.AiOutlineArrowRight />            
+  //         },{
+  //           title: "Fabrication",
+  //           // path: "/production/production/schedulelistfabrication",
+  //           icon: <AiIcons.AiOutlineArrowRight />            
+  //         },{
+  //           title: "Services",
+  //           // path: "/production/production/schedulelistservice",
+  //           icon: <AiIcons.AiOutlineArrowRight />            
+  //         }]
+  //     },
+  //     {
+  //       title: "Machine Allotment",
+  //       // path: "/production/production/machineallotementprofile",
+  //       icon: <BiGitMerge/>,
+  //       subNav: [
+  //         {
+  //           title: "Profile",
+  //           // path: "/production/production/machineallotmentProfile",
+  //           icon: <AiIcons.AiOutlineArrowRight />            
+  //         },
+  //         {
+  //           title: "Service",
+  //           // path: "/production/production/machineallotmentservice",
+  //           icon: <AiIcons.AiOutlineArrowRight />            
+  //         }
+  //       ]
 
 
-      },
-      {
-        title: "Shift Manager",
-        // path:  "production/production/shiftmanagerProfile",
-        icon: <SiGoogletagmanager/>,
-        subNav: [
-          {
-            title: "Profile",
-            // path: "/production/production/shiftmanagerProfile",
-            icon: <AiIcons.AiOutlineArrowRight />            
-          },{
-            title: "Fabrication",
-            // path: "/production/production/shiftmanagerFabrication",
-            icon: <AiIcons.AiOutlineArrowRight />            
-          },{
-            title: "Services",
-            // path: "/production/production/shiftmanagerService",
-            icon: <AiIcons.AiOutlineArrowRight />            
-          }]
-      },
-    ]
-  },
+  //     },
+  //     {
+  //       title: "Shift Manager",
+  //       // path:  "production/production/shiftmanagerProfile",
+  //       icon: <SiGoogletagmanager/>,
+  //       subNav: [
+  //         {
+  //           title: "Profile",
+  //           // path: "/production/production/shiftmanagerProfile",
+  //           icon: <AiIcons.AiOutlineArrowRight />            
+  //         },{
+  //           title: "Fabrication",
+  //           // path: "/production/production/shiftmanagerFabrication",
+  //           icon: <AiIcons.AiOutlineArrowRight />            
+  //         },{
+  //           title: "Services",
+  //           // path: "/production/production/shiftmanagerService",
+  //           icon: <AiIcons.AiOutlineArrowRight />            
+  //         }]
+  //     },
+  //   ]
+  // },
 
-  {
-    title: "Error Log",
-    icon: <DiOpenshift />,
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav: [
-      {
-        title: "Shift Editor",
-        // path: "/production/shiftplanner/shifteditor",
-        icon: <FiEdit />,
-      },
-      {
-        title: "Weekly Shift Planner",
-        // path: "/production/shiftplanner/weeklyShifteditor ",
-        icon: <FaDropbox />,
-      },
-    ]
-  },
-  {
-    title: "Set Up",
-    // path: "/production/reports",
-    icon: <MdReport />,
-    icon:<GoReport/>,
-    subNav:[
-      {
-        title: "Server Info",
-        path: "/machine/serverInfo",
-        icon:<GoReport/>
-      }
-    ]
-  },
+  // {
+  //   title: "Error Log",
+  //   icon: <DiOpenshift />,
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
+  //   subNav: [
+  //     {
+  //       title: "Shift Editor",
+  //       // path: "/production/shiftplanner/shifteditor",
+  //       icon: <FiEdit />,
+  //     },
+  //     {
+  //       title: "Weekly Shift Planner",
+  //       // path: "/production/shiftplanner/weeklyShifteditor ",
+  //       icon: <FaDropbox />,
+  //     },
+  //   ]
+  // },
+  // {
+  //   title: "Set Up",
+  //   // path: "/production/reports",
+  //   icon: <MdReport />,
+  //   icon:<GoReport/>,
+  //   subNav:[
+  //     {
+  //       title: "Server Info",
+  //       path: "/machine/serverInfo",
+  //       icon:<GoReport/>
+  //     }
+  //   ]
+  // },
   // {
   //   title: "Fabrication",
   //   path: "/production/fabrication",

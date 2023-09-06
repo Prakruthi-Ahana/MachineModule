@@ -15,7 +15,7 @@ export default function OpenShiftLogForm({
   const [stoppageID, setStoppageID] = useState("");
   const [stoppageList, setStoppageList] = useState([]);
   const [stoppageReasonList, setStoppageReasonList] = useState([]);
-  const[stoppageReason,setStoppageReason]=useState('')
+  const [stoppageReason, setStoppageReason] = useState("");
 
   const toggleInput = () => {
     setInputVisible(!isInputVisible);
@@ -32,11 +32,11 @@ export default function OpenShiftLogForm({
   let array = finalDay1.split("/");
   let finalDay = array[0] + "/" + array[1];
 
-const [selectedStoppageID, setSelectedStoppageID] = useState('');
-const [selectedStoppage, setSelectedStoppage] = useState('');
+  const [selectedStoppageID, setSelectedStoppageID] = useState("");
+  const [selectedStoppage, setSelectedStoppage] = useState("");
   const selectBothOption = (e) => {
     console.log("select option", e.target.value);
-    setStoppageReason(e.target.value)
+    setStoppageReason(e.target.value);
     if (e.target.value !== " ") {
       setAlreadyLoad(true);
     } else {
@@ -45,12 +45,11 @@ const [selectedStoppage, setSelectedStoppage] = useState('');
     const selectedStoppageID = e.target.value;
     const selectedStoppage = e.target.selectedOptions[0].dataset.stoppage;
     setSelectedStoppageID(selectedStoppageID);
-    setSelectedStoppage(selectedStoppage)
+    setSelectedStoppage(selectedStoppage);
   };
 
   console.log("Selected StoppageID:", selectedStoppageID);
-console.log("Selected Stoppage:", selectedStoppage);
-
+  console.log("Selected Stoppage:", selectedStoppage);
 
   const handleChangeStoppageList = (e) => {
     setStoppageID(e.target.value);
@@ -82,17 +81,16 @@ console.log("Selected Stoppage:", selectedStoppage);
     getStoppageReasonList();
   }, [stoppageID]);
 
-
   return (
     <div>
-        <AlreadyLoadModal
-          alreadyLoad={alreadyLoad}
-          setAlreadyLoad={setAlreadyLoad}
-          stoppageReason={stoppageReason}
-          selectshifttable={selectshifttable}
-          selectedStoppageID={selectedStoppageID}
-          selectedStoppage={selectedStoppage}
-        />
+      <AlreadyLoadModal
+        alreadyLoad={alreadyLoad}
+        setAlreadyLoad={setAlreadyLoad}
+        stoppageReason={stoppageReason}
+        selectshifttable={selectshifttable}
+        selectedStoppageID={selectedStoppageID}
+        selectedStoppage={selectedStoppage}
+      />
       <div className="row">
         <div className="col-md-12">
           <h4 className="title">Machine Log Book</h4>
@@ -125,14 +123,17 @@ console.log("Selected Stoppage:", selectedStoppage);
                     </select>
 
                     <select className="ip-select" onChange={selectBothOption}>
-  <option>Choose an option</option>
-  {stoppageReasonList.map((value, key) => (
-    <option value={value.StoppageID} data-stoppage={value.Stoppage} key={key}>
-      {value.Stoppage}
-    </option>
-  ))}
-</select>
-
+                      <option>Choose an option</option>
+                      {stoppageReasonList.map((value, key) => (
+                        <option
+                          value={value.StoppageID}
+                          data-stoppage={value.Stoppage}
+                          key={key}
+                        >
+                          {value.Stoppage}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               )}
