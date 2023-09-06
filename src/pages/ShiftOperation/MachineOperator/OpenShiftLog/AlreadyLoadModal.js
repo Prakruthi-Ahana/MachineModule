@@ -18,6 +18,7 @@ export default function AlreadyLoadModal({setAlreadyLoad, alreadyLoad,selectedSt
         })
         .then((response) => {
           console.log(response.data);
+          handleClose();
         });
     };
 
@@ -29,7 +30,7 @@ export default function AlreadyLoadModal({setAlreadyLoad, alreadyLoad,selectedSt
           <Modal.Title>magod_machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>Do you wish to stop the cutting for {selectedStoppage} ?
+        <Modal.Body>Do you wish to stop the cutting for <b>{selectedStoppage}</b> ?
          </Modal.Body> 
 
         <Modal.Footer>

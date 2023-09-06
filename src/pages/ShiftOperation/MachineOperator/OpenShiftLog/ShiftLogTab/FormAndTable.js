@@ -82,8 +82,8 @@ export default function FormAndTable({ shiftLogDetails,setShiftLogDetails}) {
               return (
                 <>
                   <tr >
-                    <td style={{ whiteSpace: "nowrap" }}>{item.Srl}</td>
-                    <td style={{ whiteSpace: "nowrap" }}></td>
+                    <td style={{ whiteSpace: "nowrap" }}>{key+1}</td>
+                    <td style={{ whiteSpace: "nowrap" }}>{item.StoppageReason}</td>
                     <td style={{ whiteSpace: "nowrap" }}>
                       <div>
                       <input

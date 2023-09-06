@@ -9,6 +9,7 @@ import MachineOperator from "./pages/ShiftOperation/MachineOperator/MachineOpera
 import CallFile from "./pages/ShiftOperation/MachineOperator/OpenShiftLog/CallFile";
 import ServerInfo from "./pages/ServerInfo/ServerInfo";
 import PrintLable from "./pages/ShiftOperation/PrintLable/PrintLable";
+import StoppageList from "./pages/ShiftOperation/StoppageList/StoppageList";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/machine/machineOperator/OpenShiftLog" element={<CallFile/>}/>
           <Route path="/machine/serverInfo" element={<ServerInfo/>}/>
           <Route path="/machine/printLable" element={<PrintLable/>}/>
+          <Route path="/machine/StoppageList" element={<StoppageList/>}/>
           </Route>
           {/* <Route path="/form" element={<CallFile/>}/> */}
         </Route>
