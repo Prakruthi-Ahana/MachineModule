@@ -39,18 +39,18 @@ export const customerSidebar = [
       {
         title: "Machine Operator",
         // path: "/production/setup/server",
-        path:"/machine/machineOperator",
+        path:"/Machine/MachineOperator",
         icon: <BsServer />,
       },
       {
         title: "StoppageList",
-        path:"/machine/StoppageList",
+        path:"/Machine/StoppageList",
         icon: <FiCpu/>,
       },
       {
         title: "Print Lable",
         // path: "/production/setup/process",
-        path:"/machine/printLable",
+        path:"/Machine/PrintLable",
         icon: <VscServerProcess />,
       },
     ],
