@@ -1,10 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddGroupName from "./AddGroupName";
 import AddReason from "./AddReason";
 import DeleteAskModal from "./DeleteAskModal";
+import StoppageReasonTable from "./StoppageReasonTable";
+import axios from "axios";
+import {  toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
-export default function StoppageForm({selectedGroup}) {
-    console.log(selectedGroup);
+export default function StoppageForm({selectedGroup,getGroupName}) {
+
+  const[getReasonsList,setGetReasonsList]=useState([])
+const getReasons=()=>{
+  axios.post(
+   "http://172.16.20.61:5006/reports/getReason",
+   {
+    StoppageGpId:selectedGroup?.StoppageGpId
+  }).then((response) => {
+    setGetReasonsList(response.data);
+ });
+}
+useEffect(()=>{
+    getReasons();
+},[selectedGroup]);
+
+  const[selectedReason,setSelectedReason]=useState({})
+const selectReasonFun=(item,index)=>{
+  let list={...item,index:index}
+  // api call
+  setSelectedReason (list);
+}
 
     //open AddGroupName
     const[openAddGroup,setOpenAddGroup]=useState(false);
@@ -20,8 +44,7 @@ export default function StoppageForm({selectedGroup}) {
 
     //Delete GroupName
     const [showModal, setShowModal] = useState(false);
-   const [modalData, setModalData] = useState({  title: 'Delete GroupName', 
-   content: 'Are you sure you want to delete?'});
+   const [modalData, setModalData] = useState({ title: 'Delete GroupName', content: `Are you sure you want to delete ${selectedReason?.Stoppage}?`});
 
   const handleShowModal = (data) => {
     setModalData(data);
@@ -32,29 +55,52 @@ export default function StoppageForm({selectedGroup}) {
     setShowModal(false);
   };
 
-  const handleConfirmDelete = (data) => {
-    // Handle the delete action here with the data object
-    // For example, you can make an API call to delete the data
-    console.log(`Deleting data with title: ${data.title}`);
-    // Then, close the modal
-    handleCloseModal();
-  };
+  
+  
+
+
+const DeleteReason=()=>{
+      axios.post(
+       "http://172.16.20.61:5006/reports/deleteReason",{selectedReason
+      }).then((response) => {
+        console.log("delete function called")
+        console.log(response.data)
+      
+     });
+     setShowModal(false);
+          toast.success("Reason Deleted successfully", {
+      position: toast.POSITION.TOP_CENTER,
+    });
+    axios.post(
+      "http://172.16.20.61:5006/reports/getReason",
+      {
+       StoppageGpId:selectedGroup?.StoppageGpId
+     }).then((response) => {
+       setGetReasonsList(response.data);
+    });
+    }
+ 
+
+  
  
   return (
+    <div>
     <div className="ip-box form-bg">
         <AddGroupName
         openAddGroup={openAddGroup}
         setOpenAddGroup={setOpenAddGroup}
+        getGroupName={getGroupName}
         />
         <AddReason  openAddReason={openAddReason}
         setOpenAddReason={setOpenAddReason}
         selectedGroup={selectedGroup}
+        setGetReasonsList={setGetReasonsList}
         />
          <DeleteAskModal
         show={showModal}
         handleClose={handleCloseModal}
         data={modalData}      
-        handleDelete={handleConfirmDelete}
+        handleDelete={DeleteReason}
       />
 
       <div className="row"> 
@@ -101,11 +147,26 @@ export default function StoppageForm({selectedGroup}) {
           className="button-style mt-2 group-button"
           type="button"
           style={{ width: "150px", marginLeft: "20px" }}
-          onClick={() => handleShowModal({ title: 'Delete Reason', content: 'Are you sure you want to Delete?' })}
+          onClick={() => handleShowModal({ title: 'Delete Reason', content: 'Are you sure you want to Delete?' }
+          
+          )}
         >
           Delete Reason
         </button>
+
+       
+
       </div>
+    </div>
+
+    <div>
+    <StoppageReasonTable
+    selectedGroup={selectedGroup}
+    selectedReason={selectedReason}
+    selectReasonFun={selectReasonFun}
+    getReasonsList={getReasonsList}
+    />
+    </div>
     </div>
   );
 }

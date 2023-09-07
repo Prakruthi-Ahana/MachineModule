@@ -10,10 +10,13 @@ import CallFile from "./pages/ShiftOperation/MachineOperator/OpenShiftLog/CallFi
 import ServerInfo from "./pages/ServerInfo/ServerInfo";
 import PrintLable from "./pages/ShiftOperation/PrintLable/PrintLable";
 import StoppageList from "./pages/ShiftOperation/StoppageList/StoppageList";
+import { ToastContainer } from "react-toastify";
 
 
 function App() {
   return (
+  <>
+     <ToastContainer/>
     <BrowserRouter>
       <Routes>
         <Route element={<Login />} path="/" />
@@ -31,6 +34,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+</>
   );
 }
 
