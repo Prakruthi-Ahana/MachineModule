@@ -16,7 +16,7 @@ function Home() {
         
         
         
-        <Link to="/machine" style={{ textDecoration: "none", color: "black" }}>
+        <Link to="/Machine" style={{ textDecoration: "none", color: "black" }}>
           <div className="dashboard-card">
             <div className="card-item">
               <AiFillCreditCard size={60} color="#283E81" />

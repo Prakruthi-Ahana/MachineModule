@@ -20,12 +20,12 @@ function App() {
         <Route path="/home" element={<Home/>} />
 
         <Route element={<WithNav />}>
-          <Route path="/machine" element={<Parentroute />}> 
-          <Route path="/machine/machineOperator" element={<MachineOperator/>}/>
-          <Route path="/machine/machineOperator/OpenShiftLog" element={<CallFile/>}/>
-          <Route path="/machine/serverInfo" element={<ServerInfo/>}/>
-          <Route path="/machine/printLable" element={<PrintLable/>}/>
-          <Route path="/machine/StoppageList" element={<StoppageList/>}/>
+          <Route path="/Machine" element={<Parentroute />}> 
+          <Route path="/Machine/MachineOperator" element={<MachineOperator/>}/>
+          <Route path="/Machine/MachineOperator/OpenShiftLog" element={<CallFile/>}/>
+          <Route path="/Machine/ServerInfo" element={<ServerInfo/>}/>
+          <Route path="/Machine/PrintLable" element={<PrintLable/>}/>
+          <Route path="/Machine/StoppageList" element={<StoppageList/>}/>
           </Route>
           {/* <Route path="/form" element={<CallFile/>}/> */}
         </Route>
