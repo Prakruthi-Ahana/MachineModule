@@ -49,11 +49,21 @@ console.log(ChangedOperator);
           marginTop: "2px", marginLeft: "-12px", fontSize: "14px",
         }}
         >
-          <p style={{ marginLeft: '70px' }}> <b>Machine Shift Status </b></p>
+          <p style={{ textAlign:"center" }}> <b>Machine Shift Status </b></p>
 
-          <div style={{ marginLeft: '10px' }}> <b>Operator : {selectshifttable.Operator} </b></div>
+          <div className='d-flex ms-4'>
+          <div style={{width:"auto", textAlign:"right"}}>
+          <div style={{ marginLeft: '10px' }}> <b>Operator : </b></div>
+          <div style={{marginLeft: '10px' }}><b>Current   : </b></div>
+          </div>
 
-          <div style={{marginLeft: '10px' }}><b>Current   : {selectshifttable.Operator}</b></div>
+          <div style={{width:"auto", textAlign:"left"}}>
+          <div style={{ marginLeft: '10px' }}> <b>{selectshifttable.Operator} </b></div>
+          <div style={{marginLeft: '10px' }}><b>{selectshifttable.Operator}</b></div>
+          </div>
+          </div>
+
+
           <br></br>
 
           <div  className='d-flex'>
@@ -84,10 +94,12 @@ console.log(ChangedOperator);
       <div className=' mt-2 '>
         <div style={{
           textAlign: "", backgroundColor: "#d3d3d3",
-          marginTop: "2px", marginLeft: "-12px", fontSize: "14px", height:'172px'
+           marginLeft: "-12px", fontSize: "14px"
         }}
         >
-          <p style={{ marginLeft: '70px' }}><b>Process Task Status </b></p>
+          <p style={{textAlign:"center"}}><b>Process Task Status </b></p>
+          <div className='d-flex'>
+          <div style={{width:"auto", textAlign:"right"}}>
           <div style={{ marginLeft: '10px' }}> <b>Task No :  </b></div>
 
           <div style={{  marginLeft: '10px' }}><b>Operation :</b></div>
@@ -97,6 +109,20 @@ console.log(ChangedOperator);
           <div style={{  marginLeft: '10px' }}> <b>Start Time :  </b></div>
 
           <div className='mb-3' style={{ color: "", marginLeft: '10px' }}><b>Running For :</b></div>
+          </div>
+
+          <div style={{width:"auto", textAlign:"left"}}>
+          <div style={{ marginLeft: '10px' }}> <b> - </b></div>
+
+          <div style={{  marginLeft: '10px' }}><b> - </b></div>
+          <div style={{ color: "", marginLeft: '10px' }}> <b> - </b></div>
+
+          <div style={{  marginLeft: '10px' }}><b> - </b></div>
+          <div style={{  marginLeft: '10px' }}> <b> - </b></div>
+
+          <div className='mb-3' style={{ color: "", marginLeft: '10px' }}><b> - </b></div>
+          </div>
+          </div>
         </div>
       </div>
 
@@ -107,11 +133,22 @@ console.log(ChangedOperator);
           fontSize: "14px",marginBottom:'20px', height:'115px'
         }}
         >
-          <div className='ms-2'>
-            <p className='ms-5'><b>Material Machine Time </b></p>
-            <div><b>Sheet Id:</b></div>
-            <div> <b>Start Time :  </b></div>
-            <div className=''><b>Running For :</b></div>
+          <div>
+            <p style={{textAlign:"center"}}><b>Material Machine Time</b></p>
+            <div className='d-flex mx-2'>
+            <div style={{width:"auto",textAlign:"right"}}>
+            <div><b>Sheet Id :  </b></div>
+            <div> <b>Start Time :   </b></div>
+            <div><b>Running For :  </b></div>
+            </div>
+
+            <div style={{width:"auto", textAlign:"left"}}>
+            <div  style={{ marginLeft: '10px' }}><b>  - </b></div>
+            <div  style={{ marginLeft: '10px' }}><b>  - </b></div>
+            <div  style={{ marginLeft: '10px' }}><b>  - </b></div>
+            </div>
+            </div>
+
           </div>
         </div>
       </div>

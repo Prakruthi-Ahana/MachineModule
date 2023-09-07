@@ -138,7 +138,7 @@ console.log("Selected Stoppage:", selectedStoppage);
               )}
               <button
                 className="button-style group-button"
-                style={{ width: "90px", marginTop: "10px", fontSize: "14px" }}
+                style={{ width: "110px", marginTop: "10px", fontSize: "14px" }}
                 onClick={toggleInput}
               >
                 Stoppage
@@ -146,20 +146,20 @@ console.log("Selected Stoppage:", selectedStoppage);
 
               <button
                 className="button-style group-button"
-                style={{ width: "90px", marginTop: "10px", fontSize: "14px" }}
+                style={{ width: "110px", marginTop: "10px", fontSize: "14px" }}
               >
                 Get Program
               </button>
               <button
                 className="button-style group-button"
-                style={{ width: "90px", marginTop: "10px", fontSize: "14px" }}
+                style={{ width: "110px", marginTop: "10px", fontSize: "14px" }}
                 onClick={handleOpen}
               >
                 Error Report
               </button>
               <button
                 className="button-style group-button"
-                style={{ width: "90px", marginTop: "10px", fontSize: "14px" }}
+                style={{ width: "110px", marginTop: "10px", fontSize: "14px" }}
                 onClick={refreshSubmit}
               >
                 Refresh

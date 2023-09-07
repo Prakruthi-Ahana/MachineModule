@@ -72,7 +72,10 @@ export default function TabsFour({selectshifttable}) {
       
 
       <Tab eventKey="mt" title="Machine Tasks" >
-       <MachineTaskTable/>
+       <MachineTaskTable
+      //  shiftLogDetails={shiftLogDetails}
+      selectshifttable={selectshifttable}
+       />
        </Tab>
 
        <Tab eventKey="sl" title="Shift Log">
