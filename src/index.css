@@ -233,3 +233,8 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+.table-space{
+  white-space: nowrap;
+  
+  }

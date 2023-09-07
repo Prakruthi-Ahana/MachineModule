@@ -19,50 +19,50 @@ setmismatchModal(true);
     <>
     <div>
         <div className="col-md-12 col-sm-12">
-          <div className="ip-box form-bg " >
-          <div className="col-md-8" >
-                <label className="form-label ms-5" style={{fontSize:'12px',marginLeft:'0px'}}> NC Program sheet Details</label>
+          <div className="ip-box form-bg" >
+          <div className="col-md-8  ms-4" style={{textAlign:'center'}} >
+                <label className="form-label ms-5" style={{fontSize:'12px'}}>NC Program sheet Details</label>
                 
               </div>
-            <div className="row" >
+            <div className="row ms-3" >
+
+            <div className="col-md-6">
+            <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> Program no</label>
+            <input  className='in-field' style={{marginTop:'-2px',marginLeft:'-15px'}}/>
+            
+          </div>
              
               <div className="col-md-6">
                 <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> To Process</label>
                 <input  className='in-field '  style={{marginTop:'-2px',marginLeft:'-15px'}} />
               </div>
              
-              <div className="col-md-6">
-                <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> Program no</label>
-                <input  className='in-field' style={{marginTop:'-2px',marginLeft:'-15px'}}/>
-                
-              </div>
+            
               <div className="col-md-6">
                 <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> Allotted</label>
                 <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}} />
               </div>
 
               <div className="col-md-6">
-                <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> Remarks</label>
-     
-                <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}} />
-                
-              </div>
-              <div className="col-md-6">
-                <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> Processed</label>
-                <input  className='in-field'  style={{marginTop:'-2px',marginLeft:'-15px'}}/>
-              </div>
+              <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> Processed</label>
+              <input  className='in-field'  style={{marginTop:'-2px',marginLeft:'-15px'}}/>
+            </div>
 
-             
-              <div className="col-md-6">
-                <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}>Total parts </label>
-                <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}} />
-              </div>
-             
-              <div className="col-md-6 ">
-                <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}>Drawings </label>
-                <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}} />
-              </div>
+            <div className="col-md-6 ">
+            <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}>Drawings </label>
+            <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}} />
+          </div>
 
+                  
+          <div className="col-md-6">
+          <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}>Total parts </label>
+          <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}} />
+        </div>
+       
+
+
+           
+             
               <div className="col-md-6">
                 <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}>Program Time</label>
                 <input  className='in-field' style={{marginTop:'-2px',marginLeft:'-15px'}} />
@@ -74,11 +74,18 @@ setmismatchModal(true);
                 <input  className='in-field' style={{marginTop:'-2px',marginLeft:'-15px'}} />
               </div>
 
+              <div className="col-md-6 mb-3">
+              <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> Remarks</label>
+   
+              <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}} />
+              
+            </div>
+
              
               <div style={{textAlign:"center"}} className='col-md-4'>
             <div>
-            <button className="button-style mt-2 group-button mt-4 mb-2"
-              style={{ width: "140px",fontSize:"13px", marginLeft:'0px'}} 
+            <button className="button-style mt-3 group-button mt-4 mb-2"
+              style={{ width: "140px",fontSize:"13px"}} 
                onClick={loadProgramSubmit} >
               Load Program Material
             </button>
@@ -100,7 +107,7 @@ setmismatchModal(true);
 
     <div className='mt-2'>
         <div className="col-md-12 col-sm-12">
-          <div className="ip-box form-bg " style={{}}>
+          <div className="ip-box form-bg " >
             <div className="row">
               <div className="col-md-6 " style={{marginTop:'-10px'}} >
                 <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}> IV No :</label>

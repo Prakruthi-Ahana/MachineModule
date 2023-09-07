@@ -6,7 +6,7 @@ export default function MarkasUsedModal() {
     }
   return (
     <div>
-       <Modal show={ m} onHide={handleClose}>
+       <Modal show={m} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>magod_machine</Modal.Title>
         </Modal.Header>
