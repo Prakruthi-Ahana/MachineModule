@@ -46,6 +46,13 @@ code {
   text-indent: 5px;
 }
 
+.in-field1 {
+  height: 15px;
+  margin-top: 10px;
+  /* border-radius: 6px; */
+  text-indent: 5px;
+}
+
 .ip-select {
   font-size: 14px;
   padding: -5px 10px 10px 5px;
