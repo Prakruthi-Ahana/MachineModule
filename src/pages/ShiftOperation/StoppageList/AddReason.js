@@ -4,12 +4,55 @@ import Modal from 'react-bootstrap/Modal';
 import axios from "axios";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { useState , useEffect} from 'react';
+
+import ReasonAskModal from './ReasonAskModal';
 
 
-export default function AddReason({openAddReason,setOpenAddReason,selectedGroup}) {
+
+export default function AddReason({openAddReason,setOpenAddReason,selectedGroup,setGetReasonsList}) {
     const handleClose=()=>{
         setOpenAddReason(false)
     }
+
+    const [openreasonModal, setOpenreasonModal] = useState(false);
+    const handleModal = () => {
+      setOpenreasonModal(true);
+    }
+
+    const newHandleClose = () => {
+      setOpenreasonModal(false)
+    }
+
+    const [reason, setReason] = useState('')
+
+    const handlereason = (event) => {
+      setReason(event.target.value)
+    }
+
+    console.log(reason, "fwwfwfw");
+    const addReason=()=>{
+      axios.post(
+       "http://172.16.20.61:5006/reports/addReason",{Reason:reason, GroupId:selectedGroup.StoppageGpId
+      }).then((response) => {
+        console.log(response.data)
+      
+     });
+     setOpenreasonModal(false)
+     handleClose();
+          toast.success("Reason added successfully", {
+      position: toast.POSITION.TOP_CENTER,
+    });
+    axios.post(
+      "http://172.16.20.61:5006/reports/getReason",
+      {
+       StoppageGpId:selectedGroup?.StoppageGpId
+     }).then((response) => {
+       setGetReasonsList(response.data);
+    });
+    }
+    
+
   return (
     <Modal show={openAddReason} onHide={handleClose}>
     <Modal.Header closeButton>
@@ -34,7 +77,11 @@ export default function AddReason({openAddReason,setOpenAddReason,selectedGroup}
           <div className="col-md-12">
             <label className="form-label">Reason</label>
             <input  
-            className="in-field" />
+            className="in-field"
+            value={reason}
+            onChange={handlereason}
+            />
+            
           </div>
         </div>
       </div>
@@ -42,13 +89,19 @@ export default function AddReason({openAddReason,setOpenAddReason,selectedGroup}
     </Modal.Body>
 
     <Modal.Footer>
-    <Button style={{backgroundColor:"#2b3a55",border:"#2b3a55"}}>
+    <Button style={{backgroundColor:"#2b3a55",border:"#2b3a55"}} onClick={handleModal}>
        Add 
       </Button>
       <Button variant="secondary">
         Exit
       </Button>
     </Modal.Footer>
+
+    <ReasonAskModal
+    show={openreasonModal}
+    handleClose={newHandleClose}
+    handleadd={addReason}
+  />
   </Modal>
   )
 }

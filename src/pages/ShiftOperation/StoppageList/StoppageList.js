@@ -47,6 +47,7 @@ useEffect(() => {
       <div className="col-md-6 col-sm-12">    
         <StoppageForm
             selectedGroup={selectedGroup}
+            getGroupName={getGroupName}
         />
      </div>
     </div>
