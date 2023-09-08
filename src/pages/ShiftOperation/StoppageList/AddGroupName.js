@@ -14,7 +14,11 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
 
     const[getGroupNameList,setGetGroupNameList]=useState([])
 
+    const [showInnerModal, setShowInnerModal] = useState(false);
+
+
     const [openModal, setOpenModal] = useState(false);
+    
     const handleModal = () => {
       setOpenModal(true)
     }
@@ -27,7 +31,6 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
        "http://172.16.20.61:5006/reports/addGroupName",{GroupName:groupName
       }).then((response) => {
         console.log(response.data)
-        setGetGroupNameList(response.data);
      });
      setOpenModal(false)
      setOpenAddGroup(false)
@@ -42,6 +45,9 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
        setGetGroupNameList(response.data);
     });
     }
+    useEffect(() => {
+
+    }, [])
 
 
 
@@ -50,6 +56,7 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
       const addedtext = event.target.value;
       setGroupName(addedtext)
     }
+
    
 
   return (
@@ -59,7 +66,9 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
       <Modal.Title>Magod Laser:Add Group Name</Modal.Title>
     </Modal.Header>
 
-    <Modal.Body>
+   
+    <Modal.Body style={{display: showInnerModal ? 'none' : 'block'}}>
+
       {/* <h5 className='ms-2'>{selectedRow.refName}</h5> */}
     <div className="col-md-12 col-sm-12 ip-box form-bg">
       <div>
@@ -75,26 +84,38 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
         </div>
       </div>
     </div>
+
+   
     </Modal.Body>
 
     
 
     <Modal.Footer>
-    <Button style={{backgroundColor:"#2b3a55",border:"#2b3a55"}} onClick={handleModal}>
-       Add 
-      </Button>
+    <Button style={{ backgroundColor: "#2b3a55", border: "#2b3a55" }} onClick={() => { handleModal();  setShowInnerModal(true); }}>
+    Add
+  </Button>
+  
       <Button variant="secondary" onClick={handleClose}>
         Exit
       </Button>
     </Modal.Footer>
 
-    <DeleteAskModal
-    show={openModal}
-    handleClose={newHandleClose}
-    data={{title: 'Add GroupName', content: 'Are you sure you want to add?' }}
-    handleDelete={addGroupName}
-
-  />
+    {showInnerModal && (
+      
+      <DeleteAskModal
+        show={showInnerModal}
+        handleClose={() => {
+          setShowInnerModal(false);
+          setOpenAddGroup(true); // Show the outer modal again if needed
+        }}
+        data={{ title: 'Add GroupName', content:    <div>
+        Are you sure you want to add <strong>{groupName}</strong> for GroupName?
+       
+      </div>  }}
+        handleDelete={addGroupName}
+        groupName={groupName}
+      />
+    )}
   </Modal>
 
 

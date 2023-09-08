@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap';
 
-export default function ReasonAskModal({ show, handleClose,handleadd }) {
+export default function ReasonAskModal({ show, handleClose,handleadd, reason }) {
   return (
     <div>
          <Modal show={show} onHide={handleClose}>
@@ -9,7 +9,9 @@ export default function ReasonAskModal({ show, handleClose,handleadd }) {
         <Modal.Title>Add Reason</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p>Are You sure you want add </p>
+      <div>
+      Are you sure you want to add <strong>{reason}</strong> as Reason?
+    </div>
       </Modal.Body>
       <Modal.Footer>
       <Button variant='primary' onClick={() =>handleadd()} >Yes</Button>  
