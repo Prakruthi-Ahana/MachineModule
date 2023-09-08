@@ -1,171 +1,189 @@
-import React, { useState } from 'react';
-import MaterialAndPartsTabs from './MaterialAndPartsTabs';
-import { Table } from 'react-bootstrap';
-import LoadProgramInfoModal from './LoadProgramInfoModal';
-import ProgramCompleteModal from './ProgramCompleteModal';
+import React, { useEffect, useState } from "react";
+import MaterialAndPartsTabs from "./MaterialAndPartsTabs";
+import { Table } from "react-bootstrap";
+import LoadProgramInfoModal from "./LoadProgramInfoModal";
+import ProgramCompleteModal from "./ProgramCompleteModal";
 
-export default function ProgramInfoForms() {
-  const [loadProgramInfo,setloadProgramInfo]=useState(false); 
-  const [programComplete, setProgramComplete]=useState(false);
+export default function ProgramInfoForms({ getMachinetaskdata }) {
+  const [loadProgramInfo, setloadProgramInfo] = useState(false);
+  const [programComplete, setProgramComplete] = useState(false);
 
-  const handleSubmit=()=>{
-setloadProgramInfo(true);
+  const handleSubmit = () => {
+    setloadProgramInfo(true);
+  };
+
+  const programCompleteSubmit = () => {
+    setProgramComplete(true);
+  };
+
+  const[selectProductionReport,setSelectProductionReport]=useState({})
+  const selectProductionReportFun=(item,index)=>{
+      let list={...item,index:index}
+      setSelectProductionReport(list);
   }
 
-  const programCompleteSubmit=()=>{
-setProgramComplete(true);
-  }
+  console.log(selectProductionReport);
+
+  useEffect(() => {
+    if (getMachinetaskdata.length > 0 && !selectProductionReport.NCProgramNo) {
+      selectProductionReportFun(getMachinetaskdata[0], 0); // Select the first row
+    }
+  }, [getMachinetaskdata, selectProductionReport, selectProductionReportFun]);
+
   return (
     <div>
+      <div
+        className="col-md-12"
+        style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
+      >
+        <Table striped className="table-data border">
+          <thead className="tableHeaderBGColor" style={{ fontSize: "13px" }}>
+            <tr>
+              <th style={{ whiteSpace: "nowrap" }}>Program No</th>
+              <th style={{ whiteSpace: "nowrap" }}>Task No</th>
+            </tr>
+          </thead>
 
-       <div className='col-md-12' style={{ overflowY: 'scroll', overflowX: 'scroll', height: '250px', 
-     }}>
-          <Table striped className="table-data border">
-            <thead className="tableHeaderBGColor" style={{fontSize:'13px'}}>
-              <tr>
-                
-               
-                <th></th>
-                <th style={{whiteSpace:'nowrap'}}>Program No</th>
-                <th style={{whiteSpace:'nowrap'}}>Task No</th>
-                
-               
+          <tbody className="tablebody" style={{ fontSize: "13px" }}>
+            {getMachinetaskdata.map((item, key) => {
+              return (
+                <>
+                  <tr onClick={()=>{selectProductionReportFun(item,key)}} className={key===selectProductionReport?.index? 'selcted-row-clr':'' }>
+                    <td>{item.NCProgramNo}</td>
+                    <td>{item.TaskNo}</td>
+                  </tr>
+                </>
+              );
+            })}
+          </tbody>
+        </Table>
+      </div>
 
-                
+      <div className="row">
+        <div className=" col-md-4">
+          <div
+            style={{
+              backgroundColor: "#d3d3d3",
+              marginTop: "2px",
+              marginLeft: "-12px",
+              fontSize: "12px",
+            }}
+          >
+            <p style={{ marginLeft: "50px" }}>
+              <b>Process Info </b>
+            </p>
 
-              </tr>
-            </thead>
+            <div style={{  marginLeft: "10px" }}>
+             <p> Program No : <b>{selectProductionReport?.NCProgramNo}</b></p>
+            </div>
 
-                  <tbody className='tablebody' style={{fontSize:'13px'}}>
-                    <tr >
-                    
-                      
-                  
-                     
-                    </tr>
-                  </tbody>
-          </Table>
+            <div style={{marginLeft: "10px" }}>
+            <p>Process : <b>{selectProductionReport?.MProcess} </b></p>
+            </div>
+            <div style={{ marginLeft: "10px" }}>
+            <p>Operation: <b> {selectProductionReport?.Operation}  </b></p>
+            </div>
 
-        </div >
+            <div style={{ marginLeft: "10px" }}>
+           <p> To Process: <b> {selectProductionReport?.Qty} </b></p>
+            </div>
+            <div style={{ marginLeft: "10px" }}>
+            <p>Allotted :<b> {selectProductionReport?.QtyAllotted}</b></p>
+            </div>
 
-      <div className='row'>
+            <div style={{ marginLeft: "10px" }}>
+             <p>Processed : <b> {selectProductionReport?.QtyCut}</b></p>
+            </div>
+          </div>
+        </div>
 
+        <div className=" col-md-8">
+          <div
+            style={{
+              backgroundColor: "#d3d3d3",
+              marginTop: "2px",
+              marginLeft: "-12px",
+              fontSize: "12px",
+            }}
+          >
+            <p style={{ marginLeft: "50px" }}>
+              <b>Production Info </b>
+            </p>
 
+            <div style={{  marginLeft: "10px" }}>
+                <p> Customer:<b> {selectProductionReport?.cust_name} </b></p>
+            </div>
+
+            <div style={{ marginLeft: "10px" }}>
+            <p>Material :<b> {selectProductionReport?.Mtrl_Code}</b></p>
+            </div>
+            <div style={{  marginLeft: "10px" }}>
+            <p>Drawings:<b> {selectProductionReport?.NoOfDwgs} </b></p>
+            </div>
+
+            <div style={{  marginLeft: "10px" }}>
+            <p>Total Parts: <b>{selectProductionReport?.TotalParts}</b></p>
+            </div>
+            <div style={{ marginLeft: "10px" }}>
+              <p>Planned Time:<b>{selectProductionReport?.EstimatedTime} </b></p>
+            </div>
+
+            <div style={{ color: "", marginLeft: "10px" }}>
+              <p>Actual Time :<b>{selectProductionReport?.ActualTime} </b></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row">
+        <div style={{ textAlign: "", marginLeft: "0px" }} className="col-md-6">
+          <div>
+            <button
+              className="button-style mt-2 group-button mt-2 mb-2"
+              style={{ width: "150px", fontSize: "14px"}}
+              onClick={handleSubmit}
+            >
+              Load Program Info
+            </button>
+          </div>
+        </div>
+
+        <div style={{ textAlign: "", marginLeft: "0px" }} className="col-md-4">
+          <div>
+            <button
+              className="button-style mt-2 group-button mt-2 mb-2"
+              style={{ width: "150px", fontSize: "14px", marginLeft: "-70px" }}
+              onClick={programCompleteSubmit}
+            >
+              Program complete
+            </button>
+          </div>
+        </div>
+
+        <div style={{ textAlign: "", marginLeft: "0px" }} className="col-md-2">
+          <div>
+            <button
+              className="button-style mt-2 group-button mt-2 mb-2"
+              style={{ width: "130px", fontSize: "14px", marginLeft: "-60px" }}
+            >
+              Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <MaterialAndPartsTabs />
      
+        <LoadProgramInfoModal
+          loadProgramInfo={loadProgramInfo}
+          setloadProgramInfo={setloadProgramInfo}
+        />
+ 
+        <ProgramCompleteModal
+          programComplete={programComplete}
+          setProgramComplete={setProgramComplete}
+        />
 
-
-
-
-    
-      <div className=' col-md-6'>
-       
-       <div style={{textAlign:"",backgroundColor:"#d3d3d3",
-        marginTop:"2px",marginLeft:"-12px",fontSize:"14px",}}
-       >
-          <p style={{marginLeft:'50px'}}><b>Process Info </b></p>
-
-          <div style={{color:"",marginLeft:'10px'}}> <b>Program No :  </b></div>
-          
-           <div style={{color:"",marginLeft:'10px'}}><b>Process :</b></div>
-           <div style={{color:"",marginLeft:'10px'}}> <b>Operation:  </b></div>
-          
-           <div style={{color:"",marginLeft:'10px'}}><b>To Process:</b></div>
-           <div style={{color:"",marginLeft:'10px'}}> <b>Allotted :  </b></div>
-          
-           <div style={{color:"",marginLeft:'10px'}}><b>Processed :</b></div>
-
-           
-            
-           
-         
-        </div>
-    </div>
-
-
-
-
-    <div className=' col-md-6'>
-       
-       <div style={{textAlign:"",backgroundColor:"#d3d3d3",
-        marginTop:"2px",marginLeft:"-12px",fontSize:"14px",}}
-       >
-          <p style={{marginLeft:'50px'}}><b>Production Info </b></p>
-
-          <div style={{color:"",marginLeft:'10px'}}> <b>Customer:  </b></div>
-          
-           <div style={{color:"",marginLeft:'10px'}}><b>Material :</b></div>
-           <div style={{color:"",marginLeft:'10px'}}> <b>Drawings:  </b></div>
-          
-           <div style={{color:"",marginLeft:'10px'}}><b>Total Parts:</b></div>
-           <div style={{color:"",marginLeft:'10px'}}> <b>Planned Time:  </b></div>
-          
-           <div style={{color:"",marginLeft:'10px'}}><b>Actual Time :</b></div>
-
-           
-            
-           
-         
-        </div>
-    </div>
-
-
-    </div>
-
-<div className='row'>
-     <div style={{textAlign:"",marginLeft:'0px'}} className='col-md-6'>
-            <div>
-            <button className="button-style mt-2 group-button mt-2 mb-2"
-              style={{ width: "130px",fontSize:"14px",marginLeft:'5px'}} 
-             onClick={handleSubmit}   >
-             Load Program Info
-            </button>
-            </div>
-           
-            
-            </div>
-
-            <div style={{textAlign:"",marginLeft:'0px'}} className='col-md-4'>
-            <div>
-            <button className="button-style mt-2 group-button mt-2 mb-2"
-              style={{ width: "130px",fontSize:"14px",marginLeft:'-10px'}} 
-               onClick={programCompleteSubmit} >
-             Program complete
-            </button>
-            </div>
-           
-            
-            </div>
-
-
-            <div style={{textAlign:"",marginLeft:'0px'}} className='col-md-2'>
-            <div>
-            <button className="button-style mt-2 group-button mt-2 mb-2"
-              style={{ width: "70px",fontSize:"14px",marginLeft:'-12px'}} 
-                >
-             Refresh
-            </button>
-            </div>
-           
-            
-            </div>
-
-            </div>
-
-
-<MaterialAndPartsTabs/>
-{
-  loadProgramInfo &&
-  <LoadProgramInfoModal 
-  loadProgramInfo={loadProgramInfo} setloadProgramInfo={setloadProgramInfo} />
-}
-
-
-{
-  programComplete &&
-  <ProgramCompleteModal
-   programComplete={programComplete} setProgramComplete={setProgramComplete}/>
-}
-            
     </div>
   );
 }

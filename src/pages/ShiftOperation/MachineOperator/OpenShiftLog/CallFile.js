@@ -8,13 +8,13 @@ import {useLocation} from 'react-router-dom';
 
 export default function CallFile() {
   const location = useLocation();
-  const {data}=location.state;
+  const {data}=location?.state;
   
-  let selectedMachine=data.selectedMachine;
-  let finalDay1=data.finalDay1;
-  let selectshifttable=data.selectshifttable;
-  let Shift=data.Shift;
-  let date=data.date;
+  let selectedMachine=data?.selectedMachine;
+  let finalDay1=data?.finalDay1;
+  let selectshifttable=data?.selectshifttable;
+  let Shift=data?.Shift;
+  let date=data?.date;
 
   return (
     <>

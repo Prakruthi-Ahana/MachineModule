@@ -5,7 +5,7 @@ import LaserCutForm from './MaterialUsageTab/LaserCutForm';
 import ShowDfxForm from './PartsDetailsTab/ShowDfxForm';
 
 export default function MaterialAndPartsTabs() {
-    const [key, setKey] = useState("");
+    const [key, setKey] = useState("mu");
   return (
     <div>
        <div className='row'>
