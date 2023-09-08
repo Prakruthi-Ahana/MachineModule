@@ -12,7 +12,7 @@ export default function TabsFour({selectshifttable}) {
     const [key, setKey] = useState("mt");
 
 
-
+//ShiftLog Table
     const[shiftLogDetails,setShiftLogDetails]=useState([])
     const getShiftLogDetails=()=>{
       axios
@@ -58,7 +58,27 @@ export default function TabsFour({selectshifttable}) {
     useEffect(()=>{
       getShiftLogDetails();
     },[selectshifttable])
-    
+
+
+    //Machine Task Table
+    const [getMachinetaskdata, setMachinetaskdata] = useState([]);
+    let Machine=selectshifttable?.Machine;
+  const getMachineTaskData = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", { MachineName:Machine })
+      .then((response) => {
+        console.log(response.data);
+        setMachinetaskdata(response.data);
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+      });
+  };
+
+  useEffect(() => {
+    getMachineTaskData();
+  }, [Machine]);
+
   return (
     <div>
       <div className='row'>
@@ -75,6 +95,7 @@ export default function TabsFour({selectshifttable}) {
        <MachineTaskTable
       //  shiftLogDetails={shiftLogDetails}
       selectshifttable={selectshifttable}
+      getMachinetaskdata={getMachinetaskdata}
        />
        </Tab>
 
@@ -84,7 +105,7 @@ export default function TabsFour({selectshifttable}) {
        </Tab>
 
        <Tab eventKey="pr" title="Production Report">
-       <ProgramInfoForms/>
+       <ProgramInfoForms getMachinetaskdata={getMachinetaskdata}/>
        </Tab>
 
        <Tab eventKey="ss" title="Shift Summary">
