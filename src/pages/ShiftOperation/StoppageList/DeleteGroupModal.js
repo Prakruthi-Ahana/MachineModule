@@ -1,9 +1,9 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap';
 
-export default function DeleteAskModal({ show, handleClose, data,handleDelete }) {
+export default function DeleteGroupModal({ show, handleClose, data,handleGroup }) {
   const handleYesClick = () => {
-    handleDelete(data);
+    handleGroup(data);
   
   };
   return (

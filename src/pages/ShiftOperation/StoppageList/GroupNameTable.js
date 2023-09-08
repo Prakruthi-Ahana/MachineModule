@@ -3,6 +3,8 @@ import Table from "react-bootstrap/Table";
 
 
 export default function GroupNameTable({getGroupNameList,selectedGroup,selectedRowFn}) {
+
+  
   return (
     <div className='row mt-1'>
     <div>
