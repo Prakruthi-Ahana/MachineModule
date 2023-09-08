@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import GroupNameTable from "./GroupNameTable";
 import axios from "axios";
-import baseURL1 from "../../../api/baseUrl1"
 import StoppageForm from "./StoppageForm";
 
 export default function StoppageList() {
