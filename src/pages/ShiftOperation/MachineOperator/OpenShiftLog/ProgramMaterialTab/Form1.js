@@ -50,7 +50,7 @@ setmismatchModal(true);
 
             <div className="col-md-6 ">
             <label className="form-label" style={{fontSize:'12px',marginLeft:'-15px'}}>Drawings </label>
-            <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}} />
+            <input  className='in-field'style={{marginTop:'-2px',marginLeft:'-15px'}}/>
           </div>
 
                   
@@ -163,12 +163,13 @@ setmismatchModal(true);
     </div>
     <ProgrmMatrlTable/>
    
-   (
+   
     {
       mismatchModal &&
       <QuantityMismatchModal mismatchModal={mismatchModal} setmismatchModal={setmismatchModal} />
     }
-   )
+   
+   
 
    {
     loadProgram &&
