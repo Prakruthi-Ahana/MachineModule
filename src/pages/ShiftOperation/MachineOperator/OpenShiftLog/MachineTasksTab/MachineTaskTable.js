@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 import LoadProgramModal from "./LoadProgramModal";
 import axios from "axios";
 import { baseURL } from "../../../../../api/baseUrl";
+import MachineTaskProfile from "./MachineTaskProfile";
 
 export default function MachineTaskTable({ selectshifttable,getMachinetaskdata}) {
   const [open, setOpen] = useState(false);
@@ -72,13 +73,13 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
       </div>
 
       <div className="d-flex ">
-        <div className=" mt-2 col-md-6 ">
+        <div className="mt-2 col-md-5 ">
           <div
             style={{
               textAlign: "",
               backgroundColor: "#d3d3d3",
               fontSize: "14px",
-              height: "230px",
+              height: "350px",
             }}
           >
             <p style={{ color: "", textAlign: "center" }}>
@@ -98,144 +99,87 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
                 Load Program
               </button>
             </div>
-            <div className="d-flex">
-              <div style={{ width: "auto", textAlign: "right" }}>
-                <div className="mt-1" style={{ marginLeft: "10px" }}>
+            <div className="d-flex mt-3">
+              <div style={{ textAlign: "left" , fontSize:"12px"}}>
+                <div className="" style={{ marginLeft: "10px" }}>
               
-                  <b>Program No :{selectedProgram?.NCProgramNo} </b>
+                  <p>Program No :<b> {selectedProgram?.NCProgramNo} </b></p>
                 </div>
-                <div className="mt-1" style={{ marginLeft: "10px" }}>
-                  <b>Process :{selectedProgram?.MProcess}</b>
-                </div>
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  <b>Operation : {selectedProgram?.Operation}</b>
+                <div className="" style={{ marginLeft: "10px" }}>
+                  <p>Process :<b>{selectedProgram?.MProcess}</b></p>
                 </div>
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <b>To Process : {selectedProgram?.Qty} </b>
+                  <p>Operation :<b> {selectedProgram?.Operation} </b></p>
                 </div>
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   {" "}
-                  <b>Processed : {selectedProgram?.QtyCut}  </b>
+                  <p>To Process :<b> {selectedProgram?.Qty} </b></p>
+                </div>
+                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
+                  {" "}
+                  <p>Processed : <b> {selectedProgram?.QtyCut} </b></p>
                 </div>
               </div>
-              <div style={{ width: "auto", textAlign: "left" }}>
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <b> - </b>
-                </div>
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  <b> - </b>
-                </div>
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  <b> - </b>
-                </div>
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <b> - </b>
-                </div>
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <b> - </b>
-                </div>
-              </div>
+            
             </div>
           </div>
         </div>
 
-        <div className=" mt-2 col-md-6 ms-1">
+        <div className=" mt-2 col-md-7 ms-1">
           <div
             style={{
               textAlign: "",
               backgroundColor: "#d3d3d3",
-              marginTop: "2px",
               fontSize: "14px",
-              height: "auto",
+              height: "350px",
             }}
           >
             <p style={{ color: "", textAlign: "center" }}>
               <b>Material Info</b>
             </p>
 
-            <div className="d-flex">
-              <div style={{ width: "auto", textAlign: "right" }}>
-                <div style={{ color: "", marginLeft: "10px" }}>
+          
+              <div style={{ width: "auto", fontSize:"12px", marginLeft:"10px"}}>
+                <div style={{ color: "" }}>
                   {" "}
-                  <b>Customer:{selectedProgram?.cust_name}  </b>
+                  <p>Customer:<b style={{textAlign:"right"}}> {selectedProgram?.cust_name} </b> </p>
                 </div>
 
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b>Code : {selectedProgram?.Cust_Code}</b>
+                <div  style={{ color: ""}}>
+                  <p>Code :<b  style={{textAlign:"right"}}> {selectedProgram?.Cust_Code}</b></p>
                 </div>
-                <div style={{ color: "", marginLeft: "10px" }}>
+                <div style={{ color: ""}}>
                   {" "}
-                  <b>Source : {selectedProgram?.CustMtrl}</b>
+                  <p>Source :<b  style={{textAlign:"right"}}> {selectedProgram?.CustMtrl}</b></p>
                 </div>
 
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b>Length :{selectedProgram?.Para1} </b>
+                <div style={{ color: "" }}>
+                  <p>Length : <b style={{textAlign:"right"}}> {selectedProgram?.Para1}</b></p>
                 </div>
-                <div style={{ color: "", marginLeft: "10px" }}>
+                <div style={{ color: ""}}>
                   {" "}
-                  <b>Width :{selectedProgram?.Para2} </b>
+                  <p>Width :<b  style={{textAlign:"right"}}> {selectedProgram?.Para2}</b></p>
                 </div>
 
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b>Remarks :{selectedProgram?.Remarks}</b>
+                <div style={{ color: ""}}>
+                  <p>Remarks :<b  style={{textAlign:"right"}}> {selectedProgram?.Remarks}</b></p>
                 </div>
 
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b>Drawings :{selectedProgram?.NoOfDwgs}</b>
+                <div style={{ color: ""}}>
+                  <p>Drawings :<b  style={{textAlign:"right"}}> {selectedProgram?.NoOfDwgs}</b></p>
                 </div>
-                <div style={{ color: "", marginLeft: "10px" }}>
+                <div style={{ color: ""}}>
                   {" "}
-                  <b>Total Parts :{selectedProgram?.TotalParts} </b>
+                  <p>Total Parts :<b  style={{textAlign:"right"}}> {selectedProgram?.TotalParts}</b></p>
                 </div>
 
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b>Machine Time : {selectedProgram?.TotalParts}</b>
+                <div style={{ color: ""}}>
+                  <p>Machine Time:  <b  style={{textAlign:"right"}}></b></p>
                 </div>
               </div>
 
-              <div style={{ width: "auto", textAlign: "left" }}>
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <b> - </b>
-                </div>
-
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b> - </b>
-                </div>
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <b> - </b>
-                </div>
-
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b> - </b>
-                </div>
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <b> - </b>
-                </div>
-
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b> - </b>
-                </div>
-
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b> - </b>
-                </div>
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <b> - </b>
-                </div>
-
-                <div style={{ color: "", marginLeft: "10px" }}>
-                  <b> - </b>
-                </div>
-              </div>
-            </div>
+            
+           
           </div>
         </div>
       </div>
@@ -268,33 +212,8 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
         </div>
       </div>
 
-      <div
-        className="col-md-12"
-        style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
-      >
-        <Table striped className="table-data border">
-          <thead className="tableHeaderBGColor" style={{ fontSize: "12px" }}>
-            <tr>
-              <th></th>
-              <th style={{ whiteSpace: "nowrap" }}>Part Id</th>
-              <th>Rv_No</th>
-              <th>Qty Issued</th>
-              <th>Qty Used</th>
-              <th>Qty Returned</th>
-            </tr>
-          </thead>
-
-          <tbody className="tablebody" style={{ fontSize: "12px" }}>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </Table>
+      <div>
+       <MachineTaskProfile />
       </div>
     </>
   );

@@ -16,7 +16,6 @@ export default function TabsTwo() {
       onSelect={(k) => setKey(k)}
       className="mb-3 mt-3  " style={{fontSize:'12px'}}
     >
-      
 
       <Tab eventKey="pm" title="Program Material">
        <Form1/>
