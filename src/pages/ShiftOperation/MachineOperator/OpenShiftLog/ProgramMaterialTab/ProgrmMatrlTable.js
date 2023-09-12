@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 export default function ProgrmMatrlTable() {
   return (
     <div>
-      <div className='col-md-12' style={{ overflowY: 'scroll', overflowX: 'scroll',
+      <div className='mt-2 col-md-12' style={{ overflowY: 'scroll', overflowX: 'scroll',
        height: '250px', 
      }}>
           <Table striped className="table-data border">
@@ -18,9 +18,6 @@ export default function ProgrmMatrlTable() {
                 <th>Issued</th>
                 <th>Used</th>
                 <th>UsedNow</th>
-               
-
-                
 
               </tr>
             </thead>

@@ -60,16 +60,17 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
       </div>
 
       <div className="row">
-        <div className=" col-md-4">
+        <div className=" col-md-5">
           <div
             style={{
               backgroundColor: "#d3d3d3",
               marginTop: "2px",
               marginLeft: "-12px",
               fontSize: "12px",
+              height:"270px"
             }}
           >
-            <p style={{ marginLeft: "50px" }}>
+            <p style={{ textAlign:"center"}}>
               <b>Process Info </b>
             </p>
 
@@ -81,11 +82,11 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
             <p>Process : <b>{selectProductionReport?.MProcess} </b></p>
             </div>
             <div style={{ marginLeft: "10px" }}>
-            <p>Operation: <b> {selectProductionReport?.Operation}  </b></p>
+            <p>Operation : <b> {selectProductionReport?.Operation}  </b></p>
             </div>
 
             <div style={{ marginLeft: "10px" }}>
-           <p> To Process: <b> {selectProductionReport?.Qty} </b></p>
+           <p> To Process : <b> {selectProductionReport?.Qty} </b></p>
             </div>
             <div style={{ marginLeft: "10px" }}>
             <p>Allotted :<b> {selectProductionReport?.QtyAllotted}</b></p>
@@ -97,35 +98,36 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
           </div>
         </div>
 
-        <div className=" col-md-8">
+        <div className=" col-md-7">
           <div
             style={{
               backgroundColor: "#d3d3d3",
               marginTop: "2px",
               marginLeft: "-12px",
               fontSize: "12px",
+              height:"270px"
             }}
           >
-            <p style={{ marginLeft: "50px" }}>
+            <p style={{textAlign:"center"}}>
               <b>Production Info </b>
             </p>
 
             <div style={{  marginLeft: "10px" }}>
-                <p> Customer:<b> {selectProductionReport?.cust_name} </b></p>
+                <p> Customer :<b> {selectProductionReport?.cust_name} </b></p>
             </div>
 
             <div style={{ marginLeft: "10px" }}>
             <p>Material :<b> {selectProductionReport?.Mtrl_Code}</b></p>
             </div>
             <div style={{  marginLeft: "10px" }}>
-            <p>Drawings:<b> {selectProductionReport?.NoOfDwgs} </b></p>
+            <p>Drawings :<b> {selectProductionReport?.NoOfDwgs} </b></p>
             </div>
 
             <div style={{  marginLeft: "10px" }}>
-            <p>Total Parts: <b>{selectProductionReport?.TotalParts}</b></p>
+            <p>Total Parts :<b>{selectProductionReport?.TotalParts}</b></p>
             </div>
             <div style={{ marginLeft: "10px" }}>
-              <p>Planned Time:<b>{selectProductionReport?.EstimatedTime} </b></p>
+              <p>Planned Time :<b>{selectProductionReport?.EstimatedTime} </b></p>
             </div>
 
             <div style={{ color: "", marginLeft: "10px" }}>
