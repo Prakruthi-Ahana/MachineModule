@@ -30,6 +30,8 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
     }
   }, [getMachinetaskdata, selectProductionReport, selectProductionReportFun]);
 
+  
+
   return (
     <div>
       <div
@@ -174,7 +176,9 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
         </div>
       </div>
 
-      <MaterialAndPartsTabs />
+      <MaterialAndPartsTabs
+      selectProductionReport={selectProductionReport}
+      />
      
         <LoadProgramInfoModal
           loadProgramInfo={loadProgramInfo}

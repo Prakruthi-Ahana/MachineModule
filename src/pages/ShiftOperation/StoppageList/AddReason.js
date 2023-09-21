@@ -15,7 +15,14 @@ export default function AddReason({ openAddReason, setOpenAddReason, selectedGro
 
   const [openreasonModal, setOpenreasonModal] = useState(false);
   const handleModal = () => {
-    setOpenreasonModal(true);
+    if(reason.trim() === ''){
+      toast.error("Reason cannot be empty", {
+        position: toast.POSITION.TOP_CENTER,
+      })
+    setOpenreasonModal(false);
+    }else{
+      setOpenreasonModal(true)
+    }
   }
 
   const newHandleClose = () => {
@@ -28,7 +35,7 @@ export default function AddReason({ openAddReason, setOpenAddReason, selectedGro
     setReason(event.target.value)
   }
 
-  console.log(reason, "fwwfwfw");
+  
   const addReason = () => {
     axios.post(
       "http://172.16.20.61:5006/reports/addReason", { Reason: reason, GroupId: selectedGroup.StoppageGpId }

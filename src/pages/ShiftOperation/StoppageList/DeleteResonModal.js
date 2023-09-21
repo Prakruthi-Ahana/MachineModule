@@ -1,10 +1,12 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap';
 
-export default function DeleteAskModal({ show, handleClose, data,handleDelete }) {
+export default function DeleteResonModal({ show, handleClose, data,handleDelete }) {
   const handleYesClick = () => {
+    handleClose(true)
     handleDelete(data);
   };
+  console.log("Data is reaching here", data)
   return (
     <div>
          <Modal show={show} onHide={handleClose}>

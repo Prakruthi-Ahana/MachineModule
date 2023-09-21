@@ -3,8 +3,7 @@ import { Button, Modal } from 'react-bootstrap';
 
 export default function DeleteGroupModal({ show, handleClose, data,handleGroup }) {
   const handleYesClick = () => {
-    handleGroup(data);
-  
+    handleGroup(data); 
   };
   return (
     <div>

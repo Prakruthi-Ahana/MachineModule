@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import ShowUpModal from './ShowUpModal';
 import MarkasRejectedModal from './MarkasRejectedModal';
 import RowRejectedModal from './RowRejectedModal';
 import ShowUnusedModal from './ShowUnusedModal';
 import AllModal from './AllModal';
+import axios from 'axios';
+import { baseURL } from '../../../../../../api/baseUrl';
 
 
-export default function LaserCutForm() {
+export default function LaserCutForm(selectProductionReport) {
 
  const[showModal,setShowModal]=useState(false);
  const [markasRejected, setMarkasRejected]=useState(false);
@@ -15,6 +17,7 @@ export default function LaserCutForm() {
  const[showUnused, setShowUnused]=useState(false);
  const [allModal, setAllModal]=useState(false);
 
+ 
  const handleSubmit=()=>{
 setShowModal(true);
  }
@@ -24,6 +27,27 @@ setShowModal(true);
  const showUnusedSubmit=()=>{
 setShowUnused(true);
  }
+
+ console.log("Laser Data", selectProductionReport.selectProductionReport.selectProductionReport.Ncid)
+
+ const selectProductionReportData =  selectProductionReport.selectProductionReport.selectProductionReport.Ncid;
+
+
+ const [ProductionReportData , setProductionReportData] = useState([])
+
+ const MaterialUsage = () => {
+   axios.post(baseURL + "/ShiftOperator/MachineTasksProfile", {NCId:selectProductionReportData
+   }).then((response) => {
+     console.log(response)
+     setProductionReportData(response.data)
+  })
+ 
+ }
+ useEffect(() => {
+  MaterialUsage(); 
+ }, [selectProductionReport]);
+
+ console.log("Testing data", ProductionReportData);
 
   return (
     <div>
@@ -74,8 +98,6 @@ setShowUnused(true);
             <thead className="tableHeaderBGColor " style={{fontSize:'12px'}}>
               <tr>
                 
-               
-                <th></th>
                 <th style={{whiteSpace:'nowrap'}}>Material Id</th>
                 <th>Length</th>
                 <th>width</th>
@@ -90,17 +112,19 @@ setShowUnused(true);
             </thead>
 
                   <tbody className='tablebody'>
-                    <tr >
-                    
-                      
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                     
-                     
-                    </tr>
+
+{
+  ProductionReportData.map((data, index) => (
+  <tr className={index=== selectProductionReport ?.index? 'selcted-row-clr':''}>
+  <td>{data.ShapeMtrlID}</td>
+  <td>{data.Para1}</td>
+  <td>{data.Para2}</td>
+  <td>{data.Used}</td>
+  <td>{data.Rejected}</td>     
+  <td>{data.RejectionReason}</td>                
+</tr>
+))}
+                   
                   </tbody>
           </Table>
 

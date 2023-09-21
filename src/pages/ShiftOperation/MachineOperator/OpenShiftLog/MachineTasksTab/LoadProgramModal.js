@@ -34,12 +34,12 @@ export default function LoadProgramModal({open, setOpen}) {
           </Button>
         </Modal.Footer>
       </Modal>
-
       {
         dublicateEntry &&
         <DublicateEntryModal  
         dublicateEntry={ dublicateEntry} setDublicateEntry={setDublicateEntry} />
       }
+
     </div>
   );
 }
