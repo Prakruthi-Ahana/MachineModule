@@ -79,7 +79,7 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
               textAlign: "",
               backgroundColor: "#d3d3d3",
               fontSize: "14px",
-              height: "350px",
+              height: "280px",
             }}
           >
             <p style={{ color: "", textAlign: "center" }}>
@@ -101,23 +101,23 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
             </div>
             <div className="d-flex mt-3">
               <div style={{ textAlign: "left" , fontSize:"12px"}}>
-                <div className="" style={{ marginLeft: "10px" }}>
+                <div className="" style={{ marginLeft: "10px"}}>
               
-                  <p>Program No :<b> {selectedProgram?.NCProgramNo} </b></p>
+                  <p style={{ margin: 5 }}>Program No :<b> {selectedProgram?.NCProgramNo} </b></p>
                 </div>
                 <div className="" style={{ marginLeft: "10px" }}>
-                  <p>Process :<b>{selectedProgram?.MProcess}</b></p>
+                  <p style={{ margin: 5 }}>Process :<b>{selectedProgram?.MProcess}</b></p>
                 </div>
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  <p>Operation :<b> {selectedProgram?.Operation} </b></p>
-                </div>
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
-                  <p>To Process :<b> {selectedProgram?.Qty} </b></p>
+                  <p style={{ margin: 5 }}>Operation :<b> {selectedProgram?.Operation} </b></p>
                 </div>
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   {" "}
-                  <p>Processed : <b> {selectedProgram?.QtyCut} </b></p>
+                  <p style={{ margin: 5 }}>To Process :<b> {selectedProgram?.Qty} </b></p>
+                </div>
+                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
+                  {" "}
+                  <p style={{ margin: 5 }}>Processed : <b> {selectedProgram?.QtyCut} </b></p>
                 </div>
               </div>
             
@@ -131,7 +131,7 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
               textAlign: "",
               backgroundColor: "#d3d3d3",
               fontSize: "14px",
-              height: "350px",
+              height: "280px",
             }}
           >
             <p style={{ color: "", textAlign: "center" }}>
@@ -142,39 +142,39 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
               <div style={{ width: "auto", fontSize:"12px", marginLeft:"10px"}}>
                 <div style={{ color: "" }}>
                   {" "}
-                  <p>Customer:<b style={{textAlign:"right"}}> {selectedProgram?.cust_name} </b> </p>
+                  <p style={{ margin: 5 }}>Customer:<b style={{textAlign:"right"}}> {selectedProgram?.cust_name} </b> </p>
                 </div>
 
                 <div  style={{ color: ""}}>
-                  <p>Code :<b  style={{textAlign:"right"}}> {selectedProgram?.Cust_Code}</b></p>
+                  <p style={{ margin: 5}}>Code :<b  style={{textAlign:"right"}}> {selectedProgram?.Cust_Code}</b></p>
                 </div>
                 <div style={{ color: ""}}>
                   {" "}
-                  <p>Source :<b  style={{textAlign:"right"}}> {selectedProgram?.CustMtrl}</b></p>
+                  <p style={{ margin: 5 }}>Source :<b  style={{textAlign:"right"}}> {selectedProgram?.CustMtrl}</b></p>
                 </div>
 
                 <div style={{ color: "" }}>
-                  <p>Length : <b style={{textAlign:"right"}}> {selectedProgram?.Para1}</b></p>
+                  <p style={{ margin: 5 }}>Length : <b style={{textAlign:"right"}}> {selectedProgram?.Para1}</b></p>
                 </div>
                 <div style={{ color: ""}}>
                   {" "}
-                  <p>Width :<b  style={{textAlign:"right"}}> {selectedProgram?.Para2}</b></p>
+                  <p style={{ margin: 5 }}>Width :<b  style={{textAlign:"right"}}> {selectedProgram?.Para2}</b></p>
                 </div>
 
                 <div style={{ color: ""}}>
-                  <p>Remarks :<b  style={{textAlign:"right"}}> {selectedProgram?.Remarks}</b></p>
+                  <p style={{ margin: 5 }}>Remarks :<b  style={{textAlign:"right"}}> {selectedProgram?.Remarks}</b></p>
                 </div>
 
                 <div style={{ color: ""}}>
-                  <p>Drawings :<b  style={{textAlign:"right"}}> {selectedProgram?.NoOfDwgs}</b></p>
+                  <p style={{ margin: 5 }}>Drawings :<b  style={{textAlign:"right"}}> {selectedProgram?.NoOfDwgs}</b></p>
                 </div>
                 <div style={{ color: ""}}>
                   {" "}
-                  <p>Total Parts :<b  style={{textAlign:"right"}}> {selectedProgram?.TotalParts}</b></p>
+                  <p style={{ margin: 5 }}>Total Parts :<b  style={{textAlign:"right"}}> {selectedProgram?.TotalParts}</b></p>
                 </div>
 
                 <div style={{ color: ""}}>
-                  <p>Machine Time:  <b  style={{textAlign:"right"}}></b></p>
+                  <p style={{ margin: 5 }}>Machine Time:  <b  style={{textAlign:"right"}}></b></p>
                 </div>
               </div>
 
@@ -184,37 +184,14 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
         </div>
       </div>
 
-      <div className="mt-2">
-        <div className="col-md-12 col-sm-12">
-          <div className="ip-box form-bg ">
-            <div className="row">
-              <div className="col-md-4">
-                <label className="form-label" style={{ fontSize: "12px" }}>
-                  {" "}
-                  IV No :
-                </label>
-              </div>
-              <div className="col-md-4">
-                <label className="form-label" style={{ fontSize: "12px" }}>
-                  {" "}
-                  Issue Date :
-                </label>
-              </div>
+     
 
-              <div className="col-md-4">
-                <label className="form-label" style={{ fontSize: "12px" }}>
-                  {" "}
-                  Sets Issued :
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-       <MachineTaskProfile />
-      </div>
+      
+       <MachineTaskProfile 
+       selectedProgram={selectedProgram}
+      
+       />
+   
     </>
   );
 }

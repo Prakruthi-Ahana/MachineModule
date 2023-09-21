@@ -24,7 +24,7 @@ useEffect(() => {
          <tr>
            <th>SL NO</th>
            <th>Stoppage Reason</th>
-           {/* <th>Working</th> */}
+      
          </tr>
        </thead>
 
