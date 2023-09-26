@@ -4,7 +4,8 @@ import MaterialUsageForm from './MaterialUsageTab/MaterialUsageForm';
 import LaserCutForm from './MaterialUsageTab/LaserCutForm';
 import ShowDfxForm from './PartsDetailsTab/ShowDfxForm';
 
-export default function MaterialAndPartsTabs() {
+export default function MaterialAndPartsTabs(selectProductionReport) {
+  
     const [key, setKey] = useState("mu");
   return (
     <div>
@@ -19,7 +20,9 @@ export default function MaterialAndPartsTabs() {
 
       <Tab eventKey="mu" title="Material Usage">
       {/* <MaterialUsageForm/> */}
-      <LaserCutForm/>
+      <LaserCutForm
+      selectProductionReport={selectProductionReport}
+      />
        </Tab>
 
        <Tab eventKey="pd" title="Parts Details">

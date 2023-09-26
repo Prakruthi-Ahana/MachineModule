@@ -3,6 +3,34 @@ import { Table } from "react-bootstrap";
 
 export default function MachineTaskService() {
   return (
+<div>
+    <div className="mt-2">
+    <div className="col-md-12 col-sm-12">
+      <div className="ip-box form-bg ">
+        <div className="row">
+          <div className="col-md-4">
+            <label className="form-label" style={{ fontSize: "12px" }}>
+              {" "}
+              IV No :
+            </label>
+          </div>
+          <div className="col-md-4">
+            <label className="form-label" style={{ fontSize: "12px" }}>
+              {" "}
+              Issue Date :
+            </label>
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label" style={{ fontSize: "12px" }}>
+              {" "}
+              Sets Issued :
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
    
     <div
     className="col-md-12"
@@ -32,6 +60,6 @@ export default function MachineTaskService() {
       </tbody>
     </Table>
   </div>
-  
+  </div>
   )
 }

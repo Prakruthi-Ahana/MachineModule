@@ -15,13 +15,20 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
     const[getGroupNameList,setGetGroupNameList]=useState([])
 
     const [showInnerModal, setShowInnerModal] = useState(false);
-
-
     const [openModal, setOpenModal] = useState(false);
     
     const handleModal = () => {
-      setOpenModal(true)
-    }
+      if (groupName.trim() === '') {
+        // Display an error toast message if the input field is empty
+        toast.error('Group Name cannot be empty', {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setShowInnerModal(false);
+      } else {
+        // Open the modal or perform other actions if the input is valid
+        setShowInnerModal(true);
+      }
+    };
     const newHandleClose = () => {
       setOpenModal(false)
     }
@@ -46,15 +53,18 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
     });
     }
     useEffect(() => {
-
+      
     }, [])
 
 
 
     const [groupName, setGroupName] = useState('');
+
+
     const handlegroupname = (event) => {
       const addedtext = event.target.value;
-      setGroupName(addedtext)
+      setGroupName(addedtext);
+    
     }
 
    
@@ -80,6 +90,7 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
             value={groupName}
             onChange={handlegroupname}
           />
+        
           </div>
         </div>
       </div>
@@ -91,7 +102,7 @@ export default function AddGroupName({openAddGroup,setOpenAddGroup,getGroupName}
     
 
     <Modal.Footer>
-    <Button style={{ backgroundColor: "#2b3a55", border: "#2b3a55" }} onClick={() => { handleModal();  setShowInnerModal(true); }}>
+    <Button style={{ backgroundColor: "#2b3a55", border: "#2b3a55" }} onClick={() => { handleModal()}}>
     Add
   </Button>
   

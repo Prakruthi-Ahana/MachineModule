@@ -1,17 +1,27 @@
+import axios from 'axios';
 import React from 'react'
+import { useEffect } from 'react';
 import { Table } from "react-bootstrap";
+import { toast } from 'react-toastify';
+import { baseURL } from '../../../../../api/baseUrl';
+import { useState } from 'react';
 
-export default function MachineTaskProfile() {
+export default function MachineTaskProfile({selectedProgram,machineTaskData,machinetask}) {
+
+  // useEffect(() => {
+  //     machinetask(); 
+  // }, [ selectedProgram]);
+
   return (
    
     <div
-    className="col-md-12"
+    className="col-md-12 mt-2"
     style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
   >
     <Table striped className="table-data border">
       <thead className="tableHeaderBGColor" style={{ fontSize: "12px" }}>
         <tr>
-          <th></th>
+         
           <th style={{ whiteSpace: "nowrap" }}>Shape Id</th>
           <th>Dim 1</th>
           <th>Dim 2</th>
@@ -20,15 +30,16 @@ export default function MachineTaskProfile() {
         </tr>
       </thead>
 
-      <tbody className="tablebody" style={{ fontSize: "12px" }}>
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+      <tbody className="tablebody table-space" style={{ fontSize: "12px" }}>
+      {machineTaskData.map((data,key) => (
+        <tr className={key===selectedProgram?.index? 'selcted-row-clr':'' }>
+          <td>{data.ShapeMtrlID}</td>
+          <td>{data.Para1}</td>
+          <td>{data.Para2}</td>
+          <td>{data.Used}</td>
+          <td>{data.Rejected}</td>
         </tr>
+      ))}
       </tbody>
     </Table>
   </div>
