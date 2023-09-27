@@ -11,6 +11,7 @@ export default function MachineTaskProfile({selectedProgram,machineTaskData,mach
   // useEffect(() => {
   //     machinetask(); 
   // }, [ selectedProgram]);
+  console.log(machineTaskData)
 
   return (
    
@@ -36,8 +37,12 @@ export default function MachineTaskProfile({selectedProgram,machineTaskData,mach
           <td>{data.ShapeMtrlID}</td>
           <td>{data.Para1}</td>
           <td>{data.Para2}</td>
-          <td>{data.Used}</td>
-          <td>{data.Rejected}</td>
+          <td><input type='checkbox'
+          checked={data.Used===1}
+          /></td>
+          <td><input type='checkbox'
+            checked={data.Rejected===1}
+          /></td>
         </tr>
       ))}
       </tbody>

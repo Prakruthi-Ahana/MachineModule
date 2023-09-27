@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 
-export default function ProgrmMatrlTable() {
+export default function ProgrmMatrlTableService() {
   return (
     <div>
       <div className='mt-2 col-md-12' style={{ overflowY: 'scroll', overflowX: 'scroll',
