@@ -8,6 +8,11 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
   const [loadProgramInfo, setloadProgramInfo] = useState(false);
   const [programComplete, setProgramComplete] = useState(false);
 
+  const [openTable, setOpenTable] = useState(false)
+  const handleButtonClick = () => {
+    setOpenTable(true);
+  };
+
   const handleSubmit = () => {
     setloadProgramInfo(true);
   };
@@ -22,14 +27,13 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
       setSelectProductionReport(list);
   }
 
-  console.log(selectProductionReport);
-
   useEffect(() => {
     if (getMachinetaskdata.length > 0 && !selectProductionReport.NCProgramNo) {
       selectProductionReportFun(getMachinetaskdata[0], 0); // Select the first row
     }
   }, [getMachinetaskdata, selectProductionReport, selectProductionReportFun]);
 
+  console.log("velmkvefve", getMachinetaskdata)
   
 
   return (
@@ -43,6 +47,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
             <tr>
               <th style={{ whiteSpace: "nowrap" }}>Program No</th>
               <th style={{ whiteSpace: "nowrap" }}>Task No</th>
+              <th style={{whiteSpace:"nowrap"}}>Customer</th>
             </tr>
           </thead>
 
@@ -53,6 +58,8 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
                   <tr onClick={()=>{selectProductionReportFun(item,key)}} className={key===selectProductionReport?.index? 'selcted-row-clr':'' }>
                     <td>{item.NCProgramNo}</td>
                     <td>{item.TaskNo}</td>
+                    <td>{item.cust_name}</td>
+                   
                   </tr>
                 </>
               );
@@ -145,12 +152,14 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
             <button
               className="button-style mt-2 group-button mt-2 mb-2"
               style={{ width: "150px", fontSize: "14px"}}
-              onClick={handleSubmit}
+             onClick={handleButtonClick}
             >
               Load Program Info
             </button>
           </div>
         </div>
+
+
 
         <div style={{ textAlign: "", marginLeft: "0px" }} className="col-md-4">
           <div>
@@ -178,6 +187,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
 
       <MaterialAndPartsTabs
       selectProductionReport={selectProductionReport}
+      openTable = {openTable}
       />
      
         <LoadProgramInfoModal

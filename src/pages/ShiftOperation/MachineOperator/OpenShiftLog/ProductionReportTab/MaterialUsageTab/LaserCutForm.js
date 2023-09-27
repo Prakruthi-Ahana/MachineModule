@@ -9,7 +9,7 @@ import axios from 'axios';
 import { baseURL } from '../../../../../../api/baseUrl';
 
 
-export default function LaserCutForm(selectProductionReport) {
+export default function LaserCutForm({selectProductionReport ,openTable}) {
 
  const[showModal,setShowModal]=useState(false);
  const [markasRejected, setMarkasRejected]=useState(false);
@@ -17,7 +17,7 @@ export default function LaserCutForm(selectProductionReport) {
  const[showUnused, setShowUnused]=useState(false);
  const [allModal, setAllModal]=useState(false);
 
- 
+
  const handleSubmit=()=>{
 setShowModal(true);
  }
@@ -28,11 +28,9 @@ setShowModal(true);
 setShowUnused(true);
  }
 
- console.log("Laser Data", selectProductionReport.selectProductionReport.selectProductionReport.Ncid)
+ console.log("Laser Data", selectProductionReport?.Ncid)
 
- const selectProductionReportData =  selectProductionReport.selectProductionReport.selectProductionReport.Ncid;
-
-
+ const selectProductionReportData =   selectProductionReport?.Ncid
  const [ProductionReportData , setProductionReportData] = useState([])
 
  const MaterialUsage = () => {
@@ -94,39 +92,37 @@ setShowUnused(true);
 
 
     <div className='col-md-12' style={{ overflowY: 'scroll', overflowX: 'scroll', height: '250px',  }}>
-          <Table striped className="table-data border">
-            <thead className="tableHeaderBGColor " style={{fontSize:'12px'}}>
-              <tr>
-                
-                <th style={{whiteSpace:'nowrap'}}>Material Id</th>
-                <th>Length</th>
-                <th>width</th>
-                <th>Used</th>
-                <th>Rejected</th>
-                <th style={{whiteSpace:'nowrap'}}>Rejection Reason</th>
-               
-
-                
-
-              </tr>
-            </thead>
-
-                  <tbody className='tablebody'>
-
-{
-  ProductionReportData.map((data, index) => (
-  <tr className={index=== selectProductionReport ?.index? 'selcted-row-clr':''}>
-  <td>{data.ShapeMtrlID}</td>
-  <td>{data.Para1}</td>
-  <td>{data.Para2}</td>
-  <td>{data.Used}</td>
-  <td>{data.Rejected}</td>     
-  <td>{data.RejectionReason}</td>                
-</tr>
-))}
-                   
-                  </tbody>
-          </Table>
+    {openTable ? (
+      <Table striped className="table-data border">
+        <thead className="tableHeaderBGColor" style={{ fontSize: '12px' }}>
+          <tr>
+            <th style={{ whiteSpace: 'nowrap' }}>Material Id</th>
+            <th>Length</th>
+            <th>width</th>
+            <th>Used</th>
+            <th>Rejected</th>
+            <th style={{ whiteSpace: 'nowrap' }}>Rejection Reason</th>
+          </tr>
+        </thead>
+        <tbody className='tablebody'>
+          {ProductionReportData.map((data, index) => (
+            <tr className={index === selectProductionReport?.index ? 'selected-row-clr' : ''} key={index}>
+              <td>{data.ShapeMtrlID}</td>
+              <td>{data.Para1}</td>
+              <td>{data.Para2}</td>
+              <td>{data.Used}</td>
+              <td>{data.Rejected}</td>
+              <td>{data.RejectionReason}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    ) : (
+      <div style={{whiteSpace:'nowrap',marginLeft:"170px"}}>
+         <td>No Data Available </td>
+      </div>
+    )}
+         
 
         </div >
 
