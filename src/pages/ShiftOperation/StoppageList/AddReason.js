@@ -4,16 +4,15 @@ import Modal from 'react-bootstrap/Modal';
 import axios from "axios";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-
-
 import ReasonAskModal from './ReasonAskModal';
 
-export default function AddReason({ openAddReason, setOpenAddReason, selectedGroup, setGetReasonsList }) {
+  export default function AddReason({ openAddReason, setOpenAddReason, selectedGroup, setGetReasonsList }) {
   const handleClose = () => {
     setOpenAddReason(false);
   }
 
   const [openreasonModal, setOpenreasonModal] = useState(false);
+  
   const handleModal = () => {
     if(reason.trim() === ''){
       toast.error("Reason cannot be empty", {
@@ -30,7 +29,6 @@ export default function AddReason({ openAddReason, setOpenAddReason, selectedGro
   }
 
   const [reason, setReason] = useState('')
-
   const handlereason = (event) => {
     setReason(event.target.value)
   }

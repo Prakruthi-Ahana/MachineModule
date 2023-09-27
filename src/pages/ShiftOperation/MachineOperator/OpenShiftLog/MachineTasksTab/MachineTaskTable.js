@@ -7,6 +7,7 @@ import MachineTaskProfile from "./MachineTaskProfile";
 
 export default function MachineTaskTable({
   selectshifttable,
+
   getMachinetaskdata,
 }) {
   const [open, setOpen] = useState(false);
@@ -16,8 +17,10 @@ export default function MachineTaskTable({
   };
 
   const [selectedProgram, setSelectedProgram] = useState({});
+
   const selectProgramFun = (item, index) => {
     let list = { ...item, index: index };
+
     setSelectedProgram(list);
   };
 
@@ -28,13 +31,17 @@ export default function MachineTaskTable({
   }, [getMachinetaskdata, selectedProgram, selectProgramFun]);
 
   const [machineTaskData, setMachineTaskData] = useState([]);
+
   const machinetask = () => {
     axios
+
       .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
         NCId: selectedProgram?.Ncid,
       })
+
       .then((response) => {
         console.log(response.data);
+
         setMachineTaskData(response.data);
       });
   };
@@ -55,13 +62,21 @@ export default function MachineTaskTable({
             >
               <tr>
                 <th>Program No</th>
+
                 <th>Task No</th>
+
                 <th>Operation</th>
+
                 <th>Material</th>
+
                 <th>Quantity</th>
+
                 <th>Allotted</th>
+
                 <th>Process</th>
+
                 <th>Customer</th>
+
                 <th>Remarks</th>
               </tr>
             </thead>
@@ -78,13 +93,21 @@ export default function MachineTaskTable({
                   onDoubleClick={machinetask}
                 >
                   <td>{data.NCProgramNo}</td>
+
                   <td>{data.TaskNo}</td>
+
                   <td>{data.Operation}</td>
+
                   <td>{data.Mtrl_Code}</td>
+
                   <td>{data.Qty}</td>
+
                   <td>{data.QtyAllotted}</td>
+
                   <td>{data.QtyCut}</td>
+
                   <td>{data.cust_name}</td>
+
                   <td>{data.Remarks}</td>
                 </tr>
               ))}
@@ -98,8 +121,11 @@ export default function MachineTaskTable({
           <div
             style={{
               textAlign: "",
+
               backgroundColor: "#d3d3d3",
+
               fontSize: "14px",
+
               height: "280px",
             }}
           >
@@ -116,10 +142,12 @@ export default function MachineTaskTable({
                   textAlign: "center",
                 }}
                 onClick={openModal}
+                
               >
                 Load Program
               </button>
             </div>
+
             <div className="d-flex mt-3">
               <div style={{ textAlign: "left", fontSize: "12px" }}>
                 <div className="" style={{ marginLeft: "10px" }}>
@@ -127,22 +155,26 @@ export default function MachineTaskTable({
                     Program No :<b> {selectedProgram?.NCProgramNo} </b>
                   </p>
                 </div>
+
                 <div className="" style={{ marginLeft: "10px" }}>
                   <p style={{ margin: 5 }}>
                     Process :<b>{selectedProgram?.MProcess}</b>
                   </p>
                 </div>
+
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   <p style={{ margin: 5 }}>
                     Operation :<b> {selectedProgram?.Operation} </b>
                   </p>
                 </div>
+
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   {" "}
                   <p style={{ margin: 5 }}>
                     To Process :<b> {selectedProgram?.Qty} </b>
                   </p>
                 </div>
+
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   {" "}
                   <p style={{ margin: 5 }}>
@@ -190,6 +222,7 @@ export default function MachineTaskTable({
                   </b>
                 </p>
               </div>
+
               <div style={{ color: "" }}>
                 {" "}
                 <p style={{ margin: 5 }}>
@@ -210,6 +243,7 @@ export default function MachineTaskTable({
                   </b>
                 </p>
               </div>
+
               <div style={{ color: "" }}>
                 {" "}
                 <p style={{ margin: 5 }}>
@@ -240,6 +274,7 @@ export default function MachineTaskTable({
                   </b>
                 </p>
               </div>
+
               <div style={{ color: "" }}>
                 {" "}
                 <p style={{ margin: 5 }}>

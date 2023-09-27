@@ -11,7 +11,6 @@ export default function ProgrmMatrlTableService() {
             <thead className="tableHeaderBGColor" style={{fontSize:'13px'}}>
               <tr>
                 
-               
                 <th></th>
                 <th>Part Id</th>
                 <th>RV No</th>

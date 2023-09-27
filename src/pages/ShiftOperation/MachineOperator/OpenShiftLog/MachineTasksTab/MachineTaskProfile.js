@@ -8,9 +8,7 @@ import { useState } from 'react';
 
 export default function MachineTaskProfile({selectedProgram,machineTaskData,machinetask}) {
 
-  // useEffect(() => {
-  //     machinetask(); 
-  // }, [ selectedProgram]);
+
   console.log(machineTaskData)
 
   return (

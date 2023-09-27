@@ -32,7 +32,7 @@ export default function CallFile() {
       finalDay1={finalDay1}
       date={date}/>
       </div>
-      <div className='col -md-4'>
+      <div className='col-md-4'>
       <TabsTwo/>
       </div>
 
