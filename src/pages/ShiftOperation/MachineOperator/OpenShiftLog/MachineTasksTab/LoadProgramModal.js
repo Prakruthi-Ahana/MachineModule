@@ -7,10 +7,10 @@ export default function LoadProgramModal({open, setOpen}) {
   const [dublicateEntry, setDublicateEntry]=useState(false);
 
    const handleSubmit=()=>{
-    setOpen(false);
-    setDublicateEntry(true);
-    
+    // setOpen(false);
+    // setDublicateEntry(true);
    }
+
     const handleClose=()=>{
         setOpen(false);
     }
@@ -34,11 +34,11 @@ export default function LoadProgramModal({open, setOpen}) {
           </Button>
         </Modal.Footer>
       </Modal>
-      {
+      {/* {
         dublicateEntry &&
         <DublicateEntryModal  
         dublicateEntry={ dublicateEntry} setDublicateEntry={setDublicateEntry} />
-      }
+      } */}
 
     </div>
   );

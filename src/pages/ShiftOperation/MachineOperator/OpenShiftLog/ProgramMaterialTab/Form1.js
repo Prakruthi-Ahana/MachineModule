@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import ProgrmMatrlTable from './ProgrmMatrlTable';
 import MarkAsUsedForm from './MarkAsUsedForm';
 import QuantityMismatchModal from './QuantityMismatchModal';
 import LoadProgramMaterialModal from './LoadProgramMaterialModal';
+import ProgramMtrlTableProfile from './ProgramMtrlTableProfile'
 
 export default function Form1() {
   const[mismatchModal, setmismatchModal]=useState(false);
@@ -158,21 +158,14 @@ setmismatchModal(true);
          
         </div>
     </div>
-    <ProgrmMatrlTable/>
+    <ProgramMtrlTableProfile/>
    
    
-    {
-      mismatchModal &&
       <QuantityMismatchModal mismatchModal={mismatchModal} setmismatchModal={setmismatchModal} />
-    }
    
-   
-
-   {
-    loadProgram &&
     <LoadProgramMaterialModal
     setLoadProgram={setLoadProgram} loadProgram={loadProgram}/>
-   }
+  
     </>
   );
 }

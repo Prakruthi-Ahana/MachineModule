@@ -6,29 +6,10 @@ import { toast } from 'react-toastify';
 import { baseURL } from '../../../../../api/baseUrl';
 import { useState } from 'react';
 
-export default function MachineTaskProfile(selectedProgram) {
-
-  const [machineTaskData , setMachineTaskData] = useState([])
- 
-
-  console.log(selectedProgram.selectedProgram.Ncid);
-
-  const machinetask =()=>{
-    axios.post(baseURL + "/ShiftOperator/MachineTasksProfile", {NCId:selectedProgram.selectedProgram.Ncid
-    }).then((response) => {
-      console.log(response.data)
-      setMachineTaskData(response.data)
-   })
-
-  }
-  
-  console.log(selectedProgram.Ncid)
-  useEffect(() => {
-      machinetask(); 
-  }, [ selectedProgram]);
-  console.log("Testing", machineTaskData)
+export default function MachineTaskProfile({selectedProgram,machineTaskData,machinetask}) {
 
 
+  console.log(machineTaskData)
 
   return (
    
@@ -54,8 +35,12 @@ export default function MachineTaskProfile(selectedProgram) {
           <td>{data.ShapeMtrlID}</td>
           <td>{data.Para1}</td>
           <td>{data.Para2}</td>
-          <td>{data.Used}</td>
-          <td>{data.Rejected}</td>
+          <td><input type='checkbox'
+          checked={data.Used===1}
+          /></td>
+          <td><input type='checkbox'
+            checked={data.Rejected===1}
+          /></td>
         </tr>
       ))}
       </tbody>

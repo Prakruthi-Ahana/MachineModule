@@ -5,18 +5,24 @@ import axios from "axios";
 import { baseURL } from "../../../../../api/baseUrl";
 import MachineTaskProfile from "./MachineTaskProfile";
 
-export default function MachineTaskTable({ selectshifttable,getMachinetaskdata}) {
+export default function MachineTaskTable({
+  selectshifttable,
+
+  getMachinetaskdata,
+}) {
   const [open, setOpen] = useState(false);
 
   const openModal = () => {
     setOpen(true);
   };
 
-  const[selectedProgram,setSelectedProgram]=useState({})
-  const selectProgramFun=(item,index)=>{
-      let list={...item,index:index}
-      setSelectedProgram(list);
-  }
+  const [selectedProgram, setSelectedProgram] = useState({});
+
+  const selectProgramFun = (item, index) => {
+    let list = { ...item, index: index };
+
+    setSelectedProgram(list);
+  };
 
   useEffect(() => {
     if (getMachinetaskdata.length > 0 && !selectedProgram.NCProgramNo) {
@@ -24,7 +30,21 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
     }
   }, [getMachinetaskdata, selectedProgram, selectProgramFun]);
 
-  console.log("ewfwfwf", selectshifttable)
+  const [machineTaskData, setMachineTaskData] = useState([]);
+
+  const machinetask = () => {
+    axios
+
+      .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+        NCId: selectedProgram?.Ncid,
+      })
+
+      .then((response) => {
+        console.log(response.data);
+
+        setMachineTaskData(response.data);
+      });
+  };
 
   return (
     <>
@@ -42,28 +62,52 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
             >
               <tr>
                 <th>Program No</th>
+
                 <th>Task No</th>
+
                 <th>Operation</th>
+
                 <th>Material</th>
+
                 <th>Quantity</th>
+
                 <th>Allotted</th>
+
                 <th>Process</th>
+
                 <th>Customer</th>
+
                 <th>Remarks</th>
               </tr>
             </thead>
 
             <tbody className="tablebody table-space">
-              {getMachinetaskdata.map((data,key) => (
-                <tr onClick={()=>{selectProgramFun(data,key)}} className={key===selectedProgram?.index? 'selcted-row-clr':'' }>
+              {getMachinetaskdata.map((data, key) => (
+                <tr
+                  onClick={() => {
+                    selectProgramFun(data, key);
+                  }}
+                  className={
+                    key === selectedProgram?.index ? "selcted-row-clr" : ""
+                  }
+                  onDoubleClick={machinetask}
+                >
                   <td>{data.NCProgramNo}</td>
+
                   <td>{data.TaskNo}</td>
+
                   <td>{data.Operation}</td>
+
                   <td>{data.Mtrl_Code}</td>
+
                   <td>{data.Qty}</td>
+
                   <td>{data.QtyAllotted}</td>
+
                   <td>{data.QtyCut}</td>
+
                   <td>{data.cust_name}</td>
+
                   <td>{data.Remarks}</td>
                 </tr>
               ))}
@@ -77,9 +121,12 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
           <div
             style={{
               textAlign: "",
+
               backgroundColor: "#d3d3d3",
+
               fontSize: "14px",
-              height: "310px",
+
+              height: "280px",
             }}
           >
             <p style={{ color: "", textAlign: "center" }}>
@@ -95,29 +142,44 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
                   textAlign: "center",
                 }}
                 onClick={openModal}
+                
               >
                 Load Program
               </button>
             </div>
+
             <div className="d-flex mt-3">
-              <div style={{ textAlign: "left" , fontSize:"12px"}}>
-                <div className="" style={{ marginLeft: "10px"}}>
-              
-                  <p style={{ margin: 5}}>Program No :<b> {selectedProgram?.NCProgramNo} </b></p>
-                </div>
+              <div style={{ textAlign: "left", fontSize: "12px" }}>
                 <div className="" style={{ marginLeft: "10px" }}>
-                  <p style={{ margin: 5,paddingTop:"10px" }}>Process :<b>{selectedProgram?.MProcess}</b></p>
+                  <p style={{ margin: 5 }}>
+                    Program No :<b> {selectedProgram?.NCProgramNo} </b>
+                  </p>
                 </div>
+
+                <div className="" style={{ marginLeft: "10px" }}>
+                  <p style={{ margin: 5 }}>
+                    Process :<b>{selectedProgram?.MProcess}</b>
+                  </p>
+                </div>
+
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  <p style={{ margin: 5,paddingTop:"10px" }}>Operation :<b> {selectedProgram?.Operation} </b></p>
+                  <p style={{ margin: 5 }}>
+                    Operation :<b> {selectedProgram?.Operation} </b>
+                  </p>
                 </div>
+
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   {" "}
-                  <p style={{ margin: 5,paddingTop:"10px" }}>To Process :<b> {selectedProgram?.Qty} </b></p>
+                  <p style={{ margin: 5 }}>
+                    To Process :<b> {selectedProgram?.Qty} </b>
+                  </p>
                 </div>
+
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   {" "}
-                  <p style={{ margin: 5,paddingTop:"10px" }}>Processed : <b> {selectedProgram?.QtyCut} </b></p>
+                  <p style={{ margin: 5 }}>
+                    Processed : <b> {selectedProgram?.QtyCut} </b>
+                  </p>
                 </div>
               </div>
             </div>
@@ -130,66 +192,115 @@ export default function MachineTaskTable({ selectshifttable,getMachinetaskdata})
               textAlign: "",
               backgroundColor: "#d3d3d3",
               fontSize: "14px",
-              height: "310px",
+              height: "280px",
             }}
           >
             <p style={{ color: "", textAlign: "center" }}>
               <b>Material Info</b>
             </p>
 
-          
-              <div style={{ width: "auto", fontSize:"12px", marginLeft:"10px"}}>
-                <div style={{ color: "" }}>
-                  {" "}
-                  <p style={{ margin: 5, paddingBottom:"5px" }}>Customer:<b style={{textAlign:"right"}}> {selectedProgram?.cust_name} </b> </p>
-                </div>
-
-                <div  style={{ color: ""}}>
-                  <p style={{ margin: 5,  paddingBottom:"5px"}}>Code :<b  style={{textAlign:"right"}}> {selectedProgram?.Cust_Code}</b></p>
-                </div>
-                <div style={{ color: ""}}>
-                  {" "}
-                  <p style={{ margin: 5,  paddingBottom:"5px" }}>Source :<b  style={{textAlign:"right"}}> {selectedProgram?.CustMtrl}</b></p>
-                </div>
-
-                <div style={{ color: "" }}>
-                  <p style={{ margin: 5, paddingBottom:"5px" }}>Length : <b style={{textAlign:"right"}}> {selectedProgram?.Para1}</b></p>
-                </div>
-                <div style={{ color: ""}}>
-                  {" "}
-                  <p style={{ margin: 5 ,  paddingBottom:"5px"}}>Width :<b  style={{textAlign:"right"}}> {selectedProgram?.Para2}</b></p>
-                </div>
-
-                <div style={{ color: ""}}>
-                  <p style={{ margin: 5,  paddingBottom:"5px",  paddingBottom:"5px" }}>Remarks :<b  style={{textAlign:"right"}}> {selectedProgram?.Remarks}</b></p>
-                </div>
-
-                <div style={{ color: ""}}>
-                  <p style={{ margin: 5 ,  paddingBottom:"5px"}}>Drawings :<b  style={{textAlign:"right"}}> {selectedProgram?.NoOfDwgs}</b></p>
-                </div>
-                <div style={{ color: ""}}>
-                  {" "}
-                  <p style={{ margin: 5,  paddingBottom:"5px" }}>Total Parts :<b  style={{textAlign:"right"}}> {selectedProgram?.TotalParts}</b></p>
-                </div>
-
-                <div style={{ color: ""}}>
-                  <p style={{ margin: 5,  paddingBottom:"5px" }}>Machine Time:  <b  style={{textAlign:"right"}}></b></p>
-                </div>
+            <div
+              style={{ width: "auto", fontSize: "12px", marginLeft: "10px" }}
+            >
+              <div style={{ color: "" }}>
+                {" "}
+                <p style={{ margin: 5 }}>
+                  Customer:
+                  <b style={{ textAlign: "right" }}>
+                    {" "}
+                    {selectedProgram?.cust_name}{" "}
+                  </b>{" "}
+                </p>
               </div>
 
-            
+              <div style={{ color: "" }}>
+                <p style={{ margin: 5 }}>
+                  Code :
+                  <b style={{ textAlign: "right" }}>
+                    {" "}
+                    {selectedProgram?.Cust_Code}
+                  </b>
+                </p>
+              </div>
+
+              <div style={{ color: "" }}>
+                {" "}
+                <p style={{ margin: 5 }}>
+                  Source :
+                  <b style={{ textAlign: "right" }}>
+                    {" "}
+                    {selectedProgram?.CustMtrl}
+                  </b>
+                </p>
+              </div>
+
+              <div style={{ color: "" }}>
+                <p style={{ margin: 5 }}>
+                  Length :{" "}
+                  <b style={{ textAlign: "right" }}>
+                    {" "}
+                    {selectedProgram?.Para1}
+                  </b>
+                </p>
+              </div>
+
+              <div style={{ color: "" }}>
+                {" "}
+                <p style={{ margin: 5 }}>
+                  Width :
+                  <b style={{ textAlign: "right" }}>
+                    {" "}
+                    {selectedProgram?.Para2}
+                  </b>
+                </p>
+              </div>
+
+              <div style={{ color: "" }}>
+                <p style={{ margin: 5 }}>
+                  Remarks :
+                  <b style={{ textAlign: "right" }}>
+                    {" "}
+                    {selectedProgram?.Remarks}
+                  </b>
+                </p>
+              </div>
+
+              <div style={{ color: "" }}>
+                <p style={{ margin: 5 }}>
+                  Drawings :
+                  <b style={{ textAlign: "right" }}>
+                    {" "}
+                    {selectedProgram?.NoOfDwgs}
+                  </b>
+                </p>
+              </div>
+
+              <div style={{ color: "" }}>
+                {" "}
+                <p style={{ margin: 5 }}>
+                  Total Parts :
+                  <b style={{ textAlign: "right" }}>
+                    {" "}
+                    {selectedProgram?.TotalParts}
+                  </b>
+                </p>
+              </div>
+
+              <div style={{ color: "" }}>
+                <p style={{ margin: 5 }}>
+                  Machine Time: <b style={{ textAlign: "right" }}></b>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-     
-
-      
-       <MachineTaskProfile 
-       selectedProgram={selectedProgram}
-      
-       />
-   
+      <MachineTaskProfile
+        selectedProgram={selectedProgram}
+        machineTaskData={machineTaskData}
+        machinetask={machinetask}
+      />
     </>
   );
 }
