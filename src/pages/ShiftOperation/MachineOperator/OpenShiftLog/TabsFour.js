@@ -9,6 +9,7 @@ import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
 
 export default function TabsFour({selectshifttable}) {
+  
     const [key, setKey] = useState("mt");
 
 
@@ -109,7 +110,9 @@ export default function TabsFour({selectshifttable}) {
        </Tab>
 
        <Tab eventKey="ss" title="Shift Summary">
-      <ShiftSummryTable/>
+      <ShiftSummryTable
+      selectshifttable ={selectshifttable}
+      />
        </Tab>
       
     </Tabs>

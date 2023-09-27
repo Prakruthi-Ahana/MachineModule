@@ -150,12 +150,7 @@ console.log("selected Reason", selectedReason)
       data={modalData}      
       handleGroup={DeleteGroup}
       />
-      
-
-       
-
-    
-
+ 
       <div className="row"> 
           <div className="col-md-9">
             <div className="col-md-12 ">

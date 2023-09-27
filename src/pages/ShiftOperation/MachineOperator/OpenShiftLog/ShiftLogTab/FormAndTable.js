@@ -95,7 +95,7 @@ export default function FormAndTable({ shiftLogDetails,setShiftLogDetails}) {
                           }
                         />
                       </div>
-                      </td>
+                      </td>x
                     <td style={{ whiteSpace: "nowrap" }}>
                     <input
                           className="table-cell-editor"
