@@ -3,10 +3,12 @@ import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 import DublicateEntryModal from './DublicateEntryModal';
 
-export default function LoadProgramModal({open, setOpen}) {
+export default function LoadProgramModal({open, setOpen,NCProgramNo,afterLoadProgram}) {
   const [dublicateEntry, setDublicateEntry]=useState(false);
 
    const handleSubmit=()=>{
+    afterLoadProgram();
+    setOpen(false);
     // setOpen(false);
     // setDublicateEntry(true);
    }
@@ -21,7 +23,7 @@ export default function LoadProgramModal({open, setOpen}) {
           <Modal.Title>magod_machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>Do you wish to load NC Program No: <b>4321 </b> 
+        <Modal.Body>Do you wish to load NC Program No: <b>{NCProgramNo}</b> ?
          </Modal.Body> 
 
         <Modal.Footer>

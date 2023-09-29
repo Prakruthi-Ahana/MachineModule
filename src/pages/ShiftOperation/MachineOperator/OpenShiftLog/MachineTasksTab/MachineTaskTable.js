@@ -4,23 +4,24 @@ import LoadProgramModal from "./LoadProgramModal";
 import axios from "axios";
 import { baseURL } from "../../../../../api/baseUrl";
 import MachineTaskProfile from "./MachineTaskProfile";
+import { useGlobalContext } from "../../../../../Context/Context";
 
 export default function MachineTaskTable({
   selectshifttable,
-
   getMachinetaskdata,
+  afterLoadProgram
 }) {
-  const [open, setOpen] = useState(false);
 
+  const{NcId,setNcId}=useGlobalContext();
+
+  const [open, setOpen] = useState(false);
   const openModal = () => {
     setOpen(true);
   };
 
   const [selectedProgram, setSelectedProgram] = useState({});
-
   const selectProgramFun = (item, index) => {
     let list = { ...item, index: index };
-
     setSelectedProgram(list);
   };
 
@@ -31,24 +32,28 @@ export default function MachineTaskTable({
   }, [getMachinetaskdata, selectedProgram, selectProgramFun]);
 
   const [machineTaskData, setMachineTaskData] = useState([]);
-
   const machinetask = () => {
     axios
-
       .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
         NCId: selectedProgram?.Ncid,
       })
-
       .then((response) => {
         console.log(response.data);
-
         setMachineTaskData(response.data);
       });
   };
 
+let NCProgramNo=selectedProgram.NCProgramNo;
+
+useEffect(()=>{
+  setNcId(selectedProgram.Ncid)
+},[selectedProgram.Ncid])
+
   return (
     <>
-      <LoadProgramModal open={open} setOpen={setOpen} />
+      <LoadProgramModal open={open} setOpen={setOpen} 
+      NCProgramNo={NCProgramNo}
+  afterLoadProgram={afterLoadProgram}/>
 
       <div>
         <div
@@ -62,21 +67,13 @@ export default function MachineTaskTable({
             >
               <tr>
                 <th>Program No</th>
-
                 <th>Task No</th>
-
                 <th>Operation</th>
-
                 <th>Material</th>
-
                 <th>Quantity</th>
-
                 <th>Allotted</th>
-
                 <th>Process</th>
-
                 <th>Customer</th>
-
                 <th>Remarks</th>
               </tr>
             </thead>
@@ -93,21 +90,13 @@ export default function MachineTaskTable({
                   onDoubleClick={machinetask}
                 >
                   <td>{data.NCProgramNo}</td>
-
                   <td>{data.TaskNo}</td>
-
                   <td>{data.Operation}</td>
-
                   <td>{data.Mtrl_Code}</td>
-
                   <td>{data.Qty}</td>
-
                   <td>{data.QtyAllotted}</td>
-
                   <td>{data.QtyCut}</td>
-
                   <td>{data.cust_name}</td>
-
                   <td>{data.Remarks}</td>
                 </tr>
               ))}
@@ -121,11 +110,8 @@ export default function MachineTaskTable({
           <div
             style={{
               textAlign: "",
-
               backgroundColor: "#d3d3d3",
-
               fontSize: "14px",
-
               height: "280px",
             }}
           >
@@ -142,7 +128,6 @@ export default function MachineTaskTable({
                   textAlign: "center",
                 }}
                 onClick={openModal}
-                
               >
                 Load Program
               </button>
