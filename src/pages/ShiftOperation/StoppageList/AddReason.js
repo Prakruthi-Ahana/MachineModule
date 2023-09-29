@@ -34,26 +34,37 @@ import ReasonAskModal from './ReasonAskModal';
   }
 
   
-  const addReason = () => {
-    axios.post(
-      "http://172.16.20.61:5006/reports/addReason", { Reason: reason, GroupId: selectedGroup.StoppageGpId }
-    ).then((response) => {
-      console.log(response.data)
-
-    });
-    setOpenreasonModal(false);
-    handleClose();
-    toast.success("Reason added successfully", {
-      position: toast.POSITION.TOP_CENTER,
-    });
-    axios.post(
-      "http://172.16.20.61:5006/reports/getReason",
-      {
-        StoppageGpId: selectedGroup?.StoppageGpId
-      }).then((response) => {
-        setGetReasonsList(response.data);
+  const addReason = async () => {
+    try {
+      // First API call
+      const response1 = await axios.post(
+        "http://172.16.20.61:5006/reports/addReason",
+        { Reason: reason, GroupId: selectedGroup.StoppageGpId }
+      );
+      console.log(response1.data);
+      setOpenreasonModal(false);
+      handleClose();
+      toast.success("Reason added successfully", {
+        position: toast.POSITION.TOP_CENTER,
       });
-  }
+      // Introduce a delay of 1000 milliseconds (1 second)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Second API call after the delay
+      const response2 = await axios.post(
+        "http://172.16.20.61:5006/reports/getReason",
+        {
+          StoppageGpId: selectedGroup?.StoppageGpId
+        }
+      );
+      console.log(response2.data);
+      setGetReasonsList(response2.data);
+      setReason('');
+    } catch (error) {
+      // Handle errors here
+      console.error(error);
+    }
+  };
+  
 
   return (
     <Modal show={openAddReason} onHide={handleClose}>
@@ -107,6 +118,7 @@ import ReasonAskModal from './ReasonAskModal';
         handleClose={newHandleClose}
         handleadd={addReason}
         reason={reason}
+        selectedGroup={selectedGroup}
       />
     </Modal>
   )

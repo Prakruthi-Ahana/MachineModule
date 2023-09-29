@@ -1,7 +1,8 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap';
 
-export default function ReasonAskModal({ show, handleClose,handleadd, reason }) {
+export default function ReasonAskModal({ show, handleClose,handleadd, reason,selectedGroup}) {
+  // console.log(selectedGroup)
   return (
     <div>
          <Modal show={show} onHide={handleClose}>
@@ -10,7 +11,7 @@ export default function ReasonAskModal({ show, handleClose,handleadd, reason }) 
       </Modal.Header>
       <Modal.Body>
       <div>
-      Are you sure you want to add <strong>{reason}</strong> as Reason?
+      Are you sure you want to add <strong>{reason}</strong> as Reason for  <b>{selectedGroup.GroupName}</b>?
     </div>
       </Modal.Body>
       <Modal.Footer>
