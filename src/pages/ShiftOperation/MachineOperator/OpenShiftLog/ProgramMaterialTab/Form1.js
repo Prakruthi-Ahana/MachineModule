@@ -4,7 +4,7 @@ import QuantityMismatchModal from './QuantityMismatchModal';
 import LoadProgramMaterialModal from './LoadProgramMaterialModal';
 import ProgramMtrlTableProfile from './ProgramMtrlTableProfile'
 
-export default function Form1() {
+export default function Form1({afterloadProgram}) {
   const[mismatchModal, setmismatchModal]=useState(false);
   const [loadProgram, setLoadProgram]=useState(false);
 
@@ -158,7 +158,7 @@ setmismatchModal(true);
          
         </div>
     </div>
-    <ProgramMtrlTableProfile/>
+    <ProgramMtrlTableProfile afterloadProgram={afterloadProgram}/>
    
    
       <QuantityMismatchModal mismatchModal={mismatchModal} setmismatchModal={setmismatchModal} />

@@ -5,6 +5,11 @@ import Form1 from './ProgramMaterialTab/Form1';
 import TabsTwo from './TabsTwo';
 import TabsFour from './TabsFour';
 import {useLocation} from 'react-router-dom';
+import { useGlobalContext } from '../../../../Context/Context';
+import { baseURL } from '../../../../api/baseUrl';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 export default function CallFile() {
   const location = useLocation();
@@ -15,6 +20,23 @@ export default function CallFile() {
   let selectshifttable=data?.selectshifttable;
   let Shift=data?.Shift;
   let date=data?.date;
+
+
+  const{NcId,setNcId}=useGlobalContext();
+  console.log(NcId);
+
+  const[afterloadProgram,setAfterloadProgram]=useState([])
+  const afterLoadProgram=()=>{
+    axios
+    .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+      NCId: NcId,
+    })
+    .then((response) => {
+      console.log(response.data);
+      setAfterloadProgram(response.data);
+    });
+  }
+
 
   return (
     <>
@@ -33,12 +55,16 @@ export default function CallFile() {
       date={date}/>
       </div>
       <div className='col-md-4'>
-      <TabsTwo/>
+      <TabsTwo
+      afterloadProgram={afterloadProgram}
+      />
       </div>
 
       <div className='col-md-5'>
       <TabsFour
-      selectshifttable={selectshifttable}/>
+      selectshifttable={selectshifttable}
+      afterLoadProgram={afterLoadProgram}
+      />
       </div>
       
       </div>
