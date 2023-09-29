@@ -3,8 +3,8 @@ import { Button, Modal } from 'react-bootstrap';
 
 export default function DeleteResonModal({ show, handleClose, data,handleDelete }) {
   const handleYesClick = () => {
-    handleClose(true)
     handleDelete(data);
+    handleClose(true)
   };
   console.log("Data is reaching here", data)
   return (

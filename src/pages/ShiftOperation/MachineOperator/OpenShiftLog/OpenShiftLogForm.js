@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ErrorReportForm from "./ErrorReportForm";
-import AlreadyLoadModal from "./AlreadyLoadModal";
 import { baseURL } from "../../../../api/baseUrl";
 import axios from "axios";
+import StoppageAskModal from "./StoppageAskModal";
 
 export default function OpenShiftLogForm({
   selectedMachine,
@@ -83,7 +83,7 @@ export default function OpenShiftLogForm({
 
   return (
     <div>
-      <AlreadyLoadModal
+      <StoppageAskModal
         alreadyLoad={alreadyLoad}
         setAlreadyLoad={setAlreadyLoad}
         stoppageReason={stoppageReason}

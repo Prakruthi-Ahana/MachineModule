@@ -7,19 +7,21 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DeleteGroupModal from "./DeleteGroupModal";
-import DeleteAskModal from "./DeleteAskModal";
 
-export default function StoppageForm({ selectedGroup, getGroupName }) {
+export default function StoppageForm({
+  selectedGroup,
+  getGroupName,
+  setGetGroupNameList,
+  setSelectedGroup,
+  getGroupNameList,
+}) {
   const [getReasonsList, setGetReasonsList] = useState([]);
 
   const getReasons = () => {
     axios
       .post(
         "http://172.16.20.61:5006/reports/getReason",
-
-        {
-          StoppageGpId: selectedGroup?.StoppageGpId,
-        }
+        {StoppageGpId: selectedGroup?.StoppageGpId,}
       )
       .then((response) => {
         setGetReasonsList(response.data);
@@ -34,36 +36,26 @@ export default function StoppageForm({ selectedGroup, getGroupName }) {
 
   const selectReasonFun = (item, index) => {
     let list = { ...item, index: index };
-
-    // api call
-
     setSelectedReason(list);
   };
 
   console.log("selected Reason", selectedReason);
 
   //open AddGroupName
-
   const [openAddGroup, setOpenAddGroup] = useState(false);
-
   const openAddGroupNameModal = () => {
     setOpenAddGroup(true);
   };
 
   //open Reason
-
   const [openAddReason, setOpenAddReason] = useState(false);
-
   const openAddReasonModal = () => {
     setOpenAddReason(true);
   };
 
   //Delete GroupName
-
   const [showModal, setShowModal] = useState(false);
-
   const [showReasonModal, setshowReasonModal] = useState(false);
-
   const [modalData, setModalData] = useState({
     title: "Delete GroupName",
     content: `Are you sure you want to delete ${selectedGroup?.Stoppage}?`,
@@ -76,13 +68,11 @@ export default function StoppageForm({ selectedGroup, getGroupName }) {
 
   const handleShowModal = (data) => {
     setModalData(data);
-
     setShowModal(true);
   };
 
   const handleShowReaonModal = (data) => {
     setReasonModalData(data);
-
     setshowReasonModal(true);
   };
 
@@ -94,59 +84,54 @@ export default function StoppageForm({ selectedGroup, getGroupName }) {
     setShowModal(false);
   };
 
-  const DeleteGroup = () => {
-    axios
-      .post("http://172.16.20.61:5006/reports/deleteGroup", {
-        StoppageGpId: selectedGroup?.StoppageGpId,
-      })
-
-      .then((response) => {
-        console.log("delete function called");
-
-        console.log("Yes This one", response.data);
+  const DeleteGroup = async () => {
+    try {
+      // First API call
+      const response1 = await axios.post(
+        "http://172.16.20.61:5006/reports/deleteGroup",
+        {
+          StoppageGpId: selectedGroup?.StoppageGpId,
+        }
+      );
+      setShowModal(false);
+      toast.success("Group Deleted successfully", {
+        position: toast.POSITION.TOP_CENTER,
       });
-
-    setShowModal(false);
-
-    toast.success("Group Deleted successfully", {
-      position: toast.POSITION.TOP_CENTER,
-    });
+      // Introduce a delay of 1000 milliseconds (1 second)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Second API call after the delay
+      const response2 = await axios.get(
+        "http://172.16.20.61:5006/reports/getGroupName",
+        {}
+      );
+      console.log(response2.data);
+      setGetGroupNameList(response2.data);
+    } catch (error) {
+      // Handle errors here
+      console.error(error);
+    }
+    setSelectedGroup({ ...getGroupNameList[0], index: 0 });
   };
 
   const DeleteReason = () => {
     console.log(selectedReason.StoppageID);
-
     axios
       .post("http://172.16.20.61:5006/reports/deleteReason", {
-        StoppageId: selectedReason.StoppageID,
+        StoppageID: selectedReason.StoppageID,
       })
-
       .then((response) => {
         console.log("delete function called");
-
         setshowReasonModal(false);
-
         toast.success("Reason Deleted successfully", {
           position: toast.POSITION.TOP_CENTER,
         });
-
         axios
-
           .post("http://172.16.20.61:5006/reports/getReason", {
-            StoppageId: selectedReason?.StoppageID,
+            StoppageGpId: selectedGroup?.StoppageGpId,
           })
-
           .then((response) => {
             setGetReasonsList(response.data);
-          })
-
-          .catch((error) => {
-            console.error("Error fetching reasons:", error);
           });
-      })
-
-      .catch((error) => {
-        console.error("Error deleting reason:", error);
       });
   };
 
@@ -157,6 +142,7 @@ export default function StoppageForm({ selectedGroup, getGroupName }) {
           openAddGroup={openAddGroup}
           setOpenAddGroup={setOpenAddGroup}
           getGroupName={getGroupName}
+          setGetGroupNameList={setGetGroupNameList}
         />
 
         <AddReason

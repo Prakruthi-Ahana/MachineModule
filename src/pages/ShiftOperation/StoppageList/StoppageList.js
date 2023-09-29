@@ -47,6 +47,9 @@ useEffect(() => {
         <StoppageForm
             selectedGroup={selectedGroup}
             getGroupName={getGroupName}
+            setGetGroupNameList={setGetGroupNameList}
+            setSelectedGroup={setSelectedGroup}
+            getGroupNameList={getGroupNameList}
         />
      </div>
     </div>

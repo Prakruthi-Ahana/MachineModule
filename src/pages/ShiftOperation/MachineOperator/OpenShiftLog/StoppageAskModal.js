@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
 
-export default function AlreadyLoadModal({setAlreadyLoad, alreadyLoad,selectedStoppageID,selectshifttable,selectedStoppage}) {
+export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedStoppageID,selectshifttable,selectedStoppage}) {
     const handleClose=()=>{
         setAlreadyLoad(false);
     }
