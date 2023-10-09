@@ -4,7 +4,7 @@ import Tab from "react-bootstrap/Tab";
 import Form1 from './ProgramMaterialTab/Form1';
 import ProgramPartsForm from './ProgramPartsTab/ProgramPartsForm';
 import MarkAsUsedForm from './ProgramMaterialTab/MarkAsUsedForm';
-export default function TabsTwo({afterloadProgram}) {
+export default function TabsTwo({afterloadProgram, showTable}) {
 
     const [key, setKey] = useState("pm");
   return (
@@ -18,7 +18,7 @@ export default function TabsTwo({afterloadProgram}) {
     >
 
       <Tab eventKey="pm" title="Program Material">
-       <Form1 afterloadProgram={afterloadProgram}/>
+       <Form1 afterloadProgram={afterloadProgram} showTable={showTable}/>
       
        </Tab>
 

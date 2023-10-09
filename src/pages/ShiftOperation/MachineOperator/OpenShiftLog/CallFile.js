@@ -26,6 +26,8 @@ export default function CallFile() {
   console.log(NcId);
 
   const[afterloadProgram,setAfterloadProgram]=useState([])
+  const [showTable, setShowTable] = useState(false)
+
   const afterLoadProgram=()=>{
     axios
     .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
@@ -34,6 +36,7 @@ export default function CallFile() {
     .then((response) => {
       console.log(response.data);
       setAfterloadProgram(response.data);
+      setShowTable(true)
     });
   }
 
@@ -57,6 +60,7 @@ export default function CallFile() {
       <div className='col-md-4'>
       <TabsTwo
       afterloadProgram={afterloadProgram}
+      showTable={showTable}
       />
       </div>
 
@@ -64,6 +68,7 @@ export default function CallFile() {
       <TabsFour
       selectshifttable={selectshifttable}
       afterLoadProgram={afterLoadProgram}
+     
       />
       </div>
       
