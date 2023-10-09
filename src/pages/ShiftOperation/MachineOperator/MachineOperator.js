@@ -8,13 +8,12 @@ import OpenShiftModal from "./OpenShiftLogModal";
 
 
 export default function MachineOperator() {
-
     //get Machine List
   const[machineList,setMachineList]=useState([])
   const getMachineList=()=>{
     axios.get(baseURL + "/ShiftOperator/getallMachines").then((response) => {
       setMachineList(response.data);
-      // console.log(response.data)
+      console.log(response.data)
     });
   }
   useEffect(()=>{
@@ -59,7 +58,6 @@ export default function MachineOperator() {
       setShiftDetails(response.data);
     });
   };
-
 
     //Open ShiftLog  Modal
     const[openmodal,setOpenmodal]=useState('');
