@@ -667,8 +667,6 @@ Public Class MachineLog
         With newShiftSrl
             .Item("ShiftID") = intShiftId
             .Item("Machine") = currentMachine.MachineName
-
-
             .Item("TaskNo") = currentMachine.TaskNo
             .Item("Program") = currentMachine.NCProgarmNo
             .Item("Operator") = currentMachine._Operator
@@ -927,7 +925,7 @@ Public Class MachineLog
             With .UpdateCommand
                 .CommandText = "UPDATE magodmis.shiftlogbook s " _
                 & "SET s.Remarks =@Remarks, s.Srl=@Srl,s.ToTime=@ToTime, s.Locked=@Locked, s.`QtyProcessed`=@QtyProcessed " _
-                                & "WHERE s.ShiftLogId=@ShiftLogId;"
+                                & "WHERE s.ShiftLogId=@ShiftLogId"
                 With .Parameters
                     .Add("@Remarks", MySql.Data.MySqlClient.MySqlDbType.VarChar, 100, "Remarks")
                     .Add("@Srl", MySql.Data.MySqlClient.MySqlDbType.Int32, 10, "Srl")
