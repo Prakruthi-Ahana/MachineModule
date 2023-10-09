@@ -5,6 +5,7 @@ import axios from "axios";
 import { baseURL } from "../../../../../api/baseUrl";
 import MachineTaskProfile from "./MachineTaskProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
+import { unstable_ClassNameGenerator } from "@mui/material";
 
 export default function MachineTaskTable({
   selectshifttable,
@@ -13,10 +14,12 @@ export default function MachineTaskTable({
 }) {
 
   const{NcId,setNcId}=useGlobalContext();
+  const[showTable, setShowTable] = useState(false)
 
   const [open, setOpen] = useState(false);
   const openModal = () => {
     setOpen(true);
+    setShowTable(true)
   };
 
   const [selectedProgram, setSelectedProgram] = useState({});
@@ -53,7 +56,10 @@ useEffect(()=>{
     <>
       <LoadProgramModal open={open} setOpen={setOpen} 
       NCProgramNo={NCProgramNo}
-  afterLoadProgram={afterLoadProgram}/>
+  afterLoadProgram={afterLoadProgram}
+  showTable = {showTable}
+  
+  />
 
       <div>
         <div

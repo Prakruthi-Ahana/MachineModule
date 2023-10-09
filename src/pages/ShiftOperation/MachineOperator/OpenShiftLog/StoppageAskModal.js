@@ -3,12 +3,17 @@ import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
+import { useState } from 'react';
+import ProgrmMatrlTableProfile from './ProgramMaterialTab/ProgramMtrlTableProfile';
 
 export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedStoppageID,selectshifttable,selectedStoppage}) {
     const handleClose=()=>{
         setAlreadyLoad(false);
     }
 
+    const[hidetable, setHidetable] = useState(false)
+
+    const[showTableone, setshowTableone] = useState(true)
     const onClickYes = () => {
       axios
         .post(baseURL + "/ShiftOperator/addStopage", {
@@ -19,11 +24,14 @@ export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedSt
         .then((response) => {
           console.log(response.data);
           handleClose();
+          setshowTableone(false)
+          setHidetable(true)
         });
     };
 
     
   return (
+    <div>
     <div>
        <Modal show={alreadyLoad} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -44,6 +52,10 @@ export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedSt
           </Button>
         </Modal.Footer>
       </Modal>
+      </div>
+      <ProgrmMatrlTableProfile
+      hidetable={hidetable}
+      />
     </div>
   )
 }
