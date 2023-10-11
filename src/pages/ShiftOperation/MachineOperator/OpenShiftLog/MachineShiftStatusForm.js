@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { baseURL } from '../../../../api/baseUrl';
 import axios from 'axios';
+import { useGlobalContext } from "../../../../Context/Context";
+
 
 export default function MachineShiftStatusForm({selectshifttable,Shift,finalDay1,date}) {
-  console.log("Date required",date)
-var count=0;
-  
+  console.log("Date required",date);
+
+  const{selectedProgram,afterloadData}=useGlobalContext();
+
+  var count=0;
   const [isInputVisible, setInputVisible] = useState(false);
   
   const toggleInput = () => {
@@ -13,7 +17,6 @@ var count=0;
 
 if(count === 1){
     setInputVisible(true);
-   
 }
 else {
   setInputVisible(false);
@@ -24,7 +27,6 @@ axios.post(baseURL+'/ShiftOperator/UpdateOperator',{Operator:ChangedOperator,Shi
         })
 }
   };
-  
   
   const[operatorsList,setOperatorsList]=useState([])
   useEffect(() => {
@@ -100,12 +102,12 @@ console.log(ChangedOperator);
           <p style={{textAlign:"center"}}><b>Process Task Status </b></p>
           <div className='d-flex'>
           <div style={{width:"auto", textAlign:"right"}}>
-          <div style={{ marginLeft: '10px' }}> <b>Task No :  </b></div>
+          <div style={{ marginLeft: '10px' }}> <b>Task No : {afterloadData?.TaskNo} </b></div>
 
-          <div style={{  marginLeft: '10px' }}><b>Operation :</b></div>
-          <div style={{ color: "", marginLeft: '10px' }}> <b>Material :  </b></div>
+          <div style={{  marginLeft: '10px' }}><b>Operation : {afterloadData?.Operation}</b></div>
+          <div style={{ color: "", marginLeft: '10px' }}> <b>Material : {afterloadData?.Mtrl_Code} </b></div>
 
-          <div style={{  marginLeft: '10px' }}><b>Program no :</b></div>
+          <div style={{  marginLeft: '10px' }}><b>Program no : {afterloadData?.NCProgramNo}</b></div>
           <div style={{  marginLeft: '10px' }}> <b>Start Time :  </b></div>
 
           <div className='mb-3' style={{ color: "", marginLeft: '10px' }}><b>Running For :</b></div>
