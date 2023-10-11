@@ -51,7 +51,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
             </tr>
           </thead>
 
-          <tbody className="tablebody" style={{ fontSize: "13px" }}>
+          <tbody className="tablebody table-space" style={{ fontSize: "13px" }}>
             {getMachinetaskdata.map((item, key) => {
               return (
                 <>
