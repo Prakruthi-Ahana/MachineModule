@@ -10,19 +10,19 @@ import { unstable_ClassNameGenerator } from "@mui/material";
 export default function MachineTaskTable({
   selectshifttable,
   getMachinetaskdata,
-  afterLoadProgram
+  afterLoadProgram,
 }) {
-
-  const{NcId,setNcId}=useGlobalContext();
-  const[showTable, setShowTable] = useState(false)
+  const { NcId, setNcId, selectedProgram, setSelectedProgram,afterloadData,setAfterloadData } =
+    useGlobalContext();
+  const [showTable, setShowTable] = useState(false);
 
   const [open, setOpen] = useState(false);
   const openModal = () => {
     setOpen(true);
-    setShowTable(true)
+    setShowTable(true);
+    setAfterloadData(selectedProgram);
   };
 
-  const [selectedProgram, setSelectedProgram] = useState({});
   const selectProgramFun = (item, index) => {
     let list = { ...item, index: index };
     setSelectedProgram(list);
@@ -46,21 +46,21 @@ export default function MachineTaskTable({
       });
   };
 
-let NCProgramNo=selectedProgram.NCProgramNo;
+  let NCProgramNo = selectedProgram.NCProgramNo;
 
-useEffect(()=>{
-  setNcId(selectedProgram.Ncid)
-},[selectedProgram.Ncid])
+  useEffect(() => {
+    setNcId(selectedProgram.Ncid);
+  }, [selectedProgram.Ncid]);
 
   return (
     <>
-      <LoadProgramModal open={open} setOpen={setOpen} 
-      NCProgramNo={NCProgramNo}
-  afterLoadProgram={afterLoadProgram}
-  showTable = {showTable}
-  
-  />
-
+      <LoadProgramModal
+        open={open}
+        setOpen={setOpen}
+        NCProgramNo={NCProgramNo}
+        afterLoadProgram={afterLoadProgram}
+        showTable={showTable}
+      />
       <div>
         <div
           className="col-md-12"

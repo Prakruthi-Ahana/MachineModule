@@ -42,11 +42,11 @@ export const customerSidebar = [
         path:"/Machine/MachineOperator",
         icon: <BsServer />,
       },
-      {
-        title: "StoppageList",
-        path:"/Machine/StoppageList",
-        icon: <FiCpu/>,
-      },
+      // {
+      //   title: "StoppageList",
+      //   path:"/Machine/StoppageList",
+      //   icon: <FiCpu/>,
+      // },
       {
         title: "Print Lable",
         // path: "/production/setup/process",

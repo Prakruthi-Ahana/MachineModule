@@ -14,12 +14,13 @@ const SnackbarContext = React.createContext({
 const AuthProvider = ({ children }) => {
 // SET NCID TO A STATE
 const[NcId,setNcId]=useState('')
-  
+const [selectedProgram, setSelectedProgram] = useState({});
+ const[afterloadData,setAfterloadData]=useState({}) 
   
   return (
     <AppContext.Provider
       value={{
-        NcId,setNcId
+        NcId,setNcId,selectedProgram, setSelectedProgram,afterloadData,setAfterloadData
       }}
     >
       {children}

@@ -156,7 +156,7 @@ Public Class MachineLog
                     With Machine.getCommand
                         .CommandText = "SELECT c1.* FROM magodmis.cust_assy_data c,magodmis.cust_assy_bom_list c1 " _
                                         & "WHERE c.`Cust_Code`=@Cust_Code AND  c.`AssyCust_PartId`=@AssyCust_PartId " _
-                                        & "AND c1.`Cust_AssyId`=c.`Id`;"
+                                        & "AND c1.`Cust_AssyId`=c.`Id`"
                         .Parameters.Clear()
                         .Parameters.AddWithValue("@Cust_Code", currentProgram.Cust_Code)
                         .Parameters.AddWithValue("@AssyCust_PartId", dtRunningProgramPartsList.First.DwgName)
@@ -380,9 +380,6 @@ Public Class MachineLog
                 MsgBox(ex.Message)
 
             End Try
-
-
-
 
 
         End If
