@@ -46,13 +46,11 @@ export default function ProgrmMatrlTableProfile({ afterloadProgram , showTable ,
         </div>
 ) : null}
 {showTable && !hidetable ? (
-      
-
         <div className='mt-2 col-md-12 col-sm-12' style={{ overflow: 'scroll', height: '230px' }}>
           <Table striped className="table-data border">
             <thead className="tableHeaderBGColor table-space" style={{ fontSize: '13px' }}>
               <tr>
-                <th>Material ID</th>
+                <th style={{ whiteSpace: "nowrap" }} >Material ID</th>
                 <th>Length</th>
                 <th>Width</th>
                 <th>Used</th>
@@ -68,15 +66,14 @@ export default function ProgrmMatrlTableProfile({ afterloadProgram , showTable ,
                   <td>{data.Para1}</td>
                   <td>{data.Para2}</td>
                   <td>
-                    <label>
+                   
                       <input type='checkbox' checked={data.Used === 1} />
-
-                    </label>
+                   
                   </td>
                   <td>
-                    <label>
+                  
                       <input type='checkbox' checked={data.Rejected === 1} />
-                    </label>
+                   
                   </td>
                   <td></td>
                 </tr>

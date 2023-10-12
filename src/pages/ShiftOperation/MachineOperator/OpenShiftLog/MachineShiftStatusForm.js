@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useGlobalContext } from "../../../../Context/Context";
 
 
-export default function MachineShiftStatusForm({selectshifttable,Shift,finalDay1,date}) {
+export default function MachineShiftStatusForm({selectshifttable,Shift,finalDay1,date, showTable}) {
   console.log("Date required",date);
 
   const{selectedProgram,afterloadData}=useGlobalContext();
@@ -54,15 +54,11 @@ console.log(ChangedOperator);
           <p style={{ textAlign:"center" }}> <b>Machine Shift Status </b></p>
 
           <div className='d-flex ms-4'>
-          <div style={{width:"auto", textAlign:"right"}}>
-          <div style={{ marginLeft: '10px' }}> <b>Operator : </b></div>
-          <div style={{marginLeft: '10px' }}><b>Current   : </b></div>
+          <div style={{width:"auto", textAlign:"left"}}>
+          <div style={{ marginLeft: '5px' }}> <b>Operator : {selectshifttable.Operator}  </b></div>
+          <div style={{marginLeft: '5px' }}><b>Current   : {selectshifttable.Operator} </b></div>
           </div>
 
-          <div style={{width:"auto", textAlign:"left"}}>
-          <div style={{ marginLeft: '10px' }}> <b>{selectshifttable.Operator} </b></div>
-          <div style={{marginLeft: '10px' }}><b>{selectshifttable.Operator}</b></div>
-          </div>
           </div>
 
 
@@ -101,28 +97,16 @@ console.log(ChangedOperator);
         >
           <p style={{textAlign:"center"}}><b>Process Task Status </b></p>
           <div className='d-flex'>
-          <div style={{width:"auto", textAlign:"right"}}>
-          <div style={{ marginLeft: '10px' }}> <b>Task No : {afterloadData?.TaskNo} </b></div>
-
-          <div style={{  marginLeft: '10px' }}><b>Operation : {afterloadData?.Operation}</b></div>
-          <div style={{ color: "", marginLeft: '10px' }}> <b>Material : {afterloadData?.Mtrl_Code} </b></div>
-
-          <div style={{  marginLeft: '10px' }}><b>Program no : {afterloadData?.NCProgramNo}</b></div>
-          <div style={{  marginLeft: '10px' }}> <b>Start Time :  </b></div>
-
-          <div className='mb-3' style={{ color: "", marginLeft: '10px' }}><b>Running For :</b></div>
-          </div>
-
           <div style={{width:"auto", textAlign:"left"}}>
-          <div style={{ marginLeft: '10px' }}> <b> - </b></div>
+          <div style={{ marginLeft: '15px' }}> <b>Task No : {showTable ? afterloadData?.TaskNo : ''} </b></div>
 
-          <div style={{  marginLeft: '10px' }}><b> - </b></div>
-          <div style={{ color: "", marginLeft: '10px' }}> <b> - </b></div>
+          <div style={{  marginLeft: '15px' }}><b>Operation : {showTable ?  afterloadData?.Operation : ''}  </b></div>
+          <div style={{ color: "", marginLeft: '15px' }}> <b>Material :  {showTable ? afterloadData?.Mtrl_Code : ''}  </b></div>
 
-          <div style={{  marginLeft: '10px' }}><b> - </b></div>
-          <div style={{  marginLeft: '10px' }}> <b> - </b></div>
+          <div style={{  marginLeft: '15px' }}><b>Program no : {showTable ? afterloadData?.NCProgramNo : ''}</b></div>
+          <div style={{  marginLeft: '15px' }}> <b>Start Time :  </b></div>
 
-          <div className='mb-3' style={{ color: "", marginLeft: '10px' }}><b> - </b></div>
+          <div className='mb-3' style={{ color: "", marginLeft: '15px' }}><b>Running For :</b></div>
           </div>
           </div>
         </div>
@@ -138,17 +122,13 @@ console.log(ChangedOperator);
           <div>
             <p style={{textAlign:"center"}}><b>Material Machine Time</b></p>
             <div className='d-flex mx-2'>
-            <div style={{width:"auto",textAlign:"right"}}>
-            <div><b>Sheet Id :  </b></div>
-            <div> <b>Start Time :   </b></div>
-            <div><b>Running For :  </b></div>
+            <div style={{width:"auto",textAlign:"left"}}>
+            <div style={{ marginLeft: '10px' }}><b>Sheet Id :  </b></div>
+            <div style={{ marginLeft: '10px' }}> <b>Start Time :   </b></div>
+            <div style={{ marginLeft: '10px' }}><b>Running For :  </b></div>
             </div>
 
-            <div style={{width:"auto", textAlign:"left"}}>
-            <div  style={{ marginLeft: '10px' }}><b>  - </b></div>
-            <div  style={{ marginLeft: '10px' }}><b>  - </b></div>
-            <div  style={{ marginLeft: '10px' }}><b>  - </b></div>
-            </div>
+          
             </div>
 
           </div>
