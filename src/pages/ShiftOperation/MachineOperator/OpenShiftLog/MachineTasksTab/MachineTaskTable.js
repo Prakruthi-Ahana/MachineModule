@@ -19,13 +19,16 @@ export default function MachineTaskTable({
   const [open, setOpen] = useState(false);
   const openModal = () => {
     setOpen(true);
-    setShowTable(true);
     setAfterloadData(selectedProgram);
   };
 
+
   const selectProgramFun = (item, index) => {
+
+  
     let list = { ...item, index: index };
     setSelectedProgram(list);
+   
   };
 
   useEffect(() => {

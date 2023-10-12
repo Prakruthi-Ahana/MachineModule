@@ -4,17 +4,13 @@ import { Button } from 'react-bootstrap';
 import DublicateEntryModal from './DublicateEntryModal';
 
 export default function LoadProgramModal({open, setOpen,NCProgramNo,afterLoadProgram, showTable}) {
-  const [dublicateEntry, setDublicateEntry]=useState(false);
-
 
 const handleSubmit = () => {
   afterLoadProgram(); // Pass showTables as an argument
   setOpen(false);
   showTable(true)
 }
-
-
-    const handleClose=()=>{
+const handleClose=()=>{
         setOpen(false);
     }
   return (

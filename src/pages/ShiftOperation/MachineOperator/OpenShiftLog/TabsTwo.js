@@ -7,6 +7,8 @@ import MarkAsUsedForm from './ProgramMaterialTab/MarkAsUsedForm';
 export default function TabsTwo({afterloadProgram, showTable}) {
 
     const [key, setKey] = useState("pm");
+
+    
   return (
     <div>
       <div className='row'>
@@ -19,7 +21,6 @@ export default function TabsTwo({afterloadProgram, showTable}) {
 
       <Tab eventKey="pm" title="Program Material">
        <Form1 afterloadProgram={afterloadProgram} showTable={showTable}/>
-      
        </Tab>
 
        <Tab eventKey="pp" title="Program Parts">

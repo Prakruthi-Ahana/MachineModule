@@ -26,6 +26,7 @@ export default function CallFile() {
   console.log(NcId);
 
   const[afterloadProgram,setAfterloadProgram]=useState([])
+
   const [showTable, setShowTable] = useState(false)
 
   const afterLoadProgram=()=>{
@@ -39,6 +40,10 @@ export default function CallFile() {
       setShowTable(true)
     });
   }
+
+  // useEffect(() => {
+  //   afterLoadProgram();
+  // }, [NcId]);
 
 
   return (
@@ -55,7 +60,10 @@ export default function CallFile() {
       <MachineShiftStatusForm selectshifttable={selectshifttable}
       Shift={Shift}
       finalDay1={finalDay1}
-      date={date}/>
+      date={date}
+      showTable={showTable}
+      
+      />
       </div>
       <div className='col-md-4'>
       <TabsTwo

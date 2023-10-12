@@ -18,12 +18,11 @@ export default function Form1({ afterloadProgram, showTable }) {
   };
 
   const{selectedProgram,afterloadData,setAfterloadData }=useGlobalContext();
-
   console.log(afterloadData)
-
   return (
     <>
       <div>
+     
         <div className="col-md-12 col-sm-12">
           <div className="ip-box form-bg">
             <div className="col-md-8  ms-4" style={{ textAlign: "center" }}>
@@ -42,7 +41,9 @@ export default function Form1({ afterloadProgram, showTable }) {
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={afterloadData.NCProgramNo}
+                
+                  value={showTable ? afterloadData.NCProgramNo : ''}
+                
                 />
               </div>
 
@@ -56,7 +57,7 @@ export default function Form1({ afterloadProgram, showTable }) {
                 <input
                   className="in-field "
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={afterloadData.Qty}
+                  value={ showTable ? afterloadData.Qty : ''}
                 />
               </div>
 
@@ -70,7 +71,7 @@ export default function Form1({ afterloadProgram, showTable }) {
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={afterloadData.QtyAllotted}
+                  value={ showTable ? afterloadData.QtyAllotted : ''}
                 />
               </div>
 
@@ -84,7 +85,7 @@ export default function Form1({ afterloadProgram, showTable }) {
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={afterloadData.QtyCut}
+                  value={ showTable ? afterloadData.QtyCut : ''}
                 />
               </div>
 
@@ -98,7 +99,7 @@ export default function Form1({ afterloadProgram, showTable }) {
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={afterloadData?.NoOfDwgs}
+                  value={ showTable ? afterloadData?.NoOfDwgs : ''}
                 />
               </div>
 
@@ -112,7 +113,7 @@ export default function Form1({ afterloadProgram, showTable }) {
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={afterloadData?.TotalParts}
+                  value={ showTable ? afterloadData?.TotalParts : ''}
                 />
               </div>
 
@@ -171,6 +172,7 @@ export default function Form1({ afterloadProgram, showTable }) {
             </div>
           </div>
         </div>
+      
       </div>
 
       <ProgramMtrlTableProfile
