@@ -6,14 +6,11 @@ import { baseURL } from '../../../../api/baseUrl';
 import { useState } from 'react';
 import ProgrmMatrlTableProfile from './ProgramMaterialTab/ProgramMtrlTableProfile';
 
-export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedStoppageID,selectshifttable,selectedStoppage}) {
+export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedStoppageID,selectshifttable,selectedStoppage,setShowTable,showTable}) {
     const handleClose=()=>{
         setAlreadyLoad(false);
     }
 
-    const[hidetable, setHidetable] = useState(false)
-
-    const[showTableone, setshowTableone] = useState(true)
     const onClickYes = () => {
       axios
         .post(baseURL + "/ShiftOperator/addStopage", {
@@ -24,8 +21,8 @@ export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedSt
         .then((response) => {
           console.log(response.data);
           handleClose();
-          setshowTableone(false)
-          setHidetable(true)
+          setShowTable(false)
+          // setHidetable(true)
         });
     };
 
@@ -54,7 +51,8 @@ export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedSt
       </Modal>
       </div>
       <ProgrmMatrlTableProfile
-      hidetable={hidetable}
+      setShowTable={setShowTable}
+      showTable={showTable}
       />
     </div>
   )

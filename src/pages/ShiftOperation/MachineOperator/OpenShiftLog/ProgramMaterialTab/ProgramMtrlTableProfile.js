@@ -3,11 +3,10 @@ import { Table } from 'react-bootstrap';
 
 export default function ProgrmMatrlTableProfile({ afterloadProgram , showTable , hidetable}) {
 
-  console.log( " checking conditions " + hidetable)
   
       return (
       <div>
-{showTable && !hidetable ? (
+{showTable  ? (
         <div className='mt-2'>
           <div className="col-md-12 col-sm-12">
             <div className="ip-box form-bg">
@@ -45,7 +44,7 @@ export default function ProgrmMatrlTableProfile({ afterloadProgram , showTable ,
           </div>
         </div>
 ) : null}
-{showTable && !hidetable ? (
+{showTable  ? (
         <div className='mt-2 col-md-12 col-sm-12' style={{ overflow: 'scroll', height: '230px' }}>
           <Table striped className="table-data border">
             <thead className="tableHeaderBGColor table-space" style={{ fontSize: '13px' }}>
@@ -60,7 +59,7 @@ export default function ProgrmMatrlTableProfile({ afterloadProgram , showTable ,
             </thead>
 
             <tbody className="tablebody table-space" style={{ fontSize: '12px' }}>
-              {afterloadProgram.map((data, key) => (
+              {afterloadProgram?.map((data, key) => (
                 <tr key={key}>
                   <td>{data.ShapeMtrlID}</td>
                   <td>{data.Para1}</td>
