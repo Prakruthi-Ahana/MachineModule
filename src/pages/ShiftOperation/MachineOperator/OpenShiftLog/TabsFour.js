@@ -8,7 +8,7 @@ import ProgramInfoForms from './ProductionReportTab/ProgramInfoForms';
 import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
 
-export default function TabsFour({selectshifttable,afterLoadProgram}) {
+export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable}) {
   
     const [key, setKey] = useState("mt");
 
@@ -102,6 +102,7 @@ console.log(selectshifttable);
       getMachinetaskdata={getMachinetaskdata}
       afterLoadProgram={afterLoadProgram}
      
+      setShowTable={setShowTable}
        />
        </Tab>
 

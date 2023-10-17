@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 import DublicateEntryModal from './DublicateEntryModal';
+import { useGlobalContext } from '../../../../../Context/Context';
 
-export default function LoadProgramModal({open, setOpen,NCProgramNo,afterLoadProgram, showTable}) {
+export default function LoadProgramModal({open, setOpen,NCProgramNo,afterLoadProgram}) {
+
+  const { NcId,setNcId,selectedProgram,setSelectedProgram,afterloadData,setAfterloadData,setShowTable} =
+  useGlobalContext();
 
 const handleSubmit = () => {
-  afterLoadProgram(); 
+  afterLoadProgram(); // Pass showTables as an argument
+  setAfterloadData(selectedProgram);
   setOpen(false);
-  showTable(true)
+  setShowTable(true);
 }
+
+console.log(selectedProgram);
+
 const handleClose=()=>{
         setOpen(false);
     }

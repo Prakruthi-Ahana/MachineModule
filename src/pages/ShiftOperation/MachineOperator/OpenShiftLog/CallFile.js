@@ -23,7 +23,6 @@ export default function CallFile() {
 
 
   const{NcId,setNcId}=useGlobalContext();
-  console.log(NcId);
 
   const[afterloadProgram,setAfterloadProgram]=useState([])
 
@@ -53,6 +52,8 @@ export default function CallFile() {
       <OpenShiftLogForm selectedMachine={selectedMachine} 
       finalDay1={finalDay1}
       selectshifttable={selectshifttable}
+      showTable={showTable}
+      setShowTable={setShowTable}
       />
       </div>
 
@@ -63,6 +64,7 @@ export default function CallFile() {
       finalDay1={finalDay1}
       date={date}
       showTable={showTable}
+      
       />
       </div>
       <div className='col-md-4'>
@@ -76,6 +78,7 @@ export default function CallFile() {
       <TabsFour
       selectshifttable={selectshifttable}
       afterLoadProgram={afterLoadProgram}
+     
       />
 
      

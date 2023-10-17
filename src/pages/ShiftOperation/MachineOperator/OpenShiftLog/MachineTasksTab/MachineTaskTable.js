@@ -11,25 +11,21 @@ export default function MachineTaskTable({
   selectshifttable,
   getMachinetaskdata,
   afterLoadProgram,
+  setShowTable
 }) {
   const { NcId, setNcId, selectedProgram, setSelectedProgram,afterloadData,setAfterloadData } =
     useGlobalContext();
-  const [showTable, setShowTable] = useState(false);
 
   const [open, setOpen] = useState(false);
   const openModal = () => {
     setOpen(true);
-    setShowTable(true)
     setAfterloadData(selectedProgram);
   };
 
 
   const selectProgramFun = (item, index) => {
-
-  
     let list = { ...item, index: index };
     setSelectedProgram(list);
-   
   };
 
   useEffect(() => {
@@ -37,6 +33,7 @@ export default function MachineTaskTable({
       selectProgramFun(getMachinetaskdata[0], 0); // Select the first row
     }
   }, [getMachinetaskdata, selectedProgram, selectProgramFun]);
+  
 
   const [machineTaskData, setMachineTaskData] = useState([]);
   const machinetask = () => {
@@ -64,8 +61,6 @@ export default function MachineTaskTable({
         NCProgramNo={NCProgramNo}
         afterLoadProgram={afterLoadProgram}
         showTable={showTable}
-        setAfterloadData={setAfterloadData}
-        selectedProgram={selectedProgram}
       />
       <div>
         <div
