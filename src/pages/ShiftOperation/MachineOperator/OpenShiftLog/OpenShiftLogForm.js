@@ -8,6 +8,8 @@ export default function OpenShiftLogForm({
   selectedMachine,
   finalDay1,
   selectshifttable,
+  setShowTable,
+  showTable
 }) {
   const [errorForm, setErrorForm] = useState(false);
   const [isInputVisible, setInputVisible] = useState(false);
@@ -90,6 +92,8 @@ export default function OpenShiftLogForm({
         selectshifttable={selectshifttable}
         selectedStoppageID={selectedStoppageID}
         selectedStoppage={selectedStoppage}
+        setShowTable={setShowTable}
+        showTable={showTable}
       />
       <div className="row">
         <div className="col-md-12">
