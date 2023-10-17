@@ -19,6 +19,7 @@ export default function MachineTaskTable({
   const [open, setOpen] = useState(false);
   const openModal = () => {
     setOpen(true);
+    setShowTable(true)
     setAfterloadData(selectedProgram);
   };
 
@@ -63,6 +64,8 @@ export default function MachineTaskTable({
         NCProgramNo={NCProgramNo}
         afterLoadProgram={afterLoadProgram}
         showTable={showTable}
+        setAfterloadData={setAfterloadData}
+        selectedProgram={selectedProgram}
       />
       <div>
         <div
@@ -294,6 +297,7 @@ export default function MachineTaskTable({
         selectedProgram={selectedProgram}
         machineTaskData={machineTaskData}
         machinetask={machinetask}
+       
       />
     </>
   );

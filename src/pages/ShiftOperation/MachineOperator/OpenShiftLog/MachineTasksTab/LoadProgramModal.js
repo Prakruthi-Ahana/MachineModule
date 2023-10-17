@@ -6,7 +6,7 @@ import DublicateEntryModal from './DublicateEntryModal';
 export default function LoadProgramModal({open, setOpen,NCProgramNo,afterLoadProgram, showTable}) {
 
 const handleSubmit = () => {
-  afterLoadProgram(); // Pass showTables as an argument
+  afterLoadProgram(); 
   setOpen(false);
   showTable(true)
 }

@@ -99,7 +99,7 @@ console.log(ChangedOperator);
           <div className='d-flex'>
           <div style={{width:"auto", textAlign:"left"}}>
           <div style={{ marginLeft: '15px' }}> <b>Task No : {showTable ? afterloadData?.TaskNo : ''} </b></div>
-
+          
           <div style={{  marginLeft: '15px' }}><b>Operation : {showTable ?  afterloadData?.Operation : ''}  </b></div>
           <div style={{ color: "", marginLeft: '15px' }}> <b>Material :  {showTable ? afterloadData?.Mtrl_Code : ''}  </b></div>
 

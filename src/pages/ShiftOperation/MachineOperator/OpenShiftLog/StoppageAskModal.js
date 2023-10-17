@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
 import { useState } from 'react';
-import ProgrmMatrlTableProfile from './ProgramMaterialTab/ProgramMtrlTableProfile';
+
 
 export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedStoppageID,selectshifttable,selectedStoppage}) {
     const handleClose=()=>{
@@ -53,9 +53,7 @@ export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedSt
         </Modal.Footer>
       </Modal>
       </div>
-      <ProgrmMatrlTableProfile
-      hidetable={hidetable}
-      />
+     
     </div>
   )
 }
