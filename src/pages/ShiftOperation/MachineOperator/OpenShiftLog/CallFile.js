@@ -26,7 +26,8 @@ export default function CallFile() {
 
   const[afterloadProgram,setAfterloadProgram]=useState([])
 
-  const [showTable, setShowTable] = useState(false)
+  const [showTable, setShowTable] = useState(false);
+ 
 
   const afterLoadProgram=()=>{
     axios
@@ -42,7 +43,7 @@ export default function CallFile() {
 
   // useEffect(() => {
   //   afterLoadProgram();
-  // }, [NcId]);
+  // }, []);
 
 
   return (
@@ -62,7 +63,7 @@ export default function CallFile() {
       Shift={Shift}
       finalDay1={finalDay1}
       date={date}
-      setShowTable={setShowTable}
+      showTable={showTable}
       
       />
       </div>
@@ -77,8 +78,10 @@ export default function CallFile() {
       <TabsFour
       selectshifttable={selectshifttable}
       afterLoadProgram={afterLoadProgram}
-      setShowTable={setShowTable}
+     
       />
+
+     
       </div>
       
       </div>

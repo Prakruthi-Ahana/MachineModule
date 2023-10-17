@@ -6,6 +6,7 @@ export default function ErrorSaveModal({errorSave,setErrorSave}) {
     const handleClose=()=>{
     setErrorSave(false);
     }
+    
   return (
     <div>
       <Modal show={errorSave} onHide={handleClose}>

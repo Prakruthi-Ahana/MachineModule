@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 
-export default function ProgrmMatrlTableProfile({ afterloadProgram , showTable , hidetable}) {
+export default function ProgrmMatrlTableProfile({ afterloadProgram , showTable}) {
 
   
       return (

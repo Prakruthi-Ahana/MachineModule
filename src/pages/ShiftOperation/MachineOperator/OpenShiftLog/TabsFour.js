@@ -12,6 +12,8 @@ export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable
   
     const [key, setKey] = useState("mt");
 
+    const [showtab , setShowtab] = useState(false)
+
 
 //ShiftLog Table
 console.log(selectshifttable);
@@ -99,6 +101,7 @@ console.log(selectshifttable);
       selectshifttable={selectshifttable}
       getMachinetaskdata={getMachinetaskdata}
       afterLoadProgram={afterLoadProgram}
+     
       setShowTable={setShowTable}
        />
        </Tab>

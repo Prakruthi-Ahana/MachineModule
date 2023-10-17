@@ -22,7 +22,6 @@ export default function Form1({ afterloadProgram, showTable }) {
   return (
     <>
       <div>
-     
         <div className="col-md-12 col-sm-12">
           <div className="ip-box form-bg">
             <div className="col-md-8  ms-4" style={{ textAlign: "center" }}>
