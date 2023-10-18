@@ -11,7 +11,8 @@ export default function MachineTaskTable({
   selectshifttable,
   getMachinetaskdata,
   afterLoadProgram,
-  setShowTable
+  setShowTable,
+  showTable
 }) {
   const { NcId, setNcId, selectedProgram, setSelectedProgram,afterloadData,setAfterloadData } =
     useGlobalContext();

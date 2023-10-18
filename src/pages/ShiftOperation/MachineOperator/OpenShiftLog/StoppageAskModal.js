@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
 import { useState } from 'react';
-
+import ProgrmMatrlTableProfile from '../OpenShiftLog/ProgramMaterialTab/ProgramMtrlTableProfile'
 
 export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedStoppageID,selectshifttable,selectedStoppage,setShowTable,showTable}) {
     const handleClose=()=>{
