@@ -6,7 +6,8 @@ export default function QuantityModal({setQuantity, quantity}) {
 
     const handleClose=()=>{
         setQuantity(false);
-            }
+      }
+      
   return (
     <div>
       <Modal show={quantity} onHide={handleClose}>

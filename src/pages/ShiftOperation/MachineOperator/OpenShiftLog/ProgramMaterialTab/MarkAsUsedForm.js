@@ -11,10 +11,7 @@ export default function MarkAsUsedForm() {
         <div className="col-md-12 col-sm-12">
           <div className="ip-box form-bg " >
             <div className="row" style={{gap:'10px',marginLeft:'-5px'}}>
-              
-             
-             
-            
+
              
               <div style={{textAlign:"center",marginLeft:'-12px'}} className='col-md-3'>
             <div>

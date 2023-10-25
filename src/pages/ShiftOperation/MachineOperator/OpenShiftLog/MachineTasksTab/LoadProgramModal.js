@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
-import DublicateEntryModal from './DublicateEntryModal';
 import { useGlobalContext } from '../../../../../Context/Context';
 
 export default function LoadProgramModal({open, setOpen,NCProgramNo,afterLoadProgram}) {

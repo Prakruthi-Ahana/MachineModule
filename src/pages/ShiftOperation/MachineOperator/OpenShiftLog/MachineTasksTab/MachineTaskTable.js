@@ -5,22 +5,35 @@ import axios from "axios";
 import { baseURL } from "../../../../../api/baseUrl";
 import MachineTaskProfile from "./MachineTaskProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
-import { unstable_ClassNameGenerator } from "@mui/material";
+import GlobalModal from "../../GlobalModal";
+
 
 export default function MachineTaskTable({
   selectshifttable,
   getMachinetaskdata,
   afterLoadProgram,
-  setShowTable
+  setShowTable,
+  showTable
 }) {
+
   const { NcId, setNcId, selectedProgram, setSelectedProgram,afterloadData,setAfterloadData } =
     useGlobalContext();
 
+
+  // Modal Related code....
   const [open, setOpen] = useState(false);
   const openModal = () => {
     setOpen(true);
-    setAfterloadData(selectedProgram);
+
   };
+  const handleSubmit = () => {
+    afterLoadProgram();
+    setAfterloadData(selectedProgram); 
+    setOpen(false);
+  }
+  const handleClose = () => {
+    setOpen(false);
+  }
 
 
   const selectProgramFun = (item, index) => {
@@ -55,13 +68,21 @@ export default function MachineTaskTable({
 
   return (
     <>
-      <LoadProgramModal
-        open={open}
-        setOpen={setOpen}
-        NCProgramNo={NCProgramNo}
-        afterLoadProgram={afterLoadProgram}
-        showTable={showTable}
-      />
+     
+
+       <GlobalModal 
+       show={open}
+       title="magod_machine"
+       content={
+        <>
+          Do you wish to load NC Program No: <strong>{NCProgramNo}</strong> ?
+        </>
+      }
+       onYesClick={handleSubmit}
+       onNoClick={handleClose}
+       onClose={handleClose}
+       />
+
       <div>
         <div
           className="col-md-12"
@@ -292,7 +313,6 @@ export default function MachineTaskTable({
         selectedProgram={selectedProgram}
         machineTaskData={machineTaskData}
         machinetask={machinetask}
-       
       />
     </>
   );

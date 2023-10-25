@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import MarkAsUsedForm from "./MarkAsUsedForm";
-import QuantityMismatchModal from "./QuantityMismatchModal";
-import LoadProgramMaterialModal from "./LoadProgramMaterialModal";
 import ProgramMtrlTableProfile from "./ProgramMtrlTableProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
+import GlobalModal from "../../GlobalModal";
 
 export default function Form1({ afterloadProgram, showTable }) {
   const [mismatchModal, setmismatchModal] = useState(false);
@@ -16,6 +14,11 @@ export default function Form1({ afterloadProgram, showTable }) {
   const loadProgramSubmit = () => {
     setLoadProgram(true);
   };
+
+  const handleClose=()=>{
+    setLoadProgram(false);
+    setmismatchModal(false)
+        }
 
   const{selectedProgram,afterloadData,setAfterloadData }=useGlobalContext();
   console.log(afterloadData)
@@ -179,15 +182,27 @@ export default function Form1({ afterloadProgram, showTable }) {
         showTable={showTable}
       />
 
-      <QuantityMismatchModal
-        mismatchModal={mismatchModal}
-        setmismatchModal={setmismatchModal}
+
+      <GlobalModal
+      show={loadProgram}
+      title="magod_machine"
+      content=<div>Do You wish to Load Material ID: <strong>23456</strong></div>
+      onYesClick={() => setLoadProgram(false)} 
+      onNoClick={() => setLoadProgram(false)} 
+      onClose={handleClose}
       />
 
-      <LoadProgramMaterialModal
-        setLoadProgram={setLoadProgram}
-        loadProgram={loadProgram}
+
+      <GlobalModal
+      show={mismatchModal}
+      title="magod_machine"
+      content=<div>Parts Quantity Mismatch</div>
+      onYesClick={() => setmismatchModal(false)} 
+      onNoClick={() => setmismatchModal(false)} 
+      onClose={handleClose}
       />
+
+
     </>
   );
 }

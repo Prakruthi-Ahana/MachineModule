@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
 
+
 export default function ShiftSummryTable({selectshifttable}) {
   const[shiftSummaryData,setShiftSummaryData]=useState([])
   const getShiftSummaryData = () => {
@@ -18,6 +19,7 @@ export default function ShiftSummryTable({selectshifttable}) {
     getShiftSummaryData();
   },[selectshifttable])
 
+
   return (
     <div>
       <div
@@ -27,6 +29,7 @@ export default function ShiftSummryTable({selectshifttable}) {
         <Table striped className="table-data border">
           <thead className="tableHeaderBGColor" style={{ fontSize: "12px" }}>
             <tr>
+
               <th style={{ whiteSpace: "nowrap" }}>Head</th>
               <th style={{ whiteSpace: "nowrap" }}>Time Hours</th>
               <th style={{ whiteSpace: "nowrap" }}>Time in Min</th>
@@ -34,6 +37,7 @@ export default function ShiftSummryTable({selectshifttable}) {
           </thead>
 
           <tbody className="tablebody">
+
             {shiftSummaryData.map((item,key)=>{
               return(
                 <>
@@ -45,6 +49,7 @@ export default function ShiftSummryTable({selectshifttable}) {
                 </>
               )
             })}
+
           </tbody>
         </Table>
       </div>
