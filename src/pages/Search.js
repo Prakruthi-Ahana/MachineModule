@@ -156,7 +156,7 @@ Public Class MachineLog
                     With Machine.getCommand
                         .CommandText = "SELECT c1.* FROM magodmis.cust_assy_data c,magodmis.cust_assy_bom_list c1 " _
                                         & "WHERE c.`Cust_Code`=@Cust_Code AND  c.`AssyCust_PartId`=@AssyCust_PartId " _
-                                        & "AND c1.`Cust_AssyId`=c.`Id`"
+                                        & "AND c1.`Cust_AssyId`=c.`Id`;"
                         .Parameters.Clear()
                         .Parameters.AddWithValue("@Cust_Code", currentProgram.Cust_Code)
                         .Parameters.AddWithValue("@AssyCust_PartId", dtRunningProgramPartsList.First.DwgName)
@@ -382,6 +382,9 @@ Public Class MachineLog
             End Try
 
 
+
+
+
         End If
     End Sub
     Private Function upDateMachineStatus() As Boolean
@@ -389,7 +392,7 @@ Public Class MachineLog
             .CommandText = "UPDATE machine_data.machinestatus m " _
                     & " SET m.`NCProgarmNo`=@NCProgarmNo, m.`TaskNo`=@TaskNo, m.`ProgramStartTime`=now(), " _
                    & " m.mtrl_Code=@mtrl_Code,m.mtrlid='', m.mprocess=@mprocess , m.stopid=@stopid,m.SheetStartTime=now(),m.ProgMachineTime=0," _
-                   & "  m.SheetMachineTime=0 WHERE m.`MachineName`=@MachineName; "
+                   & "  m.SheetMachineTime=0 WHERE m.`MachineName`=@MachineName"
             With .Parameters
                 .Clear()
                 .AddWithValue("@NCProgarmNo", currentMachine.NCProgarmNo)
@@ -664,6 +667,8 @@ Public Class MachineLog
         With newShiftSrl
             .Item("ShiftID") = intShiftId
             .Item("Machine") = currentMachine.MachineName
+
+
             .Item("TaskNo") = currentMachine.TaskNo
             .Item("Program") = currentMachine.NCProgarmNo
             .Item("Operator") = currentMachine._Operator
@@ -922,7 +927,7 @@ Public Class MachineLog
             With .UpdateCommand
                 .CommandText = "UPDATE magodmis.shiftlogbook s " _
                 & "SET s.Remarks =@Remarks, s.Srl=@Srl,s.ToTime=@ToTime, s.Locked=@Locked, s.`QtyProcessed`=@QtyProcessed " _
-                                & "WHERE s.ShiftLogId=@ShiftLogId"
+                                & "WHERE s.ShiftLogId=@ShiftLogId;"
                 With .Parameters
                     .Add("@Remarks", MySql.Data.MySqlClient.MySqlDbType.VarChar, 100, "Remarks")
                     .Add("@Srl", MySql.Data.MySqlClient.MySqlDbType.Int32, 10, "Srl")
