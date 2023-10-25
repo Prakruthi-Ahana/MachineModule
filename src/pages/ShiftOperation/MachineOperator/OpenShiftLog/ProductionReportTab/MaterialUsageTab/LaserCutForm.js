@@ -1,29 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import ShowUpModal from './ShowUpModal';
 import MarkasRejectedModal from './MarkasRejectedModal';
 import RowRejectedModal from './RowRejectedModal';
 import ShowUnusedModal from './ShowUnusedModal';
 import AllModal from './AllModal';
 import axios from 'axios';
 import { baseURL } from '../../../../../../api/baseUrl';
+// import AltModal from '../../../AltModal';
 
 
 export default function LaserCutForm({selectProductionReport ,openTable}) {
 
- const[showModal,setShowModal]=useState(false);
+
+ 
+//  const[showModal,setShowModal]=useState(false);
  const [markasRejected, setMarkasRejected]=useState(false);
  const [rowsRejected, setRowsRejected]=useState(false);
  const[showUnused, setShowUnused]=useState(false);
  const [allModal, setAllModal]=useState(false);
 
-
- const handleSubmit=()=>{
-setShowModal(true);
- }
+ const [openModal , setOpenModal] = useState(false)
+//  const [modalData, setModalData] = useState({ title: '', content: '' });
+ 
+ const handleclickmarkused = () => {
+   setOpenModal(true);
+ };
+ 
+ const markasused = () => {
+   setOpenModal(false);
+ };
+ 
+ const handleClose = () => {
+   setOpenModal(false);
+ };
+ 
  const rejectSubmit=()=>{
   setMarkasRejected(true);
  }
+
+
  const showUnusedSubmit=()=>{
 setShowUnused(true);
  }
@@ -58,7 +73,18 @@ setShowUnused(true);
             <div>
             <button className="button-style mt-2 group-button mt-4 mb-2"
               style={{ width: "110px",fontSize:"13px"}} 
-              onClick={handleSubmit}  >
+      //          onClick={() => {
+      //   setModalData({
+      //     title: "Mark as Used",
+      //     content: (
+      //       <div>
+      //         Material Once Marked as Used Cannot be Used again. Are You Sure?
+      //       </div>
+      //     ),
+      //   });
+      //   handleclickmarkused();
+      // }}
+              >
               Mark as Used
             </button>
             </div>
@@ -126,10 +152,9 @@ setShowUnused(true);
 
         </div >
 
-       {
-        showModal &&
-        <ShowUpModal showModal={showModal} setShowModal={setShowModal}/>
-       }
+    
+        
+  
 
        {
         // markasRejected &&
@@ -151,7 +176,8 @@ rowsRejected &&
 
        {
         allModal &&
-        <AllModal allModal={allModal} setAllModal={setAllModal}/>
+        <AllModal allModal={allModal} 
+        setAllModal={setAllModal}/>
        }
       
     </div>

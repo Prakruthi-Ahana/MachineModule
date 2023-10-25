@@ -50,10 +50,7 @@ export default function StoppageAskModal({setAlreadyLoad, alreadyLoad,selectedSt
         </Modal.Footer>
       </Modal>
       </div>
-      <ProgrmMatrlTableProfile
-      setShowTable={setShowTable}
-      showTable={showTable}
-      />
+    
     </div>
   )
 }
