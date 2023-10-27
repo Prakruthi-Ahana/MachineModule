@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Table } from "react-bootstrap";
 import ShowUsedModal from "./ShowUsedModal";
 import AllModal from "../ProductionReportTab/MaterialUsageTab/AllModal";
@@ -8,6 +9,8 @@ export default function ProgrmMatrlTableProfile({
   afterloadProgram,
   setAfterloadProgram,
   showTable,
+  selectedMtrlTable,
+  rowSelectMtrlTable
 
 }) {
 
@@ -16,8 +19,6 @@ export default function ProgrmMatrlTableProfile({
   const [isCheckboxchecked, setIsCheckboxchecked] = useState(false);
   const [originalData, setOriginalData] = useState([]);
   const [isDataFiltered, setIsDataFiltered] = useState(false);
- 
- 
  
  
  
@@ -121,7 +122,7 @@ export default function ProgrmMatrlTableProfile({
               style={{ fontSize: "12px" }}
             >
               {afterloadProgram?.map((data, key) => (
-                <tr key={key}>
+                <tr onClick={()=>{rowSelectMtrlTable(data,key)}} className={key===selectedMtrlTable?.index? 'selcted-row-clr':'' }>
                   <td>{data.ShapeMtrlID}</td>
                   <td>{data.Para1}</td>
                   <td>{data.Para2}</td>

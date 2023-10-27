@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
 
+
 export default function ShiftSummryTable({selectshifttable}) {
   
   const[shiftSummaryData,setShiftSummaryData]=useState([])
@@ -18,6 +19,7 @@ export default function ShiftSummryTable({selectshifttable}) {
   useEffect(()=>{
     getShiftSummaryData();
   },[selectshifttable])
+
 
   return (
     <div>

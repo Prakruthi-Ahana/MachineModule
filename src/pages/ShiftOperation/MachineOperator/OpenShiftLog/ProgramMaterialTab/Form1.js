@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import ProgramMtrlTableProfile from "./ProgramMtrlTableProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
 import GlobalModal from "../../GlobalModal";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Form1({ afterloadProgram, showTable, setAfterloadProgram }) {
   const [mismatchModal, setmismatchModal] = useState(false);
@@ -11,10 +13,6 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
     setmismatchModal(true);
   };
 
-  const loadProgramSubmit = () => {
-    setLoadProgram(true);
-  };
-
   const handleClose=()=>{
     setLoadProgram(false);
     setmismatchModal(false)
@@ -22,6 +20,30 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
 
   const{selectedProgram,afterloadData,setAfterloadData }=useGlobalContext();
   console.log(afterloadData)
+
+  //selecting table
+  const[selectedMtrlTable,setSelectedMtrlTable]=useState({})
+  const rowSelectMtrlTable=(item,index)=>{
+      let list={...item,index:index}
+      setSelectedMtrlTable(list);
+  }
+
+  useMemo(()=>{
+   setSelectedMtrlTable({...afterloadProgram[0],index:0})
+  },[afterloadProgram[0]])
+
+  const loadProgramSubmit = () => {
+    if(selectedMtrlTable.Used===1 || selectedMtrlTable.Rejected===1 )
+    {
+      toast.error('Cannot Load the Material that is Used or Rejected', {
+        position: toast.POSITION.TOP_CENTER
+      });
+    }
+    else{
+      setLoadProgram(true);
+    }
+  };
+
   return (
     <>
       <div>
@@ -181,6 +203,8 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
         afterloadProgram={afterloadProgram}
         setAfterloadProgram={setAfterloadProgram}
         showTable={showTable}
+        selectedMtrlTable={selectedMtrlTable}
+        rowSelectMtrlTable={rowSelectMtrlTable}
       />
 
 

@@ -26,7 +26,7 @@ export default function CallFile() {
 
   const[afterloadProgram,setAfterloadProgram]=useState([])
 
-  const [showTable, setShowTable] = useState(false);
+  const [showTable, setShowTable] = useState(true);
  
 
   const afterLoadProgram=()=>{
