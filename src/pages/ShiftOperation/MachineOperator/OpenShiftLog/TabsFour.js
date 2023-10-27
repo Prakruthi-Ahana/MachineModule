@@ -16,7 +16,6 @@ export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable
 
 
 //ShiftLog Table
-console.log(selectshifttable);
     const[shiftLogDetails,setShiftLogDetails]=useState([])
     const getShiftLogDetails=()=>{
       axios
@@ -101,7 +100,6 @@ console.log(selectshifttable);
       selectshifttable={selectshifttable}
       getMachinetaskdata={getMachinetaskdata}
       afterLoadProgram={afterLoadProgram}
-     
       setShowTable={setShowTable}
        />
        </Tab>

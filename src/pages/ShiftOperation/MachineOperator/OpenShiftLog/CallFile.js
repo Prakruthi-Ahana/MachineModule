@@ -59,7 +59,8 @@ export default function CallFile() {
 
       <div className='row col-md-12'>
       <div className='col-md-3'>
-      <MachineShiftStatusForm selectshifttable={selectshifttable}
+      <MachineShiftStatusForm 
+      selectshifttable={selectshifttable}
       Shift={Shift}
       finalDay1={finalDay1}
       date={date}
@@ -69,6 +70,7 @@ export default function CallFile() {
       </div>
       <div className='col-md-4'>
       <TabsTwo
+      setAfterloadProgram={setAfterloadProgram}
       afterloadProgram={afterloadProgram}
       showTable={showTable}
       />
@@ -78,7 +80,7 @@ export default function CallFile() {
       <TabsFour
       selectshifttable={selectshifttable}
       afterLoadProgram={afterLoadProgram}
-     
+      
       />
 
      

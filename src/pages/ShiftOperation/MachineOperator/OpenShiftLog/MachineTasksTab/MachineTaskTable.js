@@ -6,6 +6,7 @@ import { baseURL } from "../../../../../api/baseUrl";
 import MachineTaskProfile from "./MachineTaskProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
 import GlobalModal from "../../GlobalModal";
+import ErrorModal from './ErrorModal';
 
 
 export default function MachineTaskTable({
@@ -22,10 +23,19 @@ export default function MachineTaskTable({
 
   // Modal Related code....
   const [open, setOpen] = useState(false);
-  const openModal = () => {
-    setOpen(true);
+  const [isDataDisplayed, setIsDataDisplayed] = useState(false);
+  const [ErrorshowModal, setErrorshowModal] = useState(false)
 
+
+  const openModal = () => {
+    if (isDataDisplayed) {
+      setOpen(true); // Open the modal
+    } else {
+      setErrorshowModal(true); // Display the error message
+    }
   };
+
+  
   const handleSubmit = () => {
     afterLoadProgram();
     setAfterloadData(selectedProgram); 
@@ -57,7 +67,11 @@ export default function MachineTaskTable({
       .then((response) => {
         console.log(response.data);
         setMachineTaskData(response.data);
-      });
+        setIsDataDisplayed(true); // Data is displayed
+      }).catch((err) => {
+        console.log(err)
+        setIsDataDisplayed(false); 
+      })
   };
 
   let NCProgramNo = selectedProgram.NCProgramNo;
@@ -82,6 +96,12 @@ export default function MachineTaskTable({
        onNoClick={handleClose}
        onClose={handleClose}
        />
+ 
+
+  
+     
+
+       
 
       <div>
         <div
@@ -313,7 +333,18 @@ export default function MachineTaskTable({
         selectedProgram={selectedProgram}
         machineTaskData={machineTaskData}
         machinetask={machinetask}
+        setIsDataDisplayed={setIsDataDisplayed}
       />
+
+      {
+        ErrorModal && (
+          <ErrorModal
+          ErrorshowModal={ErrorshowModal}
+          setErrorshowModal={setErrorshowModal}
+          />
+          
+        )
+       }
     </>
   );
 }

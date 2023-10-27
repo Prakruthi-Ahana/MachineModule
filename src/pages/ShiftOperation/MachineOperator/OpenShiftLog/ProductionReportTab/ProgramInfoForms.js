@@ -34,6 +34,15 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
   }, [getMachinetaskdata, selectProductionReport, selectProductionReportFun]);
 
   console.log("velmkvefve", getMachinetaskdata)
+
+ 
+
+  const handleRefresh = () => {
+    setOpenTable(false)
+    if(getMachinetaskdata.length > 0){
+      selectProductionReportFun(getMachinetaskdata[0], 0);
+    }
+  }
   
 
   return (
@@ -178,6 +187,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
             <button
               className="button-style mt-2 group-button mt-2 mb-2"
               style={{ width: "130px", fontSize: "14px", marginLeft: "-60px" }}
+              onClick={handleRefresh}
             >
               Refresh
             </button>
@@ -188,6 +198,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
       <MaterialAndPartsTabs
       selectProductionReport={selectProductionReport}
       openTable = {openTable}
+     
       />
      
         <LoadProgramInfoModal

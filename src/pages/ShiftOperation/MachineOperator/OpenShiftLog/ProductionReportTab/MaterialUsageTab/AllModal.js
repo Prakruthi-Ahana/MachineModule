@@ -2,10 +2,15 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 
-export default function AllModal({allModal,setAllModal}) {
+export default function AllModal({allModal,setAllModal, resetData}) {
     const handleClose=()=>{
         setAllModal(false);
             }
+            const handleOkClick = () => {
+              resetData();
+              setAllModal(false);
+          }
+          
   return (
     <div>
         <Modal show={allModal} onHide={handleClose}>
@@ -13,11 +18,12 @@ export default function AllModal({allModal,setAllModal}) {
           <Modal.Title>magod_machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>Parts Quantity Mismatch
+        <Modal.Body>
+            All
          </Modal.Body> 
 
         <Modal.Footer>
-          <Button variant="primary" 
+          <Button variant="primary" onClick={handleOkClick}
         >
            Ok
           </Button>

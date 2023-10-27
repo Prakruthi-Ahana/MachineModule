@@ -2,10 +2,16 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 
-export default function ShowUnusedModal({setShowUnused,showUnused}) {
+export default function ShowUnusedModal({setShowUnused,showUnused, filterUnusedData }) {
     const handleClose=()=>{
        setShowUnused(false);
             }
+
+            const handleOkClick = () => {
+              // Call the filterUnusedData callback to filter the data
+              filterUnusedData();
+              setShowUnused(false);
+          }
   return (
     <div>
        <Modal show={showUnused} onHide={handleClose}>
@@ -17,10 +23,9 @@ export default function ShowUnusedModal({setShowUnused,showUnused}) {
          </Modal.Body> 
 
         <Modal.Footer>
-          <Button variant="primary" 
-        >
-           Ok
-          </Button>
+           <Button variant="primary" onClick={handleOkClick}>
+                        Ok
+                    </Button>
           {/* <Button variant="secondary" onClick={handleClose}>
             No
           </Button> */}
