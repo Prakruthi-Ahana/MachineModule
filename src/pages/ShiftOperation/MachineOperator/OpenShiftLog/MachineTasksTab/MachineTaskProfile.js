@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { baseURL } from '../../../../../api/baseUrl';
 import { useState } from 'react';
 
-export default function MachineTaskProfile({selectedProgram,machineTaskData,machinetask}) {
+export default function MachineTaskProfile({selectedProgram,machineTaskData,machinetask,setIsDataDisplayed}) {
 
   console.log(selectedProgram)
 

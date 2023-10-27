@@ -1,14 +1,54 @@
+import React, { useState } from "react";
 import React, { useMemo, useState } from "react";
 import { Table } from "react-bootstrap";
+import ShowUsedModal from "./ShowUsedModal";
+import AllModal from "../ProductionReportTab/MaterialUsageTab/AllModal";
+import ShowAllModal from "./ShowAllModal";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
+  setAfterloadProgram,
   showTable,
   selectedMtrlTable,
   rowSelectMtrlTable
-}) {
-  
 
+}) {
+
+  const [showusedModal, setShowusedModal] = useState(false);
+  const [allModal, setAllModal]=useState(false);
+  const [isCheckboxchecked, setIsCheckboxchecked] = useState(false);
+  const [originalData, setOriginalData] = useState([]);
+  const [isDataFiltered, setIsDataFiltered] = useState(false);
+ 
+ 
+ 
+ const filterUnusedData = () => {
+   // Filter the ProductionReportData array to show only rows where Used and Rejected are both 0
+   const filteredData = afterloadProgram.filter(data => data.Used === 0 && data.Rejected === 0);
+   setOriginalData(afterloadProgram); // Save the original data
+   setAfterloadProgram(filteredData); // Update the filtered data
+   setIsDataFiltered(true); // Set the flag to indicate data is filtered
+ }
+ const resetData = () => {
+  setAfterloadProgram(originalData); // Restore the original data
+   setIsDataFiltered(false); // Clear the data filtered flag
+ }
+ 
+
+
+
+  const handleCheckBoxChange = () => {
+    setIsCheckboxchecked(!isCheckboxchecked)
+    if(isCheckboxchecked){
+      setAllModal(true);
+    }else{
+
+      setShowusedModal(true)
+    }
+  }
+
+  console.log(isCheckboxchecked)
+ 
   return (
     <div>
       {showTable ? (
@@ -42,7 +82,9 @@ export default function ProgrmMatrlTableProfile({
                 </div>
 
                 <div className="col-md-3 row mt-3">
-                  <input type="checkbox" className="col-md-2" />
+                  <input type="checkbox" className="col-md-2"
+                  onChange={handleCheckBoxChange}
+                  />
                   <label
                     className="form-label col-md-1 mt-1"
                     style={{ whiteSpace: "nowrap", marginLeft: "-6px" }}
@@ -97,6 +139,28 @@ export default function ProgrmMatrlTableProfile({
           </Table>
         </div>
       ) : null}
+      <div>
+      {
+        showusedModal && (
+          <ShowUsedModal 
+          showusedModal={showusedModal}
+          setShowusedModal={setShowusedModal}
+          filterUnusedData={filterUnusedData}
+          />
+        )
+      }
+
+      {
+        allModal && 
+        (
+          <ShowAllModal
+          allModal={allModal}
+          setAllModal={setAllModal}
+          resetData={resetData}
+          />
+        )
+      }
+      </div>
     </div>
   );
 }

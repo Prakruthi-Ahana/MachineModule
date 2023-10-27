@@ -5,7 +5,7 @@ import GlobalModal from "../../GlobalModal";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 
-export default function Form1({ afterloadProgram, showTable }) {
+export default function Form1({ afterloadProgram, showTable, setAfterloadProgram }) {
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
 
@@ -201,6 +201,7 @@ export default function Form1({ afterloadProgram, showTable }) {
 
       <ProgramMtrlTableProfile
         afterloadProgram={afterloadProgram}
+        setAfterloadProgram={setAfterloadProgram}
         showTable={showTable}
         selectedMtrlTable={selectedMtrlTable}
         rowSelectMtrlTable={rowSelectMtrlTable}

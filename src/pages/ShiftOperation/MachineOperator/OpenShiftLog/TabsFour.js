@@ -100,7 +100,6 @@ export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable
       selectshifttable={selectshifttable}
       getMachinetaskdata={getMachinetaskdata}
       afterLoadProgram={afterLoadProgram}
-     
       setShowTable={setShowTable}
        />
        </Tab>

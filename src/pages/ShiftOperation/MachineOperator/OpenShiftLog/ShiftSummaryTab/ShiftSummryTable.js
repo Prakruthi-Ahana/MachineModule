@@ -5,6 +5,7 @@ import axios from "axios";
 
 
 export default function ShiftSummryTable({selectshifttable}) {
+  
   const[shiftSummaryData,setShiftSummaryData]=useState([])
   const getShiftSummaryData = () => {
     axios
@@ -29,7 +30,6 @@ export default function ShiftSummryTable({selectshifttable}) {
         <Table striped className="table-data border">
           <thead className="tableHeaderBGColor" style={{ fontSize: "12px" }}>
             <tr>
-
               <th style={{ whiteSpace: "nowrap" }}>Head</th>
               <th style={{ whiteSpace: "nowrap" }}>Time Hours</th>
               <th style={{ whiteSpace: "nowrap" }}>Time in Min</th>
@@ -49,7 +49,6 @@ export default function ShiftSummryTable({selectshifttable}) {
                 </>
               )
             })}
-
           </tbody>
         </Table>
       </div>
