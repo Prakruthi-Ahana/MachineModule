@@ -35,7 +35,10 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
   const handlemarkasUsed = () => {
     setMarkasRejected(true)
   }
-  console.log("Laser Data", selectProductionReport?.Ncid);
+
+
+ 
+  console.log("Laser Data", selectProductionReport);
 
   const selectProductionReportData = selectProductionReport?.Ncid;
   const [showUnused, setShowUnused] = useState(false);
@@ -61,13 +64,13 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
 
   const handleCheckBox = () => {
     setChecked(!checked);
-
     if (checked) {
       setAllModal(true);
     } else {
       setShowUnused(true);
     }
   };
+
   console.log(checked);
 
   const MaterialUsage = () => {
