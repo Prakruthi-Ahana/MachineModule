@@ -13,7 +13,7 @@ export default function ProgramCompleteModal({setProgramComplete,programComplete
           <Modal.Title>magod_machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>Do you want to change status of program to completed 
+        <Modal.Body>Do you want to change status of program to completed ?
          </Modal.Body> 
 
         <Modal.Footer>

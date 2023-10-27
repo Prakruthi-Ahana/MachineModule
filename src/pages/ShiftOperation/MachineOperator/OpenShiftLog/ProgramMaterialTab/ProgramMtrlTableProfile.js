@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import React, { useMemo, useState } from "react";
 import { Table } from "react-bootstrap";
 import ShowUsedModal from "./ShowUsedModal";
 import AllModal from "../ProductionReportTab/MaterialUsageTab/AllModal";
 import ShowAllModal from "./ShowAllModal";
+import MarkAsUsedModal from "./MarkAsUsedModal";
+import axios from "axios";
+import { baseURL } from "../../../../../api/baseUrl";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
@@ -48,6 +50,30 @@ export default function ProgrmMatrlTableProfile({
   }
 
   console.log(isCheckboxchecked)
+
+  const[MarkasUsed, setMarkasUsed] = useState(false)
+
+  const handleMarkasUsedModal = () => {
+    setMarkasUsed(true)
+  }
+
+
+  const handleMarkasUsed = () => {
+    console.log("Enytering into body")
+    axios
+      .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
+        selectedMtrlTable: selectedMtrlTable,
+      })
+      .then(() => {
+        console.log("Request sent successfully");
+           })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+
+
  
   return (
     <div>
@@ -64,6 +90,7 @@ export default function ProgrmMatrlTableProfile({
                     <button
                       className="button-style mt-2 group-button mt-4 mb-2"
                       style={{ width: "90px", fontSize: "13px" }}
+                      onClick={handleMarkasUsedModal}
                     >
                       Mark as Used
                     </button>
@@ -72,7 +99,7 @@ export default function ProgrmMatrlTableProfile({
 
                 <div style={{ textAlign: "center" }} className="col-md-4">
                   <div>
-                    <button
+                 <button
                       className="button-style mt-2 group-button mt-4 mb-2"
                       style={{ width: "110px", fontSize: "13px" }}
                     >
@@ -157,6 +184,16 @@ export default function ProgrmMatrlTableProfile({
           allModal={allModal}
           setAllModal={setAllModal}
           resetData={resetData}
+          />
+        )
+      }
+
+      {
+        MarkasUsed && (
+          <MarkAsUsedModal
+          MarkasUsed={MarkasUsed}
+          setMarkasUsed={setMarkasUsed}
+          handleMarkasUsed={handleMarkasUsed}
           />
         )
       }
