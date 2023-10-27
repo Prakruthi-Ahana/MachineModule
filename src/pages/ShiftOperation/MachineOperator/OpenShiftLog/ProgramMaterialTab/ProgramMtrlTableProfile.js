@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { Table } from "react-bootstrap";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
   showTable,
+  selectedMtrlTable,
+  rowSelectMtrlTable
 }) {
+  
+
   return (
     <div>
       {showTable ? (
@@ -76,7 +80,7 @@ export default function ProgrmMatrlTableProfile({
               style={{ fontSize: "12px" }}
             >
               {afterloadProgram?.map((data, key) => (
-                <tr key={key}>
+                <tr onClick={()=>{rowSelectMtrlTable(data,key)}} className={key===selectedMtrlTable?.index? 'selcted-row-clr':'' }>
                   <td>{data.ShapeMtrlID}</td>
                   <td>{data.Para1}</td>
                   <td>{data.Para2}</td>

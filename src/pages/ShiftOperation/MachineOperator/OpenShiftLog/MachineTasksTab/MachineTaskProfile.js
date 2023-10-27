@@ -8,8 +8,9 @@ import { useState } from 'react';
 
 export default function MachineTaskProfile({selectedProgram,machineTaskData,machinetask}) {
 
+  console.log(selectedProgram)
+
   return (
-   
     <div
     className="col-md-12 mt-2"
     style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}

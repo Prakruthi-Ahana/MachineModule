@@ -9,7 +9,6 @@ import MachineOperator from "./pages/ShiftOperation/MachineOperator/MachineOpera
 import CallFile from "./pages/ShiftOperation/MachineOperator/OpenShiftLog/CallFile";
 import ServerInfo from "./pages/ServerInfo/ServerInfo";
 import PrintLable from "./pages/ShiftOperation/PrintLable/PrintLable";
-import StoppageList from "./pages/ShiftOperation/StoppageList/StoppageList";
 import { ToastContainer } from "react-toastify";
 
 
