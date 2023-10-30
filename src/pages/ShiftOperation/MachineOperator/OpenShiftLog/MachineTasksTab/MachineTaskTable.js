@@ -35,12 +35,22 @@ export default function MachineTaskTable({
     }
   };
 
+  console.log(selectedProgram)
   
   const handleSubmit = () => {
     afterLoadProgram();
     setAfterloadData(selectedProgram); 
+    axios
+    .post(baseURL + "/ShiftOperator/loadProgram", {
+      selectedProgram
+    })
+    .then((response) => {
+      console.log(response.data);
+    });
+    console.log("function called")
     setOpen(false);
   }
+
   const handleClose = () => {
     setOpen(false);
   }

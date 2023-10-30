@@ -73,6 +73,7 @@ export default function CallFile() {
       setAfterloadProgram={setAfterloadProgram}
       afterloadProgram={afterloadProgram}
       showTable={showTable}
+      selectedMachine={selectedMachine}
       />
       </div>
 

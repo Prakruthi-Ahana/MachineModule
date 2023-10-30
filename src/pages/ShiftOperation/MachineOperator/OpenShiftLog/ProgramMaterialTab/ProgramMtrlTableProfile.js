@@ -39,14 +39,11 @@ export default function ProgrmMatrlTableProfile({
  }
  
 
-
-
   const handleCheckBoxChange = () => {
     setIsCheckboxchecked(!isCheckboxchecked)
     if(isCheckboxchecked){
       setAllModal(true);
     }else{
-
       setShowusedModal(true)
     }
   }
