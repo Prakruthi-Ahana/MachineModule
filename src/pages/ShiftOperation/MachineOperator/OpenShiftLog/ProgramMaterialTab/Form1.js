@@ -4,8 +4,10 @@ import { useGlobalContext } from "../../../../../Context/Context";
 import GlobalModal from "../../GlobalModal";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { baseURL } from "../../../../../api/baseUrl";
+import axios from "axios";
 
-export default function Form1({ afterloadProgram, showTable, setAfterloadProgram }) {
+export default function Form1({ afterloadProgram, showTable, setAfterloadProgram,selectedMachine}) {
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
 
@@ -43,6 +45,19 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
       setLoadProgram(true);
     }
   };
+
+  const onclickofYes=()=>{
+    console.log("clicked yes in Load Material");
+    axios
+    .post(baseURL + "/ShiftOperator/loadMaterial", {
+      selectedMtrlTable,
+      MachineName:selectedMachine
+    })
+    .then((response) => {
+      console.log(response.data);
+    });
+    setLoadProgram(false);
+  }
 
   return (
     <>
@@ -211,8 +226,8 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
       <GlobalModal
       show={loadProgram}
       title="magod_machine"
-      content=<div>Do You wish to Load Material ID: <strong>23456</strong></div>
-      onYesClick={() => setLoadProgram(false)} 
+      content=<div>Do You wish to Load Material ID: <strong>{selectedMtrlTable.ShapeMtrlID}</strong> ?</div>
+      onYesClick={() => onclickofYes()} 
       onNoClick={() => setLoadProgram(false)} 
       onClose={handleClose}
       />

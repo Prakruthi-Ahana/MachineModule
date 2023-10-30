@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import React, { useMemo, useState } from "react";
 import { Table } from "react-bootstrap";
 import ShowUsedModal from "./ShowUsedModal";
@@ -35,19 +34,16 @@ export default function ProgrmMatrlTableProfile({
  }
  
 
-
-
   const handleCheckBoxChange = () => {
     setIsCheckboxchecked(!isCheckboxchecked)
     if(isCheckboxchecked){
       setAllModal(true);
     }else{
-
       setShowusedModal(true)
     }
   }
 
-  console.log(isCheckboxchecked)
+  console.log(selectedMtrlTable)
  
   return (
     <div>
