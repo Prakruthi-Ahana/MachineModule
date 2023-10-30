@@ -220,6 +220,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
         showTable={showTable}
         selectedMtrlTable={selectedMtrlTable}
         rowSelectMtrlTable={rowSelectMtrlTable}
+        setSelectedMtrlTable={setSelectedMtrlTable}
       />
 
 

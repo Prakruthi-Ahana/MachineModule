@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Table } from "react-bootstrap";
 import ShowUsedModal from "./ShowUsedModal";
 import AllModal from "../ProductionReportTab/MaterialUsageTab/AllModal";
@@ -46,7 +46,7 @@ export default function ProgrmMatrlTableProfile({
     }
   }
 
-  console.log(isCheckboxchecked)
+  console.log(afterloadProgram)
 
   const[MarkasUsed, setMarkasUsed] = useState(false)
 
@@ -156,7 +156,11 @@ export default function ProgrmMatrlTableProfile({
                   <td>
                     <input type="checkbox" checked={data.Rejected === 1} />
                   </td>
-                  <td></td>
+                  <td>
+                    <input
+                    
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>

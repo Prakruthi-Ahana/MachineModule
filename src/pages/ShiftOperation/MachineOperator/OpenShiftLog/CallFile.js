@@ -45,6 +45,16 @@ export default function CallFile() {
   //   afterLoadProgram();
   // }, []);
 
+  const[shiftSummaryData,setShiftSummaryData]=useState([])
+  const getShiftSummaryData = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/ShiftSummary",{selectshifttable})
+      .then((response) => {
+        console.log(response.data);
+        setShiftSummaryData(response.data);
+      })
+  };
+
 
   return (
     <>
@@ -54,6 +64,7 @@ export default function CallFile() {
       selectshifttable={selectshifttable}
       showTable={showTable}
       setShowTable={setShowTable}
+      getShiftSummaryData={getShiftSummaryData}
       />
       </div>
 
@@ -81,7 +92,9 @@ export default function CallFile() {
       <TabsFour
       selectshifttable={selectshifttable}
       afterLoadProgram={afterLoadProgram}
-      
+      getShiftSummaryData={getShiftSummaryData}
+      shiftSummaryData={shiftSummaryData}
+      setShiftSummaryData={setShiftSummaryData}
       />
 
      
