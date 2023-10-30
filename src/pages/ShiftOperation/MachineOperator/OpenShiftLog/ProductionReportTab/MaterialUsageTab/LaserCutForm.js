@@ -128,6 +128,7 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
                     type="checkbox"
                     className="col-md-2"
                     onChange={handleCheckBox}
+                    
                   />
                   <label
                     className="form-label col-md-1 mt-1"
