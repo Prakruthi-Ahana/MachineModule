@@ -8,7 +8,7 @@ import ProgramInfoForms from './ProductionReportTab/ProgramInfoForms';
 import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
 
-export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable}) {
+export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable,shiftSummaryData,setShiftSummaryData}) {
   
     const [key, setKey] = useState("mt");
 
@@ -116,6 +116,8 @@ export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable
        <Tab eventKey="ss" title="Shift Summary">
       <ShiftSummryTable
       selectshifttable ={selectshifttable}
+      shiftSummaryData={shiftSummaryData}
+      setShiftSummaryData={setShiftSummaryData}
       />
        </Tab>
       

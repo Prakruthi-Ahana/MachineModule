@@ -4,23 +4,9 @@ import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
 
 
-export default function ShiftSummryTable({selectshifttable}) {
+export default function ShiftSummryTable({selectshifttable,shiftSummaryData,setShiftSummaryData}) {
   
-  const[shiftSummaryData,setShiftSummaryData]=useState([])
-  const getShiftSummaryData = () => {
-    axios
-      .post(baseURL + "/ShiftOperator/ShiftSummary",{selectshifttable})
-      .then((response) => {
-        console.log(response.data);
-        setShiftSummaryData(response.data);
-      })
-  };
-
-  useEffect(()=>{
-    getShiftSummaryData();
-  },[selectshifttable])
-
-
+  
   return (
     <div>
       <div
