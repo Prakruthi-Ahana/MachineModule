@@ -380,17 +380,13 @@ Public Class MachineLog
                 MsgBox(ex.Message)
 
             End Try
-
-
-
-
-
         End If
     End Sub
+
     Private Function upDateMachineStatus() As Boolean
         With Machine.getCommand
             .CommandText = "UPDATE machine_data.machinestatus m " _
-                    & " SET m.`NCProgarmNo`=@NCProgarmNo, m.`TaskNo`=@TaskNo, m.`ProgramStartTime`=now(), " _
+                    & " SET m.`NCProgarmNo`=@NCProgarmNo, m.`TaskNo`=@TaskNo, m.`ProgramStartTime`=now(), " _   
                    & " m.mtrl_Code=@mtrl_Code,m.mtrlid='', m.mprocess=@mprocess , m.stopid=@stopid,m.SheetStartTime=now(),m.ProgMachineTime=0," _
                    & "  m.SheetMachineTime=0 WHERE m.`MachineName`=@MachineName"
             With .Parameters
