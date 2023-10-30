@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState, useSyncExternalStore } from "react";
 import { Table } from "react-bootstrap";
 import ShowUsedModal from "./ShowUsedModal";
 import AllModal from "../ProductionReportTab/MaterialUsageTab/AllModal";
@@ -6,14 +6,16 @@ import ShowAllModal from "./ShowAllModal";
 import MarkAsUsedModal from "./MarkAsUsedModal";
 import axios from "axios";
 import { baseURL } from "../../../../../api/baseUrl";
+import { toast } from "react-toastify";
+import { uncountability } from "i/lib/methods";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
   setAfterloadProgram,
   showTable,
   selectedMtrlTable,
-  rowSelectMtrlTable
-
+  rowSelectMtrlTable,
+  setSelectedMtrlTable
 }) {
 
   const [showusedModal, setShowusedModal] = useState(false);
@@ -46,7 +48,6 @@ export default function ProgrmMatrlTableProfile({
     }
   }
 
-  console.log(afterloadProgram)
 
   const[MarkasUsed, setMarkasUsed] = useState(false)
 
@@ -69,9 +70,59 @@ export default function ProgrmMatrlTableProfile({
       });
   };
 
+  console.log("Data I m fetching", selectedMtrlTable)
 
 
- 
+  const [RejectedReasonState, setRejectedReasonState] = useState({});
+
+  // const onChangeInput = (index , field, value) => {
+  //   if (Array.isArray(selectedMtrlTable)) {
+  //     const updatedRejectedReason = [...selectedMtrlTable];
+  //   updatedRejectedReason[index] = {
+  //     ...updatedRejectedReason[index],
+  //     [field] : value
+  //   }
+  //   setSelectedMtrlTable(updatedRejectedReason)
+  //   setRejectedReasonState(updatedRejectedReason)
+  //   }
+   
+  // };
+
+  // const [rejectedReasonStates, setRejectedReasonStates] = useState({});
+
+  // Update the onChangeInput function
+  const onChangeInput = (key, e) => {
+      const { value } = e.target;
+      setRejectedReasonState(prevState => ({
+          ...prevState,
+          [key]: value
+      }));
+  }
+
+  
+
+  const UpdateRejectReason = () => {
+    
+      axios.post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial",{
+      
+        RejectedReason:RejectedReasonState
+      })
+      .then((response) => {
+              toast.success("Rejected Reason Saved", {
+                position: toast.POSITION.TOP_CENTER,
+              });
+            }).catch((error) => {
+              toast.error("An error occurred while updating reject reason", {
+                position: toast.POSITION.TOP_CENTER,
+              });
+            });
+            setRejectedReasonState("")
+
+  }
+
+  console.log("Check", selectedMtrlTable)
+
+
   return (
     <div>
       {showTable ? (
@@ -99,6 +150,7 @@ export default function ProgrmMatrlTableProfile({
                  <button
                       className="button-style mt-2 group-button mt-4 mb-2"
                       style={{ width: "110px", fontSize: "13px" }}
+                      onClick={UpdateRejectReason}
                     >
                       Mark as Rejected
                     </button>
@@ -106,7 +158,8 @@ export default function ProgrmMatrlTableProfile({
                 </div>
 
                 <div className="col-md-3 row mt-3">
-                  <input type="checkbox" className="col-md-2"
+                  <input type="checkbox"
+                  className="col-md-2"
                   onChange={handleCheckBoxChange}
                   />
                   <label
@@ -157,9 +210,14 @@ export default function ProgrmMatrlTableProfile({
                     <input type="checkbox" checked={data.Rejected === 1} />
                   </td>
                   <td>
-                    <input
-                    
-                    />
+                 <div key={data.index}>
+                 <input
+                 className="table-cell-editor"
+                 style={{ textAlign: "center", width: "150px" }}
+                 value={RejectedReasonState[key] || ''} // Bind to the specific state for this row
+                 onChange={(e) => onChangeInput(key, e)}
+             />
+                </div>
                   </td>
                 </tr>
               ))}
