@@ -35,7 +35,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
   },[afterloadProgram[0]])
 
   const loadProgramSubmit = () => {
-    if(selectedMtrlTable.Used===1 || selectedMtrlTable.Rejected===1 )
+    if(selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1 )
     {
       toast.error('Cannot Load the Material that is Used or Rejected', {
         position: toast.POSITION.TOP_CENTER
@@ -220,6 +220,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
         showTable={showTable}
         selectedMtrlTable={selectedMtrlTable}
         rowSelectMtrlTable={rowSelectMtrlTable}
+        setSelectedMtrlTable={setSelectedMtrlTable}
       />
 
 
