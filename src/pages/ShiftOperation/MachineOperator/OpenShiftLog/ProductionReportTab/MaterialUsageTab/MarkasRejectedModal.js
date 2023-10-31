@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 import ReasonForRejectModal from './ReasonForRejectModal';
 
-export default function MarkasRejectedModal({setMarkasRejected,markasRejected}) {
+export default function MarkasRejectedModal({setMarkasRejected,markasRejected, handleMarkasUsed}) {
     const [reasonForReject, setReasonForReject]=useState(false);
 
     const handleClose=()=>{
@@ -13,6 +13,7 @@ export default function MarkasRejectedModal({setMarkasRejected,markasRejected}) 
             const reasonSubmit=()=>{
                 setReasonForReject(true);
                 setMarkasRejected(false);
+                handleMarkasUsed();
 
             }
   return (
@@ -22,7 +23,7 @@ export default function MarkasRejectedModal({setMarkasRejected,markasRejected}) 
           <Modal.Title>magod_machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>Material once Marked as Rejected cannot br used again.
+        <Modal.Body>Material once Marked as Used cannot be used again.
              Are you sure?
          </Modal.Body> 
 

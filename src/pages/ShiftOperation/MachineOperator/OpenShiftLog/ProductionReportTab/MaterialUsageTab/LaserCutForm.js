@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Table } from "react-bootstrap";
 import MarkasRejectedModal from "./MarkasRejectedModal";
 import RowRejectedModal from "./RowRejectedModal";
@@ -6,6 +6,8 @@ import ShowUnusedModal from "./ShowUnusedModal";
 import AllModal from "./AllModal";
 import axios from "axios";
 import { baseURL } from "../../../../../../api/baseUrl";
+import { toast } from "react-toastify";
+import RejectModal from "./RejectModal";
 // import AltModal from '../../../AltModal';
 
 export default function LaserCutForm({ selectProductionReport, openTable }) {
@@ -14,31 +16,16 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
   const [rowsRejected, setRowsRejected] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
-  //  const [modalData, setModalData] = useState({ title: '', content: '' });
 
-  // const handleclickmarkused = () => {
-  //   setOpenModal(true);
-  // };
-
-  // const markasused = () => {
-  //   setOpenModal(false);
-  // };
-
-  // const handleClose = () => {
-  //   setOpenModal(false);
-  // };
-
-  const rejectSubmit = () => {
-    setMarkasRejected(true);
+  const handleRejectModal = () => {
+    setRowsRejected(true);
   };
 
   const handlemarkasUsed = () => {
-    setMarkasRejected(true)
-  }
+    setMarkasRejected(true);
+  };
 
-
- 
-  console.log("Laser Data", selectProductionReport);
+  // console.log("Laser Data", selectProductionReport);
 
   const selectProductionReportData = selectProductionReport?.Ncid;
   const [showUnused, setShowUnused] = useState(false);
@@ -87,7 +74,62 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
     MaterialUsage();
   }, [selectProductionReport]);
 
-  console.log("Testing data", ProductionReportData);
+  const [selectdefaultRow, setSelectdefaultRow] = useState({});
+
+  const initialRowSelection = (item, index) => {
+    setSelectdefaultRow({ ...item, index });
+  };
+  useMemo(() => {
+    setSelectdefaultRow({ ...selectProductionReport[0], index: 0 });
+  }, [selectProductionReport[0]]);
+
+  const handleMarkasUsed = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/markAsUsedProductionReport", {
+        selectdefaultRow,
+      })
+      .then(() => {
+        console.log("requsted posted successfully");
+        console.log(selectdefaultRow);
+        MaterialUsage();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const [RejecteReasonFun, setRejectReasonFun] = useState({});
+
+  const onChangefield = (key, e) => {
+    const { value } = e.target;
+    setRejectReasonFun((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
+
+  const valueSepertor = Object.values(RejecteReasonFun);
+  const newReason = valueSepertor.join(" ");
+
+  const UpdateRejectedReason = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/markAsRejectedProductionReport", {
+        selectdefaultRow,
+        RejectedReason: newReason,
+      })
+      .then(() => {
+        console.log("RejectReason Posted");
+        toast.success("Rejected Reason Saved", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        MaterialUsage();
+      })
+      .catch((err) => {
+        toast.error("An error occurred while updating reject reason", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      });
+  };
 
   return (
     <div>
@@ -116,7 +158,7 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
                     <button
                       className="button-style mt-2 group-button mt-4 mb-2"
                       style={{ width: "110px", fontSize: "13px" }}
-                      onClick={rejectSubmit}
+                      onClick={handleRejectModal}
                     >
                       Mark as Rejected
                     </button>
@@ -128,13 +170,12 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
                     type="checkbox"
                     className="col-md-2"
                     onChange={handleCheckBox}
-                    
                   />
                   <label
                     className="form-label col-md-1 mt-1"
                     style={{ whiteSpace: "nowrap", marginLeft: "-6px" }}
                   >
-                    <b>show unused</b>{" "}
+                    <b>show unused</b>
                   </label>
                 </div>
               </div>
@@ -144,7 +185,7 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
       </div>
 
       <div className="col-md-12">
-        {openTable  ? (
+        {openTable ? (
           <div
             style={{
               overflowY: "scroll",
@@ -154,7 +195,7 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
           >
             <Table striped className="table-data border">
               <thead
-                className="tableHeaderBGColor"
+                className="tableHeaderBGColor table-space"
                 style={{ fontSize: "12px" }}
               >
                 <tr>
@@ -166,15 +207,15 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
                   <th style={{ whiteSpace: "nowrap" }}>Rejection Reason</th>
                 </tr>
               </thead>
-              <tbody className="tablebody">
-                {ProductionReportData.map((data, index) => (
+              <tbody className="tablebody table-space">
+                {ProductionReportData?.map((data, key) => (
                   <tr
+                    onClick={() => {
+                      initialRowSelection(data, key);
+                    }}
                     className={
-                      index === selectProductionReport?.index
-                        ? "selected-row-clr"
-                        : ""
+                      key === selectdefaultRow?.index ? "selcted-row-clr" : ""
                     }
-                    key={index}
                   >
                     <td>{data.ShapeMtrlID}</td>
                     <td>{data.Para1}</td>
@@ -186,7 +227,16 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
                       <input type="checkbox" checked={data.Rejected === 1} />
                     </td>
 
-                    <td>{data.RejectionReason}</td>
+                    <td>
+                      <div key={data.index}>
+                        <input
+                          className="table-cell-editor"
+                          style={{ textAlign: "center", width: "150px" }}
+                          value={RejecteReasonFun[key] || ""} // Bind to the specific state for this row
+                          onChange={(e) => onChangefield(key, e)}
+                        />
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -195,13 +245,13 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
         ) : null}
       </div>
 
-      {
-        markasRejected &&
+      {markasRejected && (
         <MarkasRejectedModal
           markasRejected={markasRejected}
           setMarkasRejected={setMarkasRejected}
+          handleMarkasUsed={handleMarkasUsed}
         />
-      }
+      )}
 
       {rowsRejected && (
         <RowRejectedModal
@@ -215,6 +265,13 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
           showUnused={showUnused}
           setShowUnused={setShowUnused}
           filterUnusedData={filterUnusedData}
+        />
+      )}
+      {rowsRejected && (
+        <RejectModal
+          rowsRejected={rowsRejected}
+          setRowsRejected={setRowsRejected}
+          handleRejectedRow={UpdateRejectedReason}
         />
       )}
 

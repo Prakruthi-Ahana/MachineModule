@@ -9,7 +9,7 @@ export default function OpenShiftLogForm({
   finalDay1,
   selectshifttable,
   setShowTable,
-  showTable
+  showTable,getShiftSummaryData
 }) {
   const [errorForm, setErrorForm] = useState(false);
   const [isInputVisible, setInputVisible] = useState(false);
@@ -29,7 +29,12 @@ export default function OpenShiftLogForm({
 
   const refreshSubmit = () => {
     setInputVisible(false);
+    getShiftSummaryData();
   };
+
+  useEffect(()=>{
+    getShiftSummaryData();
+  },[selectshifttable])
 
   let array = finalDay1.split("/");
   let finalDay = array[0] + "/" + array[1];
