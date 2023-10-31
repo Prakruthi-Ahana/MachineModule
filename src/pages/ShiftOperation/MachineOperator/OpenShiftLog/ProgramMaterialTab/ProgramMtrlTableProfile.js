@@ -101,28 +101,27 @@ export default function ProgrmMatrlTableProfile({
 
   
 
-  const UpdateRejectReason = () => {
-    
-      axios.post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial",{
-      
-        RejectedReason:RejectedReasonState
-      })
-      .then((response) => {
-              toast.success("Rejected Reason Saved", {
-                position: toast.POSITION.TOP_CENTER,
-              });
-            }).catch((error) => {
-              toast.error("An error occurred while updating reject reason", {
-                position: toast.POSITION.TOP_CENTER,
-              });
-            });
-            setRejectedReasonState("")
+  console.log("Check", RejectedReasonState[2])
 
-  }
+let newReason=RejectedReasonState[2];
 
-  console.log("Check", selectedMtrlTable)
+const UpdateRejectReason = () => {
+  axios.post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial",{
+    selectedMtrlTable,
+    RejectedReason:newReason
+  })
+  .then((response) => {
+          toast.success("Rejected Reason Saved", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        }).catch((error) => {
+          toast.error("An error occurred while updating reject reason", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        });
+        setRejectedReasonState("")
 
-
+}
   return (
     <div>
       {showTable ? (
