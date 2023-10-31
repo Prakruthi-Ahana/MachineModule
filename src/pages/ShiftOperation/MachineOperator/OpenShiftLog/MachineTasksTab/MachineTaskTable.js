@@ -35,7 +35,6 @@ export default function MachineTaskTable({
     }
   };
 
-  console.log(selectedProgram)
   
   const handleSubmit = () => {
     afterLoadProgram();
