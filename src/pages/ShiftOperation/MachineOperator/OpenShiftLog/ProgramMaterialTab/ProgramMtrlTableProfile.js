@@ -8,6 +8,7 @@ import axios from "axios";
 import { baseURL } from "../../../../../api/baseUrl";
 import { toast } from "react-toastify";
 import { uncountability } from "i/lib/methods";
+import MarkAsRejected from "./MarkAsRejected";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
@@ -15,7 +16,7 @@ export default function ProgrmMatrlTableProfile({
   showTable,
   selectedMtrlTable,
   rowSelectMtrlTable,
-  setSelectedMtrlTable
+  setSelectedMtrlTable,
 }) {
 
   const [showusedModal, setShowusedModal] = useState(false);
@@ -50,20 +51,27 @@ export default function ProgrmMatrlTableProfile({
 
 
   const[MarkasUsed, setMarkasUsed] = useState(false)
+  const[MarkasReject, setMarkasReject] = useState(false)
 
   const handleMarkasUsedModal = () => {
     setMarkasUsed(true)
   }
 
+  const handleMarkasRejected = () => {
+    setMarkasReject(true)
+  }
+
+
 
   const handleMarkasUsed = () => {
-    console.log("Enytering into body")
+    
     axios
       .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
         selectedMtrlTable: selectedMtrlTable,
       })
       .then(() => {
         console.log("Request sent successfully");
+      
            })
       .catch((err) => {
         console.error(err);
@@ -75,53 +83,45 @@ export default function ProgrmMatrlTableProfile({
 
   const [RejectedReasonState, setRejectedReasonState] = useState({});
 
-  // const onChangeInput = (index , field, value) => {
-  //   if (Array.isArray(selectedMtrlTable)) {
-  //     const updatedRejectedReason = [...selectedMtrlTable];
-  //   updatedRejectedReason[index] = {
-  //     ...updatedRejectedReason[index],
-  //     [field] : value
-  //   }
-  //   setSelectedMtrlTable(updatedRejectedReason)
-  //   setRejectedReasonState(updatedRejectedReason)
-  //   }
-   
-  // };
-
-  // const [rejectedReasonStates, setRejectedReasonStates] = useState({});
-
-  // Update the onChangeInput function
   const onChangeInput = (key, e) => {
-      const { value } = e.target;
-      setRejectedReasonState(prevState => ({
-          ...prevState,
-          [key]: value
-      }));
-  }
-
+    const { value } = e.target;
+    setRejectedReasonState(prevState => ({
+      ...prevState,
+      [key]: value
+    }));
+  };
   
-
-  console.log("Check", RejectedReasonState[2])
-
-let newReason=RejectedReasonState[2];
-
-const UpdateRejectReason = () => {
-  axios.post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial",{
-    selectedMtrlTable,
-    RejectedReason:newReason
-  })
-  .then((response) => {
-          toast.success("Rejected Reason Saved", {
-            position: toast.POSITION.TOP_CENTER,
-          });
-        }).catch((error) => {
-          toast.error("An error occurred while updating reject reason", {
-            position: toast.POSITION.TOP_CENTER,
-          });
+  // Get only the values from RejectedReasonState
+  const valuesArray = Object.values(RejectedReasonState);
+  
+  // Concatenate the values into a single string
+  const newReason = valuesArray.join(' '); // Change the separator as needed
+  
+  const UpdateRejectReason = () => {
+    if (!Object.values(RejectedReasonState).some(reason => reason.trim() !== '')) {
+      toast.error("Rejected Reason is empty", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return; // Prevent further execution if the reason is empty
+    }
+  
+    axios.post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial", {
+      selectedMtrlTable,
+      RejectedReason: newReason,
+    })
+      .then((response) => {
+        toast.success("Rejected Reason Saved", {
+          position: toast.POSITION.TOP_CENTER,
         });
-        setRejectedReasonState("")
-
-}
+        console.log("RejectedReason eeee", newReason);
+      })
+      .catch((error) => {
+        toast.error("An error occurred while updating reject reason", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      });
+  }
+  
   return (
     <div>
       {showTable ? (
@@ -149,7 +149,7 @@ const UpdateRejectReason = () => {
                  <button
                       className="button-style mt-2 group-button mt-4 mb-2"
                       style={{ width: "110px", fontSize: "13px" }}
-                      onClick={UpdateRejectReason}
+                      onClick={handleMarkasRejected}
                     >
                       Mark as Rejected
                     </button>
@@ -253,6 +253,16 @@ const UpdateRejectReason = () => {
           setMarkasUsed={setMarkasUsed}
           handleMarkasUsed={handleMarkasUsed}
           />
+        )
+      }
+      {
+        MarkasReject && (
+        <MarkAsRejected
+        MarkasReject={MarkasReject}
+        setMarkasReject={setMarkasReject}
+        handleMarkasRejected={UpdateRejectReason}
+        
+        />
         )
       }
       </div>

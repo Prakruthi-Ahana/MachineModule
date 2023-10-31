@@ -2,25 +2,25 @@ import React from 'react'
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 
-export default function MarkAsUsedModal({MarkasUsed, setMarkasUsed, handleMarkasUsed}) {
+export default function MarkAsRejected({MarkasReject, setMarkasReject, handleMarkasRejected}) {
 
     const handleClose=()=>{
-        setMarkasUsed(false);
+        setMarkasReject(false);
             }
 
             const handleYesClick = () => {
-                handleMarkasUsed();
-                setMarkasUsed(false); 
+                handleMarkasRejected();
+                setMarkasReject(false); 
             }
 
   return (
     <div>
-    <Modal show={MarkasUsed} onHide={handleClose}>
+    <Modal show={MarkasReject} onHide={handleClose}>
     <Modal.Header closeButton>
       <Modal.Title>magod_machine</Modal.Title>
     </Modal.Header>
 
-    <Modal.Body>Material once Marked as Used cannot be used again.
+    <Modal.Body>Material once Marked as Rejected cannot be used again.
          Are you sure?
      </Modal.Body> 
 
