@@ -104,7 +104,7 @@ export default function ProgrmMatrlTableProfile({
   const UpdateRejectReason = () => {
     
       axios.post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial",{
-      
+        ...rowSelectMtrlTable,
         RejectedReason:RejectedReasonState
       })
       .then((response) => {
@@ -120,7 +120,7 @@ export default function ProgrmMatrlTableProfile({
 
   }
 
-  console.log("Check", selectedMtrlTable)
+  console.log("Check", rowSelectMtrlTable)
 
 
   return (
