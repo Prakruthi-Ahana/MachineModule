@@ -51,7 +51,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
         className="col-md-12"
         style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
       >
-        <Table striped className="table-data border">
+        <Table striped className="table-data border table-space">
           <thead className="tableHeaderBGColor" style={{ fontSize: "13px" }}>
             <tr>
               <th style={{ whiteSpace: "nowrap" }}>Program No</th>
