@@ -1,5 +1,4 @@
-import Axios from "axios";
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { baseURL } from "../api/baseUrl";
 
@@ -16,11 +15,15 @@ const AuthProvider = ({ children }) => {
 const[NcId,setNcId]=useState('')
 const [selectedProgram, setSelectedProgram] = useState({});
  const[afterloadData,setAfterloadData]=useState({}) 
+ const[SheetId,setSheetId]=useState('');
+ const[FormattedDate , setFormattedDate] = useState('');
+
   
   return (
     <AppContext.Provider
       value={{
         NcId,setNcId,selectedProgram, setSelectedProgram,afterloadData,setAfterloadData
+        ,SheetId,setSheetId,FormattedDate , setFormattedDate
       }}
     >
       {children}

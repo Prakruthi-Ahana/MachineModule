@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Table } from 'react-bootstrap';
 
 
@@ -64,9 +64,6 @@ export default function MarkAsUsedForm() {
                 <th>Used</th>
                 <th>Rejected</th>
                 <th style={{whiteSpace:'nowrap'}}>Rejection Reason</th>
-               
-
-                
 
               </tr>
             </thead>
