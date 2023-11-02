@@ -4,6 +4,8 @@ import { Table } from "react-bootstrap";
 import {baseURL} from "../../../../../../api/baseUrl"
 import { useGlobalContext } from "../../../../../../Context/Context";
 import { useEffect } from "react";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function ShowDfxForm() {
 
@@ -38,6 +40,32 @@ export default function ShowDfxForm() {
    },[partDetailsData[0]])
 
 
+   const onChnageReject = (e, key, valueQtyRejected) => {
+    const updatedRow = { ...partDetailsRowSelect };
+    updatedRow.QtyRejected = e.target.value;
+    setPartDetailsRowSelect(updatedRow);
+  };
+
+  const remarksChange = (e, key, valueRemarks) => {
+    const updatedRow = { ...partDetailsRowSelect };
+    updatedRow.Remarks = e.target.value;
+    setPartDetailsRowSelect(updatedRow);
+  };
+
+  const savePartDetails=()=>{
+  console.log(partDetailsRowSelect);
+  axios
+  .post(baseURL + "/ShiftOperator/SaveprogramDetails", {
+    partDetailsRowSelect,
+  })
+  .then((response) => {
+    toast.success('Data Saved Successfully', {
+      position: toast.POSITION.TOP_CENTER
+    });
+  });
+  }
+
+
   return (
     <div>
       <div className="form-bg ">
@@ -52,6 +80,7 @@ export default function ShowDfxForm() {
             <button
               className="button-style group-button"
               style={{ fontSize: "13px", width: "80px", marginTop: "10px" }}
+              onClick={savePartDetails}
             >
               Save
             </button>
@@ -105,8 +134,22 @@ export default function ShowDfxForm() {
                   <td>{value?.DwgName}</td>
                   <td>{value?.TotQtyNested}</td>
                   <td>{value?.QtyNested}</td>
-                  <td>{value?.QtyRejected}</td>
-                  <td>{value?.Remarks}</td>
+                  <td>
+                    <input
+                    className="table-cell-editor"
+                     defaultValue={value?.QtyRejected}
+                     onChange={(e) =>
+                      onChnageReject(e, key,value.QtyRejected)
+                    }
+                    />
+                  </td>
+                  <td>
+                    <input 
+                    className="table-cell-editor"
+                    defaultValue={value?.Remarks}
+                    onChange={(e) => remarksChange(e, key, value.Remarks)}
+                    />
+                  </td>
                 </tr>
               ))
             )}
