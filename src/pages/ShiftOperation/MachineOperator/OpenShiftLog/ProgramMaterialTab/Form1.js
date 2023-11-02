@@ -3,18 +3,17 @@ import ProgramMtrlTableProfile from "./ProgramMtrlTableProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
 import GlobalModal from "../../GlobalModal";
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
+import MaterialLoadModal from "./MaterialLoadModal";
 
 export default function Form1({ afterloadProgram, showTable, setAfterloadProgram,selectedMachine}) {
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
 
-  const handleSubmit = () => {
-    setmismatchModal(true);
-  };
-
+  const{SheetId,setSheetId}=useGlobalContext();
+  const{FormattedDate , setFormattedDate} = useGlobalContext();
   const handleClose=()=>{
     setLoadProgram(false);
     setmismatchModal(false)
@@ -55,8 +54,23 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
     })
     .then((response) => {
       console.log(response.data);
+      const currentDate = new Date();
+      const options = {
+        day: '2-digit',
+        month: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      };
+      const formattedDateValue = currentDate.toLocaleDateString('en-GB', options)
+        .replace(/\//, '/')
+        .replace(',', '');
+        setFormattedDate(formattedDateValue);
+        
+
+    
     });
     setLoadProgram(false);
+    setSheetId(selectedMtrlTable.ShapeMtrlID)
   }
 
   return (
@@ -221,19 +235,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
         selectedMtrlTable={selectedMtrlTable}
         rowSelectMtrlTable={rowSelectMtrlTable}
         setSelectedMtrlTable={setSelectedMtrlTable}
-      
       />
-
-
-      <GlobalModal
-      show={loadProgram}
-      title="magod_machine"
-      content=<div>Do You wish to Load Material ID: <strong>{selectedMtrlTable.ShapeMtrlID}</strong> ?</div>
-      onYesClick={() => onclickofYes()} 
-      onNoClick={() => setLoadProgram(false)} 
-      onClose={handleClose}
-      />
-
 
       <GlobalModal
       show={mismatchModal}
@@ -242,6 +244,15 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
       onYesClick={() => setmismatchModal(false)} 
       onNoClick={() => setmismatchModal(false)} 
       onClose={handleClose}
+      />
+
+      <MaterialLoadModal
+       loadProgram={loadProgram}
+       setLoadProgram={setLoadProgram}
+       selectedMtrlTable={selectedMtrlTable}
+       onclickofYes={onclickofYes}
+
+
       />
 
 

@@ -23,23 +23,38 @@ export default function CallFile() {
 
 
   const{NcId,setNcId}=useGlobalContext();
-
   const[afterloadProgram,setAfterloadProgram]=useState([])
-
   const [showTable, setShowTable] = useState(true);
- 
 
-  const afterLoadProgram=()=>{
+    const{selectedMtrlTable , setSelectedMtrlTable}=useGlobalContext(); 
+  
+  const [formattedDate, setFormattedDate] = useState(''); // State to store the formatted date and time for the current machine
+
+  const afterLoadProgram = () => {
     axios
-    .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
-      NCId: NcId,
-    })
-    .then((response) => {
-      console.log(response.data);
-      setAfterloadProgram(response.data);
-      setShowTable(true)
-    });
+      .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+        NCId: NcId,
+      })
+      .then((response) => {
+        console.log(response.data);
+        setAfterloadProgram(response.data);
+        setShowTable(true);
+
+        const currentDate = new Date();
+        const options = {
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        };
+        const formattedDateValue = currentDate.toLocaleDateString('en-GB', options)
+          .replace(/\//, '/')
+          .replace(',', '');
+
+        setFormattedDate(formattedDateValue); // Set the formatted date and time for the current machine
+      });
   }
+  console.log(afterloadProgram.NcId)
 
   // useEffect(() => {
   //   afterLoadProgram();
@@ -76,7 +91,8 @@ export default function CallFile() {
       finalDay1={finalDay1}
       date={date}
       showTable={showTable}
-      
+      formattedDate={formattedDate}
+      selectedMtrlTable={selectedMtrlTable}
       />
       </div>
       <div className='col-md-4'>
@@ -96,7 +112,6 @@ export default function CallFile() {
       shiftSummaryData={shiftSummaryData}
       setShiftSummaryData={setShiftSummaryData}
       />
-
      
       </div>
       

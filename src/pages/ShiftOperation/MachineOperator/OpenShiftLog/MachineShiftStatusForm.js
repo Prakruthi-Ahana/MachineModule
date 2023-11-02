@@ -7,10 +7,15 @@ export default function MachineShiftStatusForm({
   selectshifttable,
   Shift,
   finalDay1,
+  formattedDate,
   date,
   showTable,
+
+  
 }) {
-  const { selectedProgram, afterloadData } = useGlobalContext();
+  const { selectedProgram, afterloadData, SheetId , FormattedDate} = useGlobalContext();
+
+  console.log("Dsdsds", FormattedDate )
 
   var count = 0;
   const [isInputVisible, setInputVisible] = useState(false);
@@ -46,6 +51,8 @@ export default function MachineShiftStatusForm({
   const handleShiftIncharge = (e) => {
     setChangedOperator(e.target.value);
   };
+
+
 
   return (
     <>
@@ -146,9 +153,8 @@ export default function MachineShiftStatusForm({
                 </b>
               </div>
               <div style={{ marginLeft: "15px" }}>
-                {" "}
-                <b>Start Time : </b>
-              </div>
+              <b>Start Time:  {showTable && afterloadData?  formattedDate : ""}</b>
+            </div>
 
               <div className="mb-3" style={{ color: "", marginLeft: "15px" }}>
                 <b>Running For :</b>
@@ -176,11 +182,11 @@ export default function MachineShiftStatusForm({
             <div className="d-flex mx-2">
               <div style={{ width: "auto", textAlign: "left" }}>
                 <div style={{ marginLeft: "10px" }}>
-                  <b>Sheet Id : </b>
+                  <b>Sheet Id : {SheetId}</b>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
                   {" "}
-                  <b>Start Time : </b>
+                  <b>Start Time : {FormattedDate} </b>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
                   <b>Running For : </b>

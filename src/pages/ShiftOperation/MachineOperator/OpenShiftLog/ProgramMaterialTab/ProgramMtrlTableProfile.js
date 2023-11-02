@@ -1,4 +1,4 @@
-import React, { useState, useSyncExternalStore } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { Table } from "react-bootstrap";
 import ShowUsedModal from "./ShowUsedModal";
 import AllModal from "../ProductionReportTab/MaterialUsageTab/AllModal";
@@ -9,6 +9,7 @@ import { baseURL } from "../../../../../api/baseUrl";
 import { toast } from "react-toastify";
 import { uncountability } from "i/lib/methods";
 import MarkAsRejected from "./MarkAsRejected";
+import { useGlobalContext } from "../../../../../Context/Context";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
@@ -18,6 +19,7 @@ export default function ProgrmMatrlTableProfile({
   rowSelectMtrlTable,
   setSelectedMtrlTable,
 }) {
+
 
   const [showusedModal, setShowusedModal] = useState(false);
   const [allModal, setAllModal]=useState(false);
@@ -121,6 +123,8 @@ export default function ProgrmMatrlTableProfile({
         });
       });
   }
+
+  
   
   return (
     <div>

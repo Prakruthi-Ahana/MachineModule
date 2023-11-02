@@ -13,8 +13,7 @@ export default function MachineTaskTable({
   selectshifttable,
   getMachinetaskdata,
   afterLoadProgram,
-  setShowTable,
-  showTable
+
 }) {
 
   const { NcId, setNcId, selectedProgram, setSelectedProgram,afterloadData,setAfterloadData } =
@@ -27,8 +26,10 @@ export default function MachineTaskTable({
   const [ErrorshowModal, setErrorshowModal] = useState(false)
 
 
+
   const openModal = () => {
     if (isDataDisplayed) {
+     
       setOpen(true); // Open the modal
     } else {
       setErrorshowModal(true); // Display the error message

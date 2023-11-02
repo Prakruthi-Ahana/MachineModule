@@ -9,7 +9,6 @@ export default function ShowUsedModal({showusedModal,setShowusedModal, filterUnu
              }
 
              const handleOkClick = () => {
-               // Call the filterUnusedData callback to filter the data
                filterUnusedData();
                setShowusedModal(false);
            }
