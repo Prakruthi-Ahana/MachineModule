@@ -1,11 +1,30 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
+import { baseURL } from '../../../../../api/baseUrl';
 
-export default function ProgramCompleteModal({setProgramComplete,programComplete}) {
+export default function ProgramCompleteModal({setProgramComplete,programComplete,selectProductionReport}) {
     const handleClose=()=>{
         setProgramComplete(false);
     }
+
+    const onClickYes=()=>{
+      // console.log(selectProductionReport);
+      axios
+      .post(baseURL + "/ShiftOperator/programCompleted", {
+        selectProductionReport
+      })
+      .then((response) => {
+        setProgramComplete(false);
+        toast.success('Data Saved Successfully', {
+          position: toast.POSITION.TOP_CENTER
+        });
+      });
+    }
+
   return (
     <div>
       <Modal show={programComplete} onHide={handleClose}>
@@ -18,6 +37,7 @@ export default function ProgramCompleteModal({setProgramComplete,programComplete
 
         <Modal.Footer>
           <Button variant="primary" 
+          onClick={onClickYes}
         >
            Yes
           </Button>

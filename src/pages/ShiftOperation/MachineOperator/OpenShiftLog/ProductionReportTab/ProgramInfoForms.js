@@ -3,6 +3,8 @@ import MaterialAndPartsTabs from "./MaterialAndPartsTabs";
 import { Table } from "react-bootstrap";
 import LoadProgramInfoModal from "./LoadProgramInfoModal";
 import ProgramCompleteModal from "./ProgramCompleteModal";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function ProgramInfoForms({ getMachinetaskdata }) {
   const [loadProgramInfo, setloadProgramInfo] = useState(false);
@@ -33,9 +35,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
     }
   }, [getMachinetaskdata, selectProductionReport, selectProductionReportFun]);
 
-  console.log("velmkvefve", getMachinetaskdata)
 
- 
 
   const handleRefresh = () => {
     setOpenTable(false)
@@ -68,7 +68,6 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
                     <td>{item.NCProgramNo}</td>
                     <td>{item.TaskNo}</td>
                     <td>{item.cust_name}</td>
-                   
                   </tr>
                 </>
               );
@@ -209,6 +208,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
         <ProgramCompleteModal
           programComplete={programComplete}
           setProgramComplete={setProgramComplete}
+          selectProductionReport={selectProductionReport}
         />
 
     </div>
