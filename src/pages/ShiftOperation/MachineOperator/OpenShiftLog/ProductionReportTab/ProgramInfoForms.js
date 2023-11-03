@@ -87,7 +87,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
               height:"270px"
             }}
           >
-            <p style={{ textAlign:"center"}}>
+            <p style={{ textAlign:"center", paddingTop:"10px"}}>
               <b>Process Info </b>
             </p>
 
@@ -125,7 +125,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
               height:"270px"
             }}
           >
-            <p style={{textAlign:"center"}}>
+            <p style={{textAlign:"center",paddingTop:"10px"}}>
               <b>Production Info </b>
             </p>
 
