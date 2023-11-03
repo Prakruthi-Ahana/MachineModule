@@ -13,10 +13,11 @@ export default function MachineShiftStatusForm({
 
   
 }) {
-  const { selectedProgram, afterloadData, SheetId , FormattedDate} = useGlobalContext();
+  const { selectedProgram, afterloadData, SheetId , FormattedDate, FormattedTime}  = useGlobalContext();
 
-  console.log("Dsdsds", FormattedDate )
+  console.log("Dsdsds", FormattedTime )
 
+ 
   var count = 0;
   const [isInputVisible, setInputVisible] = useState(false);
 
@@ -157,7 +158,7 @@ export default function MachineShiftStatusForm({
             </div>
 
               <div className="mb-3" style={{ color: "", marginLeft: "15px" }}>
-                <b>Running For :</b>
+                <b>Running For :  </b>
               </div>
             </div>
           </div>
@@ -189,7 +190,7 @@ export default function MachineShiftStatusForm({
                   <b>Start Time : {FormattedDate} </b>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
-                  <b>Running For : </b>
+                  <b>Running For : {FormattedTime}</b>
                 </div>
               </div>
             </div>

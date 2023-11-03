@@ -17,13 +17,14 @@ const [selectedProgram, setSelectedProgram] = useState({});
  const[afterloadData,setAfterloadData]=useState({}) 
  const[SheetId,setSheetId]=useState('');
  const[FormattedDate , setFormattedDate] = useState('');
+ const[FormattedTime,setFormattedTime] = useState();
 
   
   return (
     <AppContext.Provider
       value={{
         NcId,setNcId,selectedProgram, setSelectedProgram,afterloadData,setAfterloadData
-        ,SheetId,setSheetId,FormattedDate , setFormattedDate
+        ,SheetId,setSheetId,FormattedDate , setFormattedDate,FormattedTime,setFormattedTime
       }}
     >
       {children}

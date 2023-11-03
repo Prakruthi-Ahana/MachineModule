@@ -173,7 +173,7 @@ export default function MachineTaskTable({
               height: "280px",
             }}
           >
-            <p style={{ color: "", textAlign: "center" }}>
+            <p style={{ color: "", textAlign: "center",paddingTop:"10px" }}>
               <b>Program Info </b>
             </p>
 
@@ -238,7 +238,7 @@ export default function MachineTaskTable({
               height: "280px",
             }}
           >
-            <p style={{ color: "", textAlign: "center" }}>
+            <p style={{ color: "", textAlign: "center", paddingTop:"10px" }}>
               <b>Material Info</b>
             </p>
 

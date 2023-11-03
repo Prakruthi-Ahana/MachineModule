@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
 import MaterialLoadModal from "./MaterialLoadModal";
+import { useEffect } from "react";
 
 export default function Form1({ afterloadProgram, showTable, setAfterloadProgram,selectedMachine}) {
   const [mismatchModal, setmismatchModal] = useState(false);
@@ -14,6 +15,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
 
   const{SheetId,setSheetId}=useGlobalContext();
   const{FormattedDate , setFormattedDate} = useGlobalContext();
+  const{FormattedTime,setFormattedTime} = useGlobalContext();
   const handleClose=()=>{
     setLoadProgram(false);
     setmismatchModal(false)
@@ -47,6 +49,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
 
   const onclickofYes=()=>{
     console.log("clicked yes in Load Material");
+    const startTime = new Date();
     axios
     .post(baseURL + "/ShiftOperator/loadMaterial", {
       selectedMtrlTable,
@@ -65,6 +68,17 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
         .replace(/\//, '/')
         .replace(',', '');
         setFormattedDate(formattedDateValue);
+
+        const endTime = new Date();
+      const elapsedTime = endTime - startTime;
+
+      const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+      const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+
+      const formattedTime = `${hours} Hours ${minutes} Min`;
+
+
+        setFormattedTime(formattedTime);
         
 
     
@@ -73,6 +87,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
     setSheetId(selectedMtrlTable.ShapeMtrlID)
   }
 
+  
   return (
     <>
       <div>
