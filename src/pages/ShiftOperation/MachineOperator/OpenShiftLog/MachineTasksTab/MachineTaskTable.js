@@ -6,26 +6,32 @@ import { baseURL } from "../../../../../api/baseUrl";
 import MachineTaskProfile from "./MachineTaskProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
 import GlobalModal from "../../GlobalModal";
-import ErrorModal from './ErrorModal';
-
+import ErrorModal from "./ErrorModal";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function MachineTaskTable({
   selectshifttable,
   getMachinetaskdata,
   afterLoadProgram,
   setShowTable,
-  showTable
+  getMachineShiftStatusForm,
+  showTable,
 }) {
-
-  const { NcId, setNcId, selectedProgram, setSelectedProgram,afterloadData,setAfterloadData } =
-    useGlobalContext();
-
+  const {
+    NcId,
+    setNcId,
+    selectedProgram,
+    setSelectedProgram,
+    setShiftLogDetails,
+    shiftLogDetails,
+    setFormData
+  } = useGlobalContext();
 
   // Modal Related code....
   const [open, setOpen] = useState(false);
   const [isDataDisplayed, setIsDataDisplayed] = useState(false);
-  const [ErrorshowModal, setErrorshowModal] = useState(false)
-
+  const [ErrorshowModal, setErrorshowModal] = useState(false);
 
   const openModal = () => {
     if (isDataDisplayed) {
@@ -35,25 +41,58 @@ export default function MachineTaskTable({
     }
   };
 
-  
   const handleSubmit = () => {
     afterLoadProgram();
-    setAfterloadData(selectedProgram); 
+    setFormData(selectedProgram);
     axios
-    .post(baseURL + "/ShiftOperator/loadProgram", {
-      selectedProgram
-    })
-    .then((response) => {
-      console.log(response.data);
-    });
-    console.log("function called")
+      .post(baseURL + "/ShiftOperator/loadProgram", {
+        selectedProgram,
+        selectshifttable,
+      })
+      .then((response) => {
+        toast.success("Program Loaded Successfully", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        getMachineShiftStatusForm();
+        axios
+          .post(baseURL + "/ShiftOperator/getShiftLog", {
+            selectshifttable: selectshifttable,
+          })
+          .then((response) => {
+            console.log("response ShiftLog is", response.data);
+            for (let i = 0; i < response.data.length; i++) {
+              // FOR TgtDelDate
+              let dateSplit = response.data[i].FromTime.split(" ");
+              let date = dateSplit[0].split("-");
+              let year = date[0];
+              let month = date[1];
+              let day = date[2];
+              let finalDay =
+                day + "/" + month + "/" + year + " " + dateSplit[1];
+              response.data[i].FromTime = finalDay;
+            }
+            for (let i = 0; i < response.data.length; i++) {
+              // Delivery_date
+              let dateSplit1 = response.data[i].ToTime.split(" ");
+              let date1 = dateSplit1[0].split("-");
+              let year1 = date1[0];
+              let month1 = date1[1];
+              let day1 = date1[2];
+              let finalDay1 =
+                day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
+              response.data[i].ToTime = finalDay1;
+            }
+
+            console.log(response.data);
+            setShiftLogDetails(response.data);
+          });
+      });
     setOpen(false);
-  }
+  };
 
   const handleClose = () => {
     setOpen(false);
-  }
-
+  };
 
   const selectProgramFun = (item, index) => {
     let list = { ...item, index: index };
@@ -65,7 +104,6 @@ export default function MachineTaskTable({
       selectProgramFun(getMachinetaskdata[0], 0); // Select the first row
     }
   }, [getMachinetaskdata, selectedProgram, selectProgramFun]);
-  
 
   const [machineTaskData, setMachineTaskData] = useState([]);
   const machinetask = () => {
@@ -77,10 +115,11 @@ export default function MachineTaskTable({
         console.log(response.data);
         setMachineTaskData(response.data);
         setIsDataDisplayed(true); // Data is displayed
-      }).catch((err) => {
-        console.log(err)
-        setIsDataDisplayed(false); 
       })
+      .catch((err) => {
+        console.log(err);
+        setIsDataDisplayed(false);
+      });
   };
 
   let NCProgramNo = selectedProgram.NCProgramNo;
@@ -91,26 +130,18 @@ export default function MachineTaskTable({
 
   return (
     <>
-     
-
-       <GlobalModal 
-       show={open}
-       title="magod_machine"
-       content={
-        <>
-          Do you wish to load NC Program No: <strong>{NCProgramNo}</strong> ?
-        </>
-      }
-       onYesClick={handleSubmit}
-       onNoClick={handleClose}
-       onClose={handleClose}
-       />
- 
-
-  
-     
-
-       
+      <GlobalModal
+        show={open}
+        title="magod_machine"
+        content={
+          <>
+            Do you wish to load NC Program No: <strong>{NCProgramNo}</strong> ?
+          </>
+        }
+        onYesClick={handleSubmit}
+        onNoClick={handleClose}
+        onClose={handleClose}
+      />
 
       <div>
         <div
@@ -145,6 +176,7 @@ export default function MachineTaskTable({
                     key === selectedProgram?.index ? "selcted-row-clr" : ""
                   }
                   onDoubleClick={machinetask}
+                  style={{ backgroundColor: data.rowColor }}
                 >
                   <td>{data.NCProgramNo}</td>
                   <td>{data.TaskNo}</td>
@@ -345,15 +377,10 @@ export default function MachineTaskTable({
         setIsDataDisplayed={setIsDataDisplayed}
       />
 
-      {
-        ErrorModal && (
-          <ErrorModal
+        <ErrorModal
           ErrorshowModal={ErrorshowModal}
           setErrorshowModal={setErrorshowModal}
-          />
-          
-        )
-       }
+        />
     </>
   );
 }

@@ -29,7 +29,7 @@ export default function ShiftSummryTable({selectshifttable,shiftSummaryData,setS
                 <>
                 <tr>
               <td>{item?.Head}</td>
-              <td>{item?.TimeinMin}</td>
+              <td>{(item?.TimeinMin / 60).toFixed(2)}</td>
               <td>{item?.TimeinMin}</td>
             </tr>
                 </>

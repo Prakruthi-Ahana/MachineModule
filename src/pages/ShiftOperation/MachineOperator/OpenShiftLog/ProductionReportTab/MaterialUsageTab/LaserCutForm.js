@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import RejectModal from "./RejectModal";
 // import AltModal from '../../../AltModal';
 
-export default function LaserCutForm({ selectProductionReport, openTable }) {
+export default function LaserCutForm({ selectProductionReport, openTable,selectshifttable}) {
   //  const[showModal,setShowModal]=useState(false);
   const [markasRejected, setMarkasRejected] = useState(false);
   const [rowsRejected, setRowsRejected] = useState(false);
@@ -58,7 +58,6 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
     }
   };
 
-  console.log(checked);
 
   const MaterialUsage = () => {
     axios
@@ -87,10 +86,18 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
     axios
       .post(baseURL + "/ShiftOperator/markAsUsedProductionReport", {
         selectdefaultRow,
+        selectedMachine:selectshifttable?.Machine
       })
       .then(() => {
-        console.log("requsted posted successfully");
         console.log(selectdefaultRow);
+        axios
+        .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+          NCId: selectProductionReportData,
+        })
+        .then((response) => {
+          console.log(response);
+          setProductionReportData(response.data);
+        });
         MaterialUsage();
       })
       .catch((err) => {
@@ -111,25 +118,36 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
   const valueSepertor = Object.values(RejecteReasonFun);
   const newReason = valueSepertor.join(" ");
 
+
   const UpdateRejectedReason = () => {
-    axios
-      .post(baseURL + "/ShiftOperator/markAsRejectedProductionReport", {
-        selectdefaultRow,
-        RejectedReason: newReason,
-      })
-      .then(() => {
-        console.log("RejectReason Posted");
-        toast.success("Rejected Reason Saved", {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        MaterialUsage();
-      })
-      .catch((err) => {
-        toast.error("An error occurred while updating reject reason", {
-          position: toast.POSITION.TOP_CENTER,
-        });
+    if (
+      !Object.values(RejecteReasonFun).some((reason) => reason.trim() !== "")
+    ) {
+      toast.error("Rejected Reason is empty", {
+        position: toast.POSITION.TOP_CENTER,
       });
+      return; // Prevent further execution if the reason is empty
+    }
+    axios
+    .post(baseURL + "/ShiftOperator/markAsRejectedProductionReport", {
+      selectdefaultRow,
+      RejectedReason: newReason,
+    })
+    .then(() => {
+      console.log("RejectReason Posted");
+      toast.success("Rejected Reason Saved", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      MaterialUsage();
+    })
+    .catch((err) => {
+      toast.error("An error occurred while updating reject reason", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    });
   };
+
+  
 
   return (
     <div>
@@ -245,35 +263,34 @@ export default function LaserCutForm({ selectProductionReport, openTable }) {
         ) : null}
       </div>
 
-      {markasRejected && (
         <MarkasRejectedModal
           markasRejected={markasRejected}
           setMarkasRejected={setMarkasRejected}
           handleMarkasUsed={handleMarkasUsed}
+          selectProductionReportData={selectProductionReportData}
+          setProductionReportData={setProductionReportData}
         />
-      )}
 
-      {rowsRejected && (
         <RowRejectedModal
           rowsRejected={rowsRejected}
           setRowsRejected={setRowsRejected}
         />
-      )}
+      
 
-      {showUnused && (
+      
         <ShowUnusedModal
           showUnused={showUnused}
           setShowUnused={setShowUnused}
           filterUnusedData={filterUnusedData}
         />
-      )}
-      {rowsRejected && (
+      
+      
         <RejectModal
           rowsRejected={rowsRejected}
           setRowsRejected={setRowsRejected}
           handleRejectedRow={UpdateRejectedReason}
         />
-      )}
+    
 
       <AllModal
         allModal={allModal}

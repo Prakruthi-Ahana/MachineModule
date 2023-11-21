@@ -9,8 +9,13 @@ export default function OpenShiftLogForm({
   finalDay1,
   selectshifttable,
   setShowTable,
-  showTable,getShiftSummaryData
+  showTable,getShiftSummaryData,
+  getMachinetaskdata,setMachinetaskdata,getMachineShiftStatusForm,getMachineTaskData
 }) {
+
+const onClickgetProgram=()=>{
+  getMachineTaskData()
+}
   const [errorForm, setErrorForm] = useState(false);
   const [isInputVisible, setInputVisible] = useState(false);
   const [alreadyLoad, setAlreadyLoad] = useState(false);
@@ -27,9 +32,50 @@ export default function OpenShiftLogForm({
     setErrorForm(true);
   };
 
+  let Machine=selectshifttable?.Machine;
   const refreshSubmit = () => {
     setInputVisible(false);
     getShiftSummaryData();
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", { MachineName:Machine })
+      .then((response) => {
+      for (let i = 0; i < response.data.length; i++) {
+        if (
+          response.data[i].Qty ===0
+        ) {
+          response.data[i].rowColor = "#DC143C";
+        } 
+        else if (
+          response.data[i].QtyAllotted ===0
+        ) {
+          response.data[i].rowColor = "#E0FFFF";
+        } 
+        else if (
+          response.data[i].QtyCut===0
+        ) {
+          response.data[i].rowColor = "#778899";
+        } 
+        else if (
+          response.data[i].QtyCut ===
+          response.data[i].Qty
+        ) {
+          response.data[i].rowColor = "#008000";
+        } 
+        else if (
+          response.data[i].QtyCut ===
+          response.data[i].QtyAllotted
+        ) {
+          response.data[i].rowColor = "#ADFF2F";
+        } 
+        else if (
+          response.data[i].Remarks!==null
+        ) {
+          response.data[i].rowColor = "#DC143C";
+        } 
+      }
+      console.log("AFTER ADDING COLOR", response.data);
+      setMachinetaskdata(response.data);
+    });
   };
 
   useEffect(()=>{
@@ -55,8 +101,6 @@ export default function OpenShiftLogForm({
     setSelectedStoppage(selectedStoppage);
   };
 
-  console.log("Selected StoppageID:", selectedStoppageID);
-  console.log("Selected Stoppage:", selectedStoppage);
 
   const handleChangeStoppageList = (e) => {
     setStoppageID(e.target.value);
@@ -88,6 +132,40 @@ export default function OpenShiftLogForm({
     getStoppageReasonList();
   }, [stoppageID]);
 
+//Current  Time
+  const[currentTime,setCurrentTime]=useState('')
+  const getCurrentTime = () => {
+    const currentDate = new Date();
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+    return formattedTime;
+  };
+  
+
+  //getCurrent date
+  const[currentDate,setCurrentDate]=useState('')
+  function getCurrentDate() {
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1; // Months are zero-based
+    const formattedDate = `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}`;
+    return formattedDate;
+  }
+
+  // Periodically update the time and date every second (1000 milliseconds)
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Update the time and date
+      setCurrentTime(getCurrentTime());
+      setCurrentDate(getCurrentDate());
+    }, 1000);
+
+    // Clean up the interval when the component is unmounted
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array ensures that the effect runs only once on mount
+
+
   return (
     <div>
       <StoppageAskModal
@@ -99,6 +177,9 @@ export default function OpenShiftLogForm({
         selectedStoppage={selectedStoppage}
         setShowTable={setShowTable}
         showTable={showTable}
+        setInputVisible={setInputVisible}
+        isInputVisible={isInputVisible}
+        getMachineShiftStatusForm={getMachineShiftStatusForm}
       />
       <div className="row">
         <div className="col-md-12">
@@ -157,6 +238,7 @@ export default function OpenShiftLogForm({
               <button
                 className="button-style group-button"
                 style={{ width: "110px", marginTop: "10px", fontSize: "14px" }}
+                onClick={onClickgetProgram}
               >
                 Get Program
               </button>
@@ -186,11 +268,11 @@ export default function OpenShiftLogForm({
               <label className="form-label">{selectedMachine}</label>
             </div>
 
-            <div className="col-md-1 col-sm-12">
-              <label className="form-label">{finalDay}</label>
+            <div className="col-md-2 col-sm-12">
+              <label className="form-label">{currentDate} {currentTime}</label>
             </div>
 
-            <div className="col-md-1 col-sm-12">
+            <div className="col-md-1 col-sm-12" style={{marginLeft:"-50px"}}>
               <label className="form-label">Status</label>
             </div>
 

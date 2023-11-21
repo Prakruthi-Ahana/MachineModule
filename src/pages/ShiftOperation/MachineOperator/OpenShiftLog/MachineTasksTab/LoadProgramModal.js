@@ -5,17 +5,16 @@ import { useGlobalContext } from '../../../../../Context/Context';
 
 export default function LoadProgramModal({open, setOpen,NCProgramNo,afterLoadProgram}) {
 
-  const { NcId,setNcId,selectedProgram,setSelectedProgram,afterloadData,setAfterloadData,setShowTable} =
+  const { selectedProgram,setFormData,setShowTable} =
   useGlobalContext();
 
 const handleSubmit = () => {
   afterLoadProgram(); // Pass showTables as an argument
-  setAfterloadData(selectedProgram);
+  setFormData(selectedProgram);
   setOpen(false);
   setShowTable(true);
 }
 
-console.log(selectedProgram);
 
 const handleClose=()=>{
         setOpen(false);

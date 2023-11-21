@@ -9,28 +9,26 @@ export default function MachineShiftStatusForm({
   finalDay1,
   date,
   showTable,
+  machineShiftStatus,
+  getMachineShiftStatusForm
 }) {
-  const { selectedProgram, afterloadData } = useGlobalContext();
+  const { selectedProgram } = useGlobalContext();
 
   var count = 0;
   const [isInputVisible, setInputVisible] = useState(false);
 
   const toggleInput = () => {
     count = count + 1;
-
     if (count === 1) {
       setInputVisible(true);
     } else {
       setInputVisible(false);
       ///ChangeOperator
       axios
-        .post(baseURL + "/ShiftOperator/UpdateOperator", {
-          Operator: ChangedOperator,
-          Shift: Shift,
-          ShiftDate: date,
-        })
+        .post(baseURL + "/ShiftOperator/updateOperator", {
+          Operator: ChangedOperator,selectshifttable})
         .then((response) => {
-          console.log(response.data);
+          getMachineShiftStatusForm();
         });
     }
   };
@@ -46,6 +44,95 @@ export default function MachineShiftStatusForm({
   const handleShiftIncharge = (e) => {
     setChangedOperator(e.target.value);
   };
+
+  const formatDateTime = (dateTimeString) => {
+    const options = { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false };
+    return new Date(dateTimeString).toLocaleString(undefined, options).replace(',', '');
+  };
+  
+
+  console.log(machineShiftStatus[0])
+
+  const [runningTime, setRunningTime] = useState("")
+  useEffect(() => {
+    const updateRunningTime = () => {
+      if (machineShiftStatus && machineShiftStatus.length > 0) {
+        const programStartTime = new Date(machineShiftStatus[0]?.ProgramStartTime);
+
+        if (!isNaN(programStartTime.getTime())) {
+          const currentTime = new Date();
+          const diffInMilliseconds = currentTime - programStartTime;
+
+          if (diffInMilliseconds >= 0) {
+            const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+            const minutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+
+            setRunningTime(`${hours} hours ${minutes} mins`);
+          } else {
+            setRunningTime("N/A");
+          }
+        } else {
+          setRunningTime("N/A");
+        }
+      } else {
+        setRunningTime("N/A");
+      }
+    };
+    updateRunningTime();
+    const intervalId = setInterval(updateRunningTime, 30000);
+    return () => clearInterval(intervalId);
+  }, [machineShiftStatus]);
+
+  // Save runningTime to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("runningTime", runningTime);
+  }, [runningTime]);
+
+
+//update sheettime
+const[sheetrunTime,setSheetRuntime]=useState("")
+
+const updateSheettime=()=>{
+  if (machineShiftStatus && machineShiftStatus.length > 0) {
+    const SheetStartTime = new Date(machineShiftStatus[0]?.SheetStartTime);
+
+    if (!isNaN(SheetStartTime.getTime())) {
+      const currentTime = new Date();
+      const diffInMilliseconds = currentTime - SheetStartTime;
+
+      if (diffInMilliseconds >= 0) {
+        const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+        const minutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+
+        setSheetRuntime(`${hours} hours ${minutes} mins`);
+      } else {
+        setSheetRuntime("0");
+      }
+    } else {
+      setSheetRuntime("0");
+    }
+  } else {
+    setSheetRuntime("0");
+  }
+}
+
+useEffect(()=>{
+  if(machineShiftStatus[0]?.MtrlID===''){
+    setSheetRuntime(runningTime)
+  }
+  else{
+    updateSheettime();
+    updateSheettime();
+    const intervalId = setInterval(updateSheettime, 30000);
+    return () => clearInterval(intervalId);
+  }
+
+},[machineShiftStatus])
+
+useEffect(() => {
+  localStorage.setItem("runningTime", sheetrunTime);
+}, [sheetrunTime]);
+
 
   return (
     <>
@@ -71,7 +158,7 @@ export default function MachineShiftStatusForm({
                 <b>Operator : {selectshifttable.Operator} </b>
               </div>
               <div style={{ marginLeft: "5px" }}>
-                <b>Current : {selectshifttable.Operator} </b>
+                <b>Current : {machineShiftStatus[0]?.Operator} </b>
               </div>
             </div>
           </div>
@@ -129,29 +216,29 @@ export default function MachineShiftStatusForm({
             <div style={{ width: "auto", textAlign: "left" }}>
               <div style={{ marginLeft: "15px" }}>
                 {" "}
-                <b>Task No : {showTable ? afterloadData?.TaskNo : ""} </b>
+                <b>Task No : {machineShiftStatus[0]?.TaskNo} </b>
               </div>
 
               <div style={{ marginLeft: "15px" }}>
-                <b>Operation : {showTable ? afterloadData?.Operation : ""} </b>
+                <b>Operation : {machineShiftStatus[0]?.Operation } </b>
               </div>
               <div style={{ color: "", marginLeft: "15px" }}>
                 {" "}
-                <b>Material : {showTable ? afterloadData?.Mtrl_Code : ""} </b>
+                <b>Material : {machineShiftStatus[0]?.Mtrl_Code} </b>
               </div>
 
               <div style={{ marginLeft: "15px" }}>
                 <b>
-                  Program no : {showTable ? afterloadData?.NCProgramNo : ""}
+                  Program no : {machineShiftStatus[0]?.NCProgarmNo}
                 </b>
               </div>
               <div style={{ marginLeft: "15px" }}>
                 {" "}
-                <b>Start Time : </b>
+                <b>Start Time :{formatDateTime(machineShiftStatus[0]?.ProgramStartTime)}</b>
               </div>
 
               <div className="mb-3" style={{ color: "", marginLeft: "15px" }}>
-                <b>Running For :</b>
+                <b>Running For :{runningTime}</b>
               </div>
             </div>
           </div>
@@ -176,14 +263,14 @@ export default function MachineShiftStatusForm({
             <div className="d-flex mx-2">
               <div style={{ width: "auto", textAlign: "left" }}>
                 <div style={{ marginLeft: "10px" }}>
-                  <b>Sheet Id : </b>
+                  <b>Sheet Id :{machineShiftStatus[0]?.MtrlID} </b>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
                   {" "}
-                  <b>Start Time : </b>
+                  <b>Start Time : {formatDateTime(machineShiftStatus[0]?.SheetStartTime)}</b>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
-                  <b>Running For : </b>
+                  <b>Running For :{sheetrunTime}</b>
                 </div>
               </div>
             </div>

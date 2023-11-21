@@ -4,10 +4,10 @@ import MaterialUsageForm from './MaterialUsageTab/MaterialUsageForm';
 import LaserCutForm from './MaterialUsageTab/LaserCutForm';
 import ShowDfxForm from './PartsDetailsTab/ShowDfxForm';
 
-export default function MaterialAndPartsTabs({selectProductionReport , openTable}) {
+export default function MaterialAndPartsTabs({selectProductionReport , openTable,selectshifttable}) {
   
     const [key, setKey] = useState("mu");
-    console.log("dde", selectProductionReport )
+    // console.log("dde", selectProductionReport )
   return (
     <div>
        <div className='row'>
@@ -24,6 +24,7 @@ export default function MaterialAndPartsTabs({selectProductionReport , openTable
       <LaserCutForm
       selectProductionReport={selectProductionReport}
       openTable ={openTable}
+      selectshifttable={selectshifttable}
       />
        </Tab>
 

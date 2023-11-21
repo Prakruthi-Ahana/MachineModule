@@ -9,6 +9,7 @@ import { baseURL } from "../../../../../api/baseUrl";
 import { toast } from "react-toastify";
 import { uncountability } from "i/lib/methods";
 import MarkAsRejected from "./MarkAsRejected";
+import { useGlobalContext } from "../../../../../Context/Context";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
@@ -17,111 +18,133 @@ export default function ProgrmMatrlTableProfile({
   selectedMtrlTable,
   rowSelectMtrlTable,
   setSelectedMtrlTable,
+  selectedMachine
 }) {
-
+  const{afterRefreshData,setAfterRefreshData,NcId}=useGlobalContext();
   const [showusedModal, setShowusedModal] = useState(false);
-  const [allModal, setAllModal]=useState(false);
+  const [allModal, setAllModal] = useState(false);
   const [isCheckboxchecked, setIsCheckboxchecked] = useState(false);
   const [originalData, setOriginalData] = useState([]);
   const [isDataFiltered, setIsDataFiltered] = useState(false);
- 
- 
- 
- const filterUnusedData = () => {
-   // Filter the ProductionReportData array to show only rows where Used and Rejected are both 0
-   const filteredData = afterloadProgram.filter(data => data.Used === 0 && data.Rejected === 0);
-   setOriginalData(afterloadProgram); // Save the original data
-   setAfterloadProgram(filteredData); // Update the filtered data
-   setIsDataFiltered(true); // Set the flag to indicate data is filtered
- }
- const resetData = () => {
-  setAfterloadProgram(originalData); // Restore the original data
-   setIsDataFiltered(false); // Clear the data filtered flag
- }
- 
+
+  const filterUnusedData = () => {
+    // Filter the ProductionReportData array to show only rows where Used and Rejected are both 0
+    const filteredData = afterRefreshData.filter(
+      (data) => data.Used === 0 && data.Rejected === 0
+    );
+    setOriginalData(afterRefreshData); // Save the original data
+    setAfterRefreshData(filteredData); // Update the filtered data
+    setIsDataFiltered(true); // Set the flag to indicate data is filtered
+  };
+  const resetData = () => {
+    setAfterRefreshData(originalData); // Restore the original data
+    setIsDataFiltered(false); // Clear the data filtered flag
+  };
 
   const handleCheckBoxChange = () => {
-    setIsCheckboxchecked(!isCheckboxchecked)
-    if(isCheckboxchecked){
+    setIsCheckboxchecked(!isCheckboxchecked);
+    if (isCheckboxchecked) {
       setAllModal(true);
-    }else{
-      setShowusedModal(true)
+    } else {
+      setShowusedModal(true);
     }
-  }
+  };
 
-
-  const[MarkasUsed, setMarkasUsed] = useState(false)
-  const[MarkasReject, setMarkasReject] = useState(false)
+  const [MarkasUsed, setMarkasUsed] = useState(false);
+  const [MarkasReject, setMarkasReject] = useState(false);
 
   const handleMarkasUsedModal = () => {
-    setMarkasUsed(true)
-  }
+    setMarkasUsed(true);
+  };
 
   const handleMarkasRejected = () => {
-    setMarkasReject(true)
-  }
-
-
+    setMarkasReject(true);
+  };
 
   const handleMarkasUsed = () => {
-    
     axios
       .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
         selectedMtrlTable: selectedMtrlTable,
+        selectedMachine:selectedMachine
       })
       .then(() => {
-        console.log("Request sent successfully");
-      
-           })
+        toast.success("Success", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        axios
+        .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
+          NcId:NcId
+        })
+        .then((response) => {
+          console.log("required result",response.data);
+          setAfterRefreshData(response?.data);
+          if (!response.data) {
+            setAfterRefreshData([]);
+          }
+        });
+      })
+
       .catch((err) => {
         console.error(err);
       });
   };
-
-  console.log("Data I m fetching", selectedMtrlTable)
 
 
   const [RejectedReasonState, setRejectedReasonState] = useState({});
 
   const onChangeInput = (key, e) => {
     const { value } = e.target;
-    setRejectedReasonState(prevState => ({
+    setRejectedReasonState((prevState) => ({
       ...prevState,
-      [key]: value
+      [key]: value,
     }));
   };
-  
+
   // Get only the values from RejectedReasonState
   const valuesArray = Object.values(RejectedReasonState);
-  
+
   // Concatenate the values into a single string
-  const newReason = valuesArray.join(' '); // Change the separator as needed
-  
+  const newReason = valuesArray.join(" "); // Change the separator as needed
+
   const UpdateRejectReason = () => {
-    if (!Object.values(RejectedReasonState).some(reason => reason.trim() !== '')) {
+    if (
+      !Object.values(RejectedReasonState).some((reason) => reason.trim() !== "")
+    ) {
       toast.error("Rejected Reason is empty", {
         position: toast.POSITION.TOP_CENTER,
       });
       return; // Prevent further execution if the reason is empty
     }
-  
-    axios.post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial", {
-      selectedMtrlTable,
-      RejectedReason: newReason,
-    })
+    else{
+      axios
+      .post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial", {
+        selectedMtrlTable,
+        RejectedReason: newReason,
+      })
       .then((response) => {
         toast.success("Rejected Reason Saved", {
           position: toast.POSITION.TOP_CENTER,
         });
-        console.log("RejectedReason eeee", newReason);
+        axios
+        .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
+          NcId:NcId
+        })
+        .then((response) => {
+          console.log("required result",response.data);
+          setAfterRefreshData(response?.data);
+          if (!response.data) {
+            setAfterRefreshData([]);
+          }
+        });
       })
       .catch((error) => {
         toast.error("An error occurred while updating reject reason", {
           position: toast.POSITION.TOP_CENTER,
         });
       });
-  }
-  
+    }
+  };
+
   return (
     <div>
       {showTable ? (
@@ -146,7 +169,7 @@ export default function ProgrmMatrlTableProfile({
 
                 <div style={{ textAlign: "center" }} className="col-md-4">
                   <div>
-                 <button
+                    <button
                       className="button-style mt-2 group-button mt-4 mb-2"
                       style={{ width: "110px", fontSize: "13px" }}
                       onClick={handleMarkasRejected}
@@ -157,9 +180,10 @@ export default function ProgrmMatrlTableProfile({
                 </div>
 
                 <div className="col-md-3 row mt-3">
-                  <input type="checkbox"
-                  className="col-md-2"
-                  onChange={handleCheckBoxChange}
+                  <input
+                    type="checkbox"
+                    className="col-md-2"
+                    onChange={handleCheckBoxChange}
                   />
                   <label
                     className="form-label col-md-1 mt-1"
@@ -197,8 +221,15 @@ export default function ProgrmMatrlTableProfile({
               className="tablebody table-space"
               style={{ fontSize: "12px" }}
             >
-              {afterloadProgram?.map((data, key) => (
-                <tr onClick={()=>{rowSelectMtrlTable(data,key)}} className={key===selectedMtrlTable?.index? 'selcted-row-clr':'' }>
+              {afterRefreshData?.map((data, key) => (
+                <tr
+                  onClick={() => {
+                    rowSelectMtrlTable(data, key);
+                  }}
+                  className={
+                    key === selectedMtrlTable?.index ? "selcted-row-clr" : ""
+                  }
+                >
                   <td>{data.ShapeMtrlID}</td>
                   <td>{data.Para1}</td>
                   <td>{data.Para2}</td>
@@ -209,14 +240,14 @@ export default function ProgrmMatrlTableProfile({
                     <input type="checkbox" checked={data.Rejected === 1} />
                   </td>
                   <td>
-                 <div key={data.index}>
-                 <input
-                 className="table-cell-editor"
-                 style={{ textAlign: "center", width: "150px" }}
-                 value={RejectedReasonState[key] || ''} // Bind to the specific state for this row
-                 onChange={(e) => onChangeInput(key, e)}
-             />
-                </div>
+                    <div key={data.index}>
+                      <input
+                        className="table-cell-editor"
+                        style={{ textAlign: "center", width: "150px" }}
+                        value={RejectedReasonState[key] || ""} // Bind to the specific state for this row
+                        onChange={(e) => onChangeInput(key, e)}
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -225,46 +256,29 @@ export default function ProgrmMatrlTableProfile({
         </div>
       ) : null}
       <div>
-      {
-        showusedModal && (
-          <ShowUsedModal 
+        <ShowUsedModal
           showusedModal={showusedModal}
           setShowusedModal={setShowusedModal}
           filterUnusedData={filterUnusedData}
-          />
-        )
-      }
+        />
 
-      {
-        allModal && 
-        (
-          <ShowAllModal
+        <ShowAllModal
           allModal={allModal}
           setAllModal={setAllModal}
           resetData={resetData}
-          />
-        )
-      }
+        />
 
-      {
-        MarkasUsed && (
-          <MarkAsUsedModal
+        <MarkAsUsedModal
           MarkasUsed={MarkasUsed}
           setMarkasUsed={setMarkasUsed}
           handleMarkasUsed={handleMarkasUsed}
-          />
-        )
-      }
-      {
-        MarkasReject && (
-        <MarkAsRejected
-        MarkasReject={MarkasReject}
-        setMarkasReject={setMarkasReject}
-        handleMarkasRejected={UpdateRejectReason}
-        
         />
-        )
-      }
+
+        <MarkAsRejected
+          MarkasReject={MarkasReject}
+          setMarkasReject={setMarkasReject}
+          handleMarkasRejected={UpdateRejectReason}
+        />
       </div>
     </div>
   );

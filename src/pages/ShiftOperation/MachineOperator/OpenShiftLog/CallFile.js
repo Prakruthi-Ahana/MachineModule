@@ -22,13 +22,15 @@ export default function CallFile() {
   let date=data?.date;
 
 
-  const{NcId,setNcId}=useGlobalContext();
+
+  const{NcId,setAfterRefreshData}=useGlobalContext();
 
   const[afterloadProgram,setAfterloadProgram]=useState([])
 
   const [showTable, setShowTable] = useState(true);
- 
+  const [getMachinetaskdata, setMachinetaskdata] = useState([]);
 
+ 
   const afterLoadProgram=()=>{
     axios
     .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
@@ -37,6 +39,7 @@ export default function CallFile() {
     .then((response) => {
       console.log(response.data);
       setAfterloadProgram(response.data);
+      setAfterRefreshData(response.data);
       setShowTable(true)
     });
   }
@@ -55,6 +58,36 @@ export default function CallFile() {
       })
   };
 
+const[machineShiftStatus,setMachineShiftStatus]=useState([])
+  const getMachineShiftStatusForm=()=>{
+    console.log(selectshifttable)
+    axios
+    .post(baseURL + "/ShiftOperator/getmachineShiftStatus", {
+    selectshifttable
+    })
+    .then((response) => {
+     console.log(response.data);
+     setMachineShiftStatus(response.data);
+      });
+  }
+
+  useEffect(()=>{
+    getMachineShiftStatusForm()
+  },[])
+
+    //Machine Task Table
+    let Machine=selectshifttable?.Machine;
+  const getMachineTaskData = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", { MachineName:Machine })
+      .then((response) => {
+        // console.log(response.data);
+        setMachinetaskdata(response.data);
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+      });
+  };
 
   return (
     <>
@@ -65,6 +98,10 @@ export default function CallFile() {
       showTable={showTable}
       setShowTable={setShowTable}
       getShiftSummaryData={getShiftSummaryData}
+      getMachinetaskdata={getMachinetaskdata}
+      setMachinetaskdata={setMachinetaskdata}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
+      getMachineTaskData={getMachineTaskData}
       />
       </div>
 
@@ -76,7 +113,8 @@ export default function CallFile() {
       finalDay1={finalDay1}
       date={date}
       showTable={showTable}
-      
+      machineShiftStatus={machineShiftStatus}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
       />
       </div>
       <div className='col-md-4'>
@@ -85,6 +123,8 @@ export default function CallFile() {
       afterloadProgram={afterloadProgram}
       showTable={showTable}
       selectedMachine={selectedMachine}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
+      selectshifttable={selectshifttable}
       />
       </div>
 
@@ -95,6 +135,11 @@ export default function CallFile() {
       getShiftSummaryData={getShiftSummaryData}
       shiftSummaryData={shiftSummaryData}
       setShiftSummaryData={setShiftSummaryData}
+      getMachinetaskdata={getMachinetaskdata}
+      setMachinetaskdata={setMachinetaskdata}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
+      setShowTable={setShowTable}
+      getMachineTaskData={getMachineTaskData}
       />
 
      

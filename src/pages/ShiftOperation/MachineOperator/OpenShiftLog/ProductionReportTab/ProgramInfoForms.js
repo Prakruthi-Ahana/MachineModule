@@ -6,7 +6,7 @@ import ProgramCompleteModal from "./ProgramCompleteModal";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 
-export default function ProgramInfoForms({ getMachinetaskdata }) {
+export default function ProgramInfoForms({ getMachinetaskdata,selectshifttable,getMachineTaskData}) {
   const [loadProgramInfo, setloadProgramInfo] = useState(false);
   const [programComplete, setProgramComplete] = useState(false);
 
@@ -197,6 +197,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
       <MaterialAndPartsTabs
       selectProductionReport={selectProductionReport}
       openTable = {openTable}
+      selectshifttable={selectshifttable}
      
       />
      
@@ -209,6 +210,7 @@ export default function ProgramInfoForms({ getMachinetaskdata }) {
           programComplete={programComplete}
           setProgramComplete={setProgramComplete}
           selectProductionReport={selectProductionReport}
+          getMachineTaskData={getMachineTaskData}
         />
 
     </div>

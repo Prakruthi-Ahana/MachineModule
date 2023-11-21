@@ -231,7 +231,7 @@ Public Class MachineLog
         '***** Reload Machine NCPrograms List
 
         With cmd
-            .CommandText = " UPDATE magodmis.ncprograms n, " _
+            .CommandText = "UPDATE magodmis.ncprograms n, " _
                 & "(SELECT n.`Ncid`, Sum(TIMESTAMPDIFF(MINUTE,s.`FromTime`,s.`ToTime`)) as MachineTime " _
                 & "FROM magodmis.ncprograms n,magodmis.shiftlogbook s WHERE n.`Machine`=@Machine " _
                 & "AND n.`PStatus`='Cutting' AND s.`StoppageID`=n.`Ncid` GROUP BY n.`Ncid`) as A  " _
@@ -316,6 +316,7 @@ Public Class MachineLog
 
 
     End Sub
+    
     Private Sub load_NcProgram()
         If Production1.TaskProgramList.Rows.Count = 0 Then
             MsgBox("No Programs Scheduled for this Machine, Check with Production In -Charge")
@@ -546,13 +547,15 @@ Public Class MachineLog
 
 #End Region
 
+
+
     '***** Records LogBookTime into Shift Stoppagelist Table and ncprogrammachinelog table
     Private Sub setLogTime(ByRef cmd As MySql.Data.MySqlClient.MySqlCommand)
         '***** Records LogBookTime into Shift Stoppagelist Table and ncprogrammachinelog table
 
         With cmd
             Try
-                .CommandText = "INSERT INTO magodmis.shiftstoppagelist ( shiftlogid,ShiftID," _
+                .CommandText = "INSERT INTO magodmis.shiftstoppagelist (shiftlogid,ShiftID," _
                                          & "StoppageID, StoppageReason, StoppageHead, Machine, FromTime, " _
                                          & "ToTime, Remarks, Locked,Operator) " _
                                          & "VALUES( @shiftlogid,@ShiftID," _
@@ -726,6 +729,8 @@ Public Class MachineLog
         End If
     End Sub
 
+
+
     Private Sub DGV_ShiftLog_CellDoubleClick(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles DGV_ShiftLog.CellDoubleClick
         If DGV_ShiftLog.Columns(e.ColumnIndex).Name = "FTime" Then
             'DGV_ShiftLog.Columns(e.ColumnIndex).DefaultCellStyle.Format = "dd/MM/yy HH:mm"
@@ -796,9 +801,8 @@ Public Class MachineLog
             Me.cmb_StopGp.Visible = True
         End If
     End Sub
+
     Private Sub ComboBox_StoppageList_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ComboBox_StoppageList.SelectedIndexChanged
-
-
         If ComboBox_StoppageList.SelectedIndex = -1 Then
             Exit Sub
         End If
@@ -828,7 +832,7 @@ Public Class MachineLog
                 End With
                 upDateMachineStatus()
                 LoadTaskProgram(0) '****** It is NCId of program
-            Catch ex As Exception
+            Catch ex As ExceptionsetUpShiftLog
                 MsgBox(ex.Message)
 
             End Try
@@ -1015,11 +1019,9 @@ Public Class MachineLog
 
 #Region "Shift Add Close etc"
     Private Sub prepareShift()
-
         '***** Sorts out the Shift Serials to check for inconfirmities and small serials
         Dim Intsrl As Integer = Production1.shiftlogbook.Rows.Count
         '  Dim Counter As Integer
-
         For Each srl As magod.Production.shiftlogbookRow In Production1.shiftlogbook.Rows
             srl.RunningTime = srl.ToTime.Subtract(srl.FromTime).TotalMinutes
             '**** Remove Srls that are less than 2 minute and in which material has not been processed or No remarks endorsed
@@ -1028,15 +1030,11 @@ Public Class MachineLog
             Else
                 srl.Locked = True
             End If
-
             If srl.RunningTime < 1 And srl.QtyProcessed = 0 And srl.IsRemarksNull Then
                 If Not srl.Equals(Production1.shiftlogbook.Last) Then
                     srl.Delete()
-
                 End If
-
             End If
-
         Next
         Intsrl = 1
         Da_ShiftLog.Update(Production1.shiftlogbook)
@@ -1045,10 +1043,10 @@ Public Class MachineLog
             Intsrl += 1
         Next
         Da_ShiftLog.Update(Production1.shiftlogbook)
-
         setLogTime(Machine.getCommand)
-
     End Sub
+
+
     Private Sub DGV_ShiftLog_CellFormatting(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellFormattingEventArgs) Handles DGV_ShiftLog.CellFormatting
         Dim dgrv As DataGridViewRow
 

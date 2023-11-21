@@ -1,5 +1,5 @@
 import Axios from "axios";
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { baseURL } from "../api/baseUrl";
 
@@ -12,15 +12,27 @@ const SnackbarContext = React.createContext({
 });
 
 const AuthProvider = ({ children }) => {
-// SET NCID TO A STATE
-const[NcId,setNcId]=useState('')
-const [selectedProgram, setSelectedProgram] = useState({});
- const[afterloadData,setAfterloadData]=useState({}) 
-  
+  // SET NCID TO A STATE
+  const [NcId, setNcId] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState({});
+  const [afterloadData, setAfterloadData] = useState({});
+  const [shiftLogDetails, setShiftLogDetails] = useState([]);
+  const [afterRefreshData,setAfterRefreshData]=useState([])
+  const [formdata,setFormData]=useState([]);
+
   return (
     <AppContext.Provider
       value={{
-        NcId,setNcId,selectedProgram, setSelectedProgram,afterloadData,setAfterloadData
+        NcId,
+        setNcId,
+        selectedProgram,
+        setSelectedProgram,
+        afterloadData,
+        setAfterloadData,
+        shiftLogDetails,
+        setShiftLogDetails,
+        afterRefreshData,setAfterRefreshData,
+        formdata,setFormData
       }}
     >
       {children}
