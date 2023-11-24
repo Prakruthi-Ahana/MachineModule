@@ -22,6 +22,8 @@ export default function MachineOperator() {
     getMachineList();
   }, []);
 
+
+
   //Selected Machine
   const moment = require("moment");
   const today = moment();
@@ -63,6 +65,8 @@ export default function MachineOperator() {
         setShiftDetails(response.data);
       });
   };
+
+  console.log(selectedMachine);
 
   //Open ShiftLog  Modal
   const [openmodal, setOpenmodal] = useState("");

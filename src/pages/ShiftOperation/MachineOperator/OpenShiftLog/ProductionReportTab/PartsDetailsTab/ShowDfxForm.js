@@ -23,7 +23,7 @@ export default function ShowDfxForm() {
     });
   }
 
-  console.log(NcId)
+  // console.log(NcId)
   useEffect(()=>{
     getPartDetails();
   },[NcId])

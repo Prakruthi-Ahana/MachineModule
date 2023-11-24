@@ -82,7 +82,7 @@ const onClickgetProgram=()=>{
     getShiftSummaryData();
   },[selectshifttable])
 
-  let array = finalDay1.split("/");
+  let array = finalDay1?.split("/");
   let finalDay = array[0] + "/" + array[1];
 
   const [selectedStoppageID, setSelectedStoppageID] = useState("");

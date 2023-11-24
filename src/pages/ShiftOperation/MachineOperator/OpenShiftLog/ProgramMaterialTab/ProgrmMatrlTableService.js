@@ -1,45 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table } from "react-bootstrap";
+import { useGlobalContext } from "../../../../../Context/Context";
 
 export default function ProgrmMatrlTableService() {
+  const { afterloadService, setAfterloadService } = useGlobalContext();
+
+  const [rowSelectService, setRowSelectService] = useState({});
+  const rowSelectPMService = (item, index) => {
+    let list = { ...item, index: index };
+    setRowSelectService(list);
+  };
+
   return (
     <div>
       <div className="mt-2">
         <div className="col-md-12 col-sm-12">
           <div className="ip-box form-bg ">
-            <div className="row">
-              <div className="col-md-6 " style={{ marginTop: "-10px" }}>
+            <div className="row col-md-12">
+              <div className="col-md-3 " style={{ marginTop: "-10px",marginLeft:"-5px"}}>
                 <label
                   className="form-label"
                   style={{ fontSize: "12px", marginLeft: "-15px" }}
                 >
-                  {" "}
                   IV No :
                 </label>
               </div>
               <div
-                className="col-md-6  "
-                style={{ marginTop: "-10px", marginLeft: "-15px" }}
+                className="col-md-3"
+                style={{ marginTop: "-10px" }}
               >
-                <label className="form-label" style={{ fontSize: "12px" }}>
-                  {" "}
+                <label className="form-label" style={{ fontSize: "12px",marginLeft: "-30px" }}>
                   Issue Date :
                 </label>
               </div>
 
               <div
-                className="col-md-6"
-                style={{ marginTop: "-10px", marginLeft: "-15px" }}
+                className="col-md-4"
+                style={{ marginTop: "-10px", marginLeft: "-10px" }}
               >
-                <label className="form-label" style={{ fontSize: "12px" }}>
-                  {" "}
+                <label className="form-label" style={{ fontSize: "12px"}}>
                   Sets Issued :
                 </label>
               </div>
 
-              <div className="col-md-6" style={{ marginTop: "-10px" }}>
-                <label className="form-label" style={{ fontSize: "12px" }}>
-                  {" "}
+              <div className="col-md-3" style={{ marginTop: "-10px" }}>
+                <label className="form-label" style={{ fontSize: "12px",marginLeft: "-15px"}}>
                   Used :
                 </label>
               </div>
@@ -49,8 +54,7 @@ export default function ProgrmMatrlTableService() {
                 style={{ marginTop: "-10px", marginLeft: "-15px" }}
               >
                 <label className="form-label" style={{ fontSize: "12px" }}>
-                  {" "}
-                  Sets Issued :{" "}
+                  Sets Issued :
                 </label>
                 <input className="in-field" style={{ marginTop: "4px" }} />
               </div>
@@ -64,7 +68,6 @@ export default function ProgrmMatrlTableService() {
                     <button
                       className="button-style mt-2 group-button mt-4 mb-2"
                       style={{ width: "100px", fontSize: "14px" }}
-                      onClick={handleSubmit}
                     >
                       Mark as Used
                     </button>
@@ -80,9 +83,11 @@ export default function ProgrmMatrlTableService() {
         style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
       >
         <Table striped className="table-data border">
-          <thead className="tableHeaderBGColor" style={{ fontSize: "13px" }}>
+          <thead
+            className="tableHeaderBGColor table-space"
+            style={{ fontSize: "13px" }}
+          >
             <tr>
-              <th></th>
               <th>Part Id</th>
               <th>RV No</th>
               <th>Issued</th>
@@ -91,15 +96,28 @@ export default function ProgrmMatrlTableService() {
             </tr>
           </thead>
 
-          <tbody className="tablebody" style={{ fontSize: "13px" }}>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
+          <tbody className="tablebody table-space" style={{ fontSize: "12px" }}>
+            {afterloadService.map((item, key) => {
+              return (
+                <>
+                  <tr
+                    onClick={() => {
+                      rowSelectPMService(item, key);
+                    }}
+                    className={
+                      key === rowSelectService?.index ? "selcted-row-clr" : ""
+                    }
+                  >
+                    {" "}
+                    <td>{item.PartId}</td>
+                    <td>{item.RV_No}</td>
+                    <td>{item.QtyIssued}</td>
+                    <td>{item.QtyUsed}</td>
+                    <td>{item.QtyReturned}</td>
+                  </tr>
+                </>
+              );
+            })}
           </tbody>
         </Table>
       </div>

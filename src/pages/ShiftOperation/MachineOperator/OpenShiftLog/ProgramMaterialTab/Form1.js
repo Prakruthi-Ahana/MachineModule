@@ -6,15 +6,22 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
+import ProgrmMatrlTableService from "./ProgrmMatrlTableService";
 
 export default function Form1({
   afterloadProgram,
   showTable,
   setAfterloadProgram,
   selectedMachine,
-  getMachineShiftStatusForm
+  getMachineShiftStatusForm,
 }) {
-  const{afterRefreshData,setAfterRefreshData,formdata,setFormData}=useGlobalContext();
+  const {
+    afterRefreshData,
+    setAfterRefreshData,
+    formdata,
+    setFormData,
+    hasBOM,machineTaskService
+  } = useGlobalContext();
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
 
@@ -27,21 +34,17 @@ export default function Form1({
     setmismatchModal(false);
   };
 
-
   //selecting table
   const [selectedMtrlTable, setSelectedMtrlTable] = useState({});
   const rowSelectMtrlTable = (item, index) => {
-    let list = { ...item, index: index  };
+    let list = { ...item, index: index };
     setSelectedMtrlTable(list);
   };
 
-
   useMemo(() => {
-    console.log("afterRefreshData[0]:", afterRefreshData[0]);
+    // console.log("afterRefreshData[0]:", afterRefreshData[0]);
     setSelectedMtrlTable({ ...afterRefreshData[0], index: 0 });
   }, [afterRefreshData[0]]);
-  
-
 
   const loadProgramSubmit = () => {
     if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
@@ -59,8 +62,7 @@ export default function Form1({
         selectedMtrlTable,
         MachineName: selectedMachine,
       })
-      .then((response) => {
-      });
+      .then((response) => {});
     setLoadProgram(false);
     getMachineShiftStatusForm();
   };
@@ -69,13 +71,14 @@ export default function Form1({
   const convertMinutesToTime = (minutes) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-  
-    const hoursString = hours > 0 ? `${hours} Hours` : '';
-    const minsString = mins > 0 ? `${mins} Min` : '';
-  
+
+    const hoursString = hours > 0 ? `${hours} Hours` : "";
+    const minsString = mins > 0 ? `${mins} Min` : "";
+
     return `${hoursString} ${minsString}`.trim();
   };
 
+  // console.log(hasBOM);
 
   return (
     <>
@@ -98,7 +101,7 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.NCProgramNo || ''}
+                  value={formdata?.NCProgramNo || ""}
                 />
               </div>
 
@@ -112,7 +115,7 @@ export default function Form1({
                 <input
                   className="in-field "
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.Qty  || ''}
+                  value={formdata?.Qty || ""}
                 />
               </div>
 
@@ -126,7 +129,7 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.QtyAllotted || '' }
+                  value={formdata?.QtyAllotted || ""}
                 />
               </div>
 
@@ -140,7 +143,7 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.QtyCut || ''}
+                  value={formdata?.QtyCut || ""}
                 />
               </div>
 
@@ -154,7 +157,7 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.NoOfDwgs || ''}
+                  value={formdata?.NoOfDwgs || ""}
                 />
               </div>
 
@@ -168,7 +171,7 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.TotalParts || ''}
+                  value={formdata?.TotalParts || ""}
                 />
               </div>
 
@@ -182,7 +185,8 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={convertMinutesToTime(formdata?.EstimatedTime || 0)}                />
+                  value={convertMinutesToTime(formdata?.EstimatedTime || 0)}
+                />
               </div>
 
               <div className="col-md-6">
@@ -195,7 +199,8 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={convertMinutesToTime(formdata?.ActualTime || 0)}                />
+                  value={convertMinutesToTime(formdata?.ActualTime || 0)}
+                />
               </div>
 
               <div className="col-md-6 mb-3">
@@ -209,19 +214,21 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.Remarks || ''}
+                  value={formdata?.Remarks || ""}
                 />
               </div>
 
               <div style={{ textAlign: "center" }} className="col-md-4">
                 <div>
-                  <button
-                    className="button-style mt-3 group-button mt-4 mb-2"
-                    style={{ width: "140px", fontSize: "13px" }}
-                    onClick={loadProgramSubmit}
-                  >
-                    Load Program Material
-                  </button>
+                  {!hasBOM ? (
+                    <button
+                      className="button-style mt-3 group-button mt-4 mb-2"
+                      style={{ width: "140px", fontSize: "13px" }}
+                      onClick={loadProgramSubmit}
+                    >
+                      Load Program Material
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -229,15 +236,19 @@ export default function Form1({
         </div>
       </div>
 
-      <ProgramMtrlTableProfile
-        afterRefreshData={afterRefreshData}
-        setAfterRefreshData={setAfterRefreshData}
-        showTable={showTable}
-        selectedMtrlTable={selectedMtrlTable}
-        rowSelectMtrlTable={rowSelectMtrlTable}
-        setSelectedMtrlTable={setSelectedMtrlTable}
-        selectedMachine={selectedMachine}
-      />
+      {hasBOM === true ? (
+        <ProgrmMatrlTableService/>
+      ) : (
+        <ProgramMtrlTableProfile
+          afterRefreshData={afterRefreshData}
+          setAfterRefreshData={setAfterRefreshData}
+          showTable={showTable}
+          selectedMtrlTable={selectedMtrlTable}
+          rowSelectMtrlTable={rowSelectMtrlTable}
+          setSelectedMtrlTable={setSelectedMtrlTable}
+          selectedMachine={selectedMachine}
+        />
+      )}
 
       <GlobalModal
         show={loadProgram}

@@ -19,6 +19,9 @@ const AuthProvider = ({ children }) => {
   const [shiftLogDetails, setShiftLogDetails] = useState([]);
   const [afterRefreshData,setAfterRefreshData]=useState([])
   const [formdata,setFormData]=useState([]);
+  const [hasBOM,setHasBOM]=useState('');
+  const [machineTaskService, setMachineTaskDataService] = useState([]);
+const[afterloadService,setAfterloadService]=useState([])
 
   return (
     <AppContext.Provider
@@ -32,7 +35,8 @@ const AuthProvider = ({ children }) => {
         shiftLogDetails,
         setShiftLogDetails,
         afterRefreshData,setAfterRefreshData,
-        formdata,setFormData
+        formdata,setFormData,
+        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService
       }}
     >
       {children}

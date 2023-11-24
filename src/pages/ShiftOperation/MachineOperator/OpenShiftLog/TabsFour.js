@@ -35,9 +35,9 @@ export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable
   };
 
   useEffect(() => {
-    console.log('Effect is running...');
+    // console.log('Effect is running...');
     const intervalId = setInterval(() => {
-      console.log('Updating time and date...');
+      // console.log('Updating time and date...');
       setCurrentTime(getCurrentTime());
       setCurrentDate(getCurrentDate());
     }, 1000);
@@ -45,7 +45,7 @@ export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable
     // Clean up the interval when the component is unmounted
     return () => {
       clearInterval(intervalId);
-      console.log('Interval cleared.');
+      // console.log('Interval cleared.');
     };
   }, []);
   
@@ -105,7 +105,7 @@ const getShiftLogDetails = () => {
 
 
     useEffect(()=>{
-      console.log('Calling getShiftLogDetails...');
+      // console.log('Calling getShiftLogDetails...');
       getShiftLogDetails();
     },[])
 

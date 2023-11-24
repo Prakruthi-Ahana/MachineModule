@@ -13,7 +13,7 @@ import { useState } from 'react';
 
 export default function CallFile() {
   const location = useLocation();
-  const {data}=location?.state || null;
+  const {data}=location?.state || '';
   
   let selectedMachine=data?.selectedMachine;
   let finalDay1=data?.finalDay1;

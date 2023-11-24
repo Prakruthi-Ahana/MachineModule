@@ -9,6 +9,7 @@ import GlobalModal from "../../GlobalModal";
 import ErrorModal from "./ErrorModal";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import MachineTaskService from "./MachineTaskService";
 
 export default function MachineTaskTable({
   selectshifttable,
@@ -25,7 +26,9 @@ export default function MachineTaskTable({
     setSelectedProgram,
     setShiftLogDetails,
     shiftLogDetails,
-    setFormData
+    setFormData,
+    hasBOM,
+    setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService
   } = useGlobalContext();
 
   // Modal Related code....
@@ -42,50 +45,54 @@ export default function MachineTaskTable({
   };
 
   const handleSubmit = () => {
-    afterLoadProgram();
-    setFormData(selectedProgram);
+    if(hasBOM===true){
+      getServiceMachineTask();
+      setAfterloadService(machineTaskService);
+    }
+    else{
+      afterLoadProgram();
+    }
+      setFormData(selectedProgram);
+      axios
+        .post(baseURL + "/ShiftOperator/loadProgram", {
+          selectedProgram,
+          selectshifttable,
+        })
+        .then((response) => {
+          toast.success("Program Loaded Successfully", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        });
+      getMachineShiftStatusForm();
     axios
-      .post(baseURL + "/ShiftOperator/loadProgram", {
-        selectedProgram,
-        selectshifttable,
+      .post(baseURL + "/ShiftOperator/getShiftLog", {
+        selectshifttable: selectshifttable,
       })
       .then((response) => {
-        toast.success("Program Loaded Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        getMachineShiftStatusForm();
-        axios
-          .post(baseURL + "/ShiftOperator/getShiftLog", {
-            selectshifttable: selectshifttable,
-          })
-          .then((response) => {
-            console.log("response ShiftLog is", response.data);
-            for (let i = 0; i < response.data.length; i++) {
-              // FOR TgtDelDate
-              let dateSplit = response.data[i].FromTime.split(" ");
-              let date = dateSplit[0].split("-");
-              let year = date[0];
-              let month = date[1];
-              let day = date[2];
-              let finalDay =
-                day + "/" + month + "/" + year + " " + dateSplit[1];
-              response.data[i].FromTime = finalDay;
-            }
-            for (let i = 0; i < response.data.length; i++) {
-              // Delivery_date
-              let dateSplit1 = response.data[i].ToTime.split(" ");
-              let date1 = dateSplit1[0].split("-");
-              let year1 = date1[0];
-              let month1 = date1[1];
-              let day1 = date1[2];
-              let finalDay1 =
-                day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
-              response.data[i].ToTime = finalDay1;
-            }
-
-            console.log(response.data);
-            setShiftLogDetails(response.data);
-          });
+        // console.log("response ShiftLog is", response.data);
+        for (let i = 0; i < response.data.length; i++) {
+          // FOR TgtDelDate
+          let dateSplit = response.data[i].FromTime.split(" ");
+          let date = dateSplit[0].split("-");
+          let year = date[0];
+          let month = date[1];
+          let day = date[2];
+          let finalDay = day + "/" + month + "/" + year + " " + dateSplit[1];
+          response.data[i].FromTime = finalDay;
+        }
+        for (let i = 0; i < response.data.length; i++) {
+          // Delivery_date
+          let dateSplit1 = response.data[i].ToTime.split(" ");
+          let date1 = dateSplit1[0].split("-");
+          let year1 = date1[0];
+          let month1 = date1[1];
+          let day1 = date1[2];
+          let finalDay1 =
+            day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
+          response.data[i].ToTime = finalDay1;
+        }
+        console.log(response.data);
+        setShiftLogDetails(response.data);
       });
     setOpen(false);
   };
@@ -94,9 +101,19 @@ export default function MachineTaskTable({
     setOpen(false);
   };
 
+  //select MachineTask Row nad Checking BOM
   const selectProgramFun = (item, index) => {
     let list = { ...item, index: index };
     setSelectedProgram(list);
+    // console.log(list);
+    axios
+      .post(baseURL + "/ShiftOperator/checkhasBOM", {
+        NCId: list?.Ncid,
+      })
+      .then((response) => {
+        console.log(response.data);
+        setHasBOM(response.data);
+      });
   };
 
   useEffect(() => {
@@ -106,20 +123,39 @@ export default function MachineTaskTable({
   }, [getMachinetaskdata, selectedProgram, selectProgramFun]);
 
   const [machineTaskData, setMachineTaskData] = useState([]);
-  const machinetask = () => {
+  const getServiceMachineTask=()=>{
     axios
-      .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
-        NCId: selectedProgram?.Ncid,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setMachineTaskData(response.data);
-        setIsDataDisplayed(true); // Data is displayed
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsDataDisplayed(false);
-      });
+    .post(baseURL + "/ShiftOperator/MachineTasksService", {
+      NCId: selectedProgram?.Ncid,
+    })
+    .then((response) => {
+      console.log(response.data);
+      setMachineTaskDataService(response.data);
+      setIsDataDisplayed(true); // Data is displayed
+    })
+    .catch((err) => {
+      console.log(err);
+      setIsDataDisplayed(false);
+    });
+  }
+  const machinetask = () => {
+    if (hasBOM === true) {
+      getServiceMachineTask();
+    } else {
+      axios
+        .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+          NCId: selectedProgram?.Ncid,
+        })
+        .then((response) => {
+          console.log(response.data);
+          setMachineTaskData(response.data);
+          setIsDataDisplayed(true); // Data is displayed
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsDataDisplayed(false);
+        });
+    }
   };
 
   let NCProgramNo = selectedProgram.NCProgramNo;
@@ -370,17 +406,21 @@ export default function MachineTaskTable({
         </div>
       </div>
 
-      <MachineTaskProfile
-        selectedProgram={selectedProgram}
-        machineTaskData={machineTaskData}
-        machinetask={machinetask}
-        setIsDataDisplayed={setIsDataDisplayed}
-      />
-
-        <ErrorModal
-          ErrorshowModal={ErrorshowModal}
-          setErrorshowModal={setErrorshowModal}
+      {hasBOM === true ? (
+        <MachineTaskService machineTaskService={machineTaskService} />
+      ) : (
+        <MachineTaskProfile
+          selectedProgram={selectedProgram}
+          machineTaskData={machineTaskData}
+          machinetask={machinetask}
+          setIsDataDisplayed={setIsDataDisplayed}
         />
+      )}
+
+      <ErrorModal
+        ErrorshowModal={ErrorshowModal}
+        setErrorshowModal={setErrorshowModal}
+      />
     </>
   );
 }

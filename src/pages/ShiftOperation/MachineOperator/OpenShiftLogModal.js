@@ -25,6 +25,7 @@ export default function OpenShiftModal({
 
   const navigate = useNavigate();
   const openShiftPage = () => {
+    console.log(requiredProgram,"onclick of yes")
     navigate("OpenShiftLog", { state: { data } });
     axios
       .post(baseURL + "/ShiftOperator/onClickYes", {
