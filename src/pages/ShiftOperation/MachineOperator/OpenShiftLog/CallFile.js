@@ -23,7 +23,7 @@ export default function CallFile() {
 
 
 
-  const{NcId,setAfterRefreshData}=useGlobalContext();
+  const{NcId,setAfterRefreshData,setFormData,setNcProgramId,setAfterloadService,setServiceTopData}=useGlobalContext();
 
   const[afterloadProgram,setAfterloadProgram]=useState([])
 
@@ -88,6 +88,60 @@ const[machineShiftStatus,setMachineShiftStatus]=useState([])
         console.error("Error occurred:", error);
       });
   };
+
+  //get After  Refresh
+  const getmiddleTbaleData = () => {
+    console.log("api called");
+    axios
+      .post(baseURL + "/ShiftOperator/ProgramMaterialAfterRefresh", {
+        selectshifttable,
+        NcId,
+      })
+      .then((response) => {
+        console.log("required result", response.data.complexData2);
+        setAfterRefreshData(response?.data?.complexData1);
+        if (!response.data.complexData1) {
+          setAfterRefreshData([]);
+        }
+        setFormData(response?.data?.complexData2[0]);
+        setNcProgramId(response?.data.complexData2[0].Ncid)
+      });
+  };
+
+  //service middletabledata
+  const serviceMiddleTableData = () => {
+    console.log("api called");
+    axios
+      .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
+        selectshifttable,
+        NcId,
+      })
+      .then((response) => {
+        console.log("required result", response.data);
+        setAfterloadService(response?.data);
+        if (!response.data) {
+          setAfterloadService([]);
+        }
+      });
+  };
+
+  const getTableTopFunc=()=>{
+    axios
+      .post(baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh", {
+        selectshifttable,
+      })
+      .then((response) => {
+        console.log("required result", response.data);
+        setServiceTopData( response.data);
+      });
+  }
+
+  useEffect(() => {
+    // console.log("calling function")
+    getmiddleTbaleData();
+    getTableTopFunc();
+    serviceMiddleTableData();
+  }, []);
 
   return (
     <>

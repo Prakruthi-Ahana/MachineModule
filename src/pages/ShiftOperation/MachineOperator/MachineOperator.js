@@ -8,8 +8,21 @@ import OpenShiftModal from "./OpenShiftLogModal";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../../Context/Context";
 
+
 export default function MachineOperator() {
-  const{afterRefreshData,setAfterRefreshData,NcId,formdata,setFormData}=useGlobalContext();
+  const {
+    afterRefreshData,
+    setAfterRefreshData,
+    NcId,
+    formdata,
+    setFormData,
+    hasBOM,
+    afterloadService,
+    setAfterloadService,
+    shiftSelected,
+    setShiftSelected,
+    servicetopData,setServiceTopData,NcProgramId,setNcProgramId
+  } = useGlobalContext();
   //get Machine List
   const [machineList, setMachineList] = useState([]);
   const getMachineList = () => {
@@ -21,8 +34,6 @@ export default function MachineOperator() {
   useEffect(() => {
     getMachineList();
   }, []);
-
-
 
   //Selected Machine
   const moment = require("moment");
@@ -41,17 +52,19 @@ export default function MachineOperator() {
   let day1 = date1[2];
   let finalDay1 = day1 + "/" + month1 + "/" + year1;
   let Time = array[1].split(":");
-  let hour = Time[0];
+  let hour = parseInt(Time[0]); // Ensure hour is parsed as an integer
   let Shift = "";
-  if (hour < 14 && hour >= 6) {
+  if (hour >= 6 && hour < 14) {
     Shift = "First";
   } else if (hour >= 14 && hour < 22) {
     Shift = "Second";
-  } else if (hour >= 22 && hour < 6) {
+  } else {
     Shift = "Third";
   }
 
-    const [selectedMachine, setSelectedMachine] = useState("");
+  console.log("Shift:", Shift);
+
+  const [selectedMachine, setSelectedMachine] = useState("");
   const [shiftDetails, setShiftDetails] = useState([]);
   const handleMachineChange = (e) => {
     setSelectedMachine(e.target.value);
@@ -88,33 +101,62 @@ export default function MachineOperator() {
   console.log(selectshifttable);
 
   const data = {
-    selectedMachine: selectedMachine || '',
-    finalDay1: finalDay1 || '',
-    selectshifttable: selectshifttable || '',
-    Shift: Shift || '',
-    date: date || '',
+    selectedMachine: selectedMachine || "",
+    finalDay1: finalDay1 || "",
+    selectshifttable: selectshifttable || "",
+    Shift: Shift || "",
+    date: date || "",
   };
 
-
-
-  const getmiddleTbaleData=()=>{
-    console.log("api called")
+  //profile
+  const getmiddleTbaleData = () => {
+    console.log("api called");
     axios
-    .post(baseURL + "/ShiftOperator/ProgramMaterialAfterRefresh", {
-      selectshifttable,NcId
-    })
-    .then((response) => {
-      console.log("required result",response.data.complexData1);
-      setAfterRefreshData(response?.data?.complexData1);
-      if (!response.data.complexData1) {
-        setAfterRefreshData([]);
-      }
-      setFormData(response?.data?.complexData2[0])
-    });
-  }
+      .post(baseURL + "/ShiftOperator/ProgramMaterialAfterRefresh", {
+        selectshifttable,
+        NcId,
+      })
+      .then((response) => {
+        console.log("required result", response.data.complexData2);
+        setAfterRefreshData(response?.data?.complexData1);
+        if (!response.data.complexData1) {
+          setAfterRefreshData([]);
+        }
+        setFormData(response?.data?.complexData2[0]);
+        setNcProgramId(response?.data.complexData2[0].Ncid)
+      });
+  };
 
+  //service middletabledata
+  const serviceMiddleTableData = () => {
+    console.log("api called");
+    axios
+      .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
+        selectshifttable,
+        NcId,
+      })
+      .then((response) => {
+        console.log("required result", response.data);
+        setAfterloadService(response?.data);
+        if (!response.data) {
+          setAfterloadService([]);
+        }
+      });
+  };
+
+  //openShiftLog Button
   const openShiftLogModal = () => {
-   getmiddleTbaleData();
+    setShiftSelected(selectshifttable);
+    serviceMiddleTableData();
+    getmiddleTbaleData();
+    axios
+      .post(baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh", {
+        selectshifttable,
+      })
+      .then((response) => {
+        console.log("required result", response.data);
+        setServiceTopData( response.data);
+      });
     axios
       .post(baseURL + "/ShiftOperator/getRowCounts", {
         selectshifttable,
@@ -145,10 +187,11 @@ export default function MachineOperator() {
       });
   };
 
-  useEffect(()=>{
-    console.log("after refresh useEffect")
-    getmiddleTbaleData();
-  },[])
+
+
+  const onClickofClose=()=>{
+    navigate("/Machine");
+  }
 
   return (
     <div>
@@ -191,11 +234,18 @@ export default function MachineOperator() {
           </div>
           <div className="col-md-4">
             <button
-              className="button-style  mt-2  group-button"
+              className="button-style   group-button"
               onClick={openShiftLogModal}
             >
               Open Shift Log
             </button>
+            <button
+                className="button-style group-button ms-2"
+                style={{ width: "130px"}}
+                onClick={onClickofClose}
+              >
+                Close
+              </button>
           </div>
         </div>
         <div></div>
@@ -230,7 +280,7 @@ export default function MachineOperator() {
                 <p>6:00:00</p>
               ) : Shift === "Second" ? (
                 <p>14:00:00</p>
-              ) : Shift === "Second" ? (
+              ) : Shift === "Third" ? (
                 <p>22:00:00</p>
               ) : null}
             </div>
@@ -246,7 +296,7 @@ export default function MachineOperator() {
                 <p>14:00:00</p>
               ) : Shift === "Second" ? (
                 <p>22:00:00</p>
-              ) : Shift === "Second" ? (
+              ) : Shift === "Third" ? (
                 <p>6:00:00</p>
               ) : null}
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import * as FaIcons from "react-icons/fa";
@@ -25,11 +25,69 @@ const SidebarWrap = styled.div`
 const SidebarComp = () => {
   const location = useLocation();
 
+  const [newSideBarData, setnewSideBarData] = useState(customerSidebar);
+  const [accessSideBarData, setAccessSideBarData] = useState([]);
+
+  console.log(customerSidebar);
+
+  let [lazerUser, setLazerUser] = useState(
+    JSON.parse(localStorage.getItem("LaserUser"))
+  );
+
   const [sidebar, setSidebar] = useState(true);
 
   function showSidebar() {
     setSidebar(!sidebar);
   }
+
+  //access information is present in laser user
+  //modify the array in newSideBarData based on laserUserdata
+  useEffect(() => {
+    const tempArray = [...accessSideBarData]; //creating a copy of the accessSideBar
+    console.log(newSideBarData, "NEW SIDE BAR DATA");
+
+    //console.log(access, 'access')
+    function filterSidebarData(data, accessPaths) {
+      const result1 = [];
+
+      console.log(data);
+
+      data.forEach((element) => {
+        console.log(element);
+        if (element.subNav) {
+          console.log(element.subNav);
+          const subNavFiltered = filterSidebarData(element.subNav, accessPaths);
+
+          element.subNav = subNavFiltered;
+          console.log(subNavFiltered);
+          if (subNavFiltered.length > 0 || accessPaths.includes(element.path)) {
+            console.log(element, "existtttttttttttttttttttttttttttttttttt");
+            result1.push(element);
+          }
+        } else {
+          if (accessPaths.includes(element.path)) {
+            result1.push(element);
+          }
+        }
+      });
+
+      return result1;
+    }
+
+    const result1 = filterSidebarData(newSideBarData, lazerUser?.data?.access);
+
+    console.log(result1);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    setAccessSideBarData(result1);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // setAccessSideBarData(tempArray);
+  }, []);
+
+  console.log(accessSideBarData, "Access Side Bar Data");
 
   return (
     <>
@@ -53,7 +111,9 @@ const SidebarComp = () => {
 
           {(location.pathname.startsWith("/admin")
             ? adminSidebar
-            : customerSidebar
+            : location.pathname.startsWith("/Machine")
+            ? accessSideBarData
+            : null
           ).map((item, index) => {
             return <SubMenuComp item={item} key={index} sidebar={sidebar} />;
           })}

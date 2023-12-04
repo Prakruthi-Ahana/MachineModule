@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.section}>
-          <Text>{selectRow?.DwgName}</Text>
+          <Text>{selectRow}</Text>
         </View>
       </Page>
     </Document>

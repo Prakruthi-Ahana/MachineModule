@@ -9,12 +9,9 @@ import MaterialUsageService from "./MaterialUsageTab/MaterialUsageService";
 export default function MaterialAndPartsTabs({
   selectProductionReport,
   openTable,
-  selectshifttable,
+  selectshifttable,rpTopData
 }) {
   const { hasBOM } = useGlobalContext();
-
-  
-
   const [key, setKey] = useState("mu");
   // console.log("dde", selectProductionReport )
   return (
@@ -29,7 +26,11 @@ export default function MaterialAndPartsTabs({
         >
           <Tab eventKey="mu" title="Material Usage">
             {hasBOM === true ? (
-              <MaterialUsageService />
+              <MaterialUsageService
+              openTable={openTable}
+              selectProductionReport={selectProductionReport}
+              rpTopData={rpTopData}
+               />
             ) : (
               <LaserCutForm
                 selectProductionReport={selectProductionReport}
@@ -41,7 +42,9 @@ export default function MaterialAndPartsTabs({
           </Tab>
 
           <Tab eventKey="pd" title="Parts Details">
-            <ShowDfxForm />
+            <ShowDfxForm
+            openTable={openTable}
+             />
           </Tab>
         </Tabs>
       </div>

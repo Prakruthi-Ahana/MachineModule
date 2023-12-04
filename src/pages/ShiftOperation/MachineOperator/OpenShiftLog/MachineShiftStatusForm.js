@@ -51,7 +51,7 @@ export default function MachineShiftStatusForm({
   };
   
 
-  console.log(machineShiftStatus[0])
+  // console.log(machineShiftStatus[0])
 
   const [runningTime, setRunningTime] = useState("")
   useEffect(() => {

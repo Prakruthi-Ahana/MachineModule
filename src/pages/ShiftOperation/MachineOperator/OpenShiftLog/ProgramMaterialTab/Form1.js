@@ -13,7 +13,7 @@ export default function Form1({
   showTable,
   setAfterloadProgram,
   selectedMachine,
-  getMachineShiftStatusForm,
+  getMachineShiftStatusForm,selectshifttable
 }) {
   const {
     afterRefreshData,
@@ -237,7 +237,10 @@ export default function Form1({
       </div>
 
       {hasBOM === true ? (
-        <ProgrmMatrlTableService/>
+        <ProgrmMatrlTableService
+        showTable={showTable}
+        selectshifttable={selectshifttable}
+        />
       ) : (
         <ProgramMtrlTableProfile
           afterRefreshData={afterRefreshData}

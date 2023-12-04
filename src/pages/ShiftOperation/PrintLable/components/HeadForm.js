@@ -4,77 +4,97 @@ import { baseURL } from "../../../../api/baseUrl";
 import PrintSelectedModal from "../PrintPDF/PrintSelected/PrintSelectedModal";
 import GlobalModal from "../../MachineOperator/GlobalModal";
 import PrintAllModal from "../PrintPDF/PrintAll/PrintAllModal";
+import { useNavigate } from "react-router-dom";
 
-export default function HeadForm({ setNcprogramNo, LoadProgram, selectRow ,printLabelData }) {
+export default function HeadForm({
+  setNcprogramNo,
+  LoadProgram,
+  selectedRows,
+  printLabelData,
+}) {
   const handleChangeNcProgram = (e) => {
     setNcprogramNo(e.target.value);
   };
-  
 
-  const [openPrintSelect, setOpenPrintSelected] = useState(false);
-  const openPrintSelectedPdf = () => {
-    setOpenPrintSelected(true);
+  //Print Selected
+  const [currentIndex1, setCurrentIndex1] = useState(0);
+  const [askPrintSelected, setAskPrintSelected] = useState("");
+  const [onClickyesPS, setOnclickofYesPS] = useState(false);
+  const [loopedBack1, setLoopedBack1] = useState(false);
+
+  const askPrintSelectedModal = () => {
+    setAskPrintSelected(true);
   };
 
-  
-  //Print All Modal 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const[currentDwg,setCurrentDwg]=useState('')
-  const[askPrintAll,setAskPrintAll]=useState('');
-  const  askPrintAllModal=()=>{
-    setAskPrintAll(true);
-  }
-
-  const hadleclose=()=>{
-    setAskPrintAll(false);
-  }
-  
-
-  //onClick yes print modal
-  const[onClickyes,setOnclickofYes]=useState(false);
-  const onClickofyes = () => {
-    // Close the current GlobalModal
-    setAskPrintAll(false);
-
-    // Render the modal with the content based on the current object
-    const currentObject = printLabelData[currentIndex];
-
-    // Pass the current object to both modals
-    setOnclickofYes(currentObject);
-
-    // Open the GlobalModal for the current object
-    askPrintAllModal();
+  const hadleclose1 = () => {
+    setAskPrintSelected(false);
   };
 
-  // Render the modal with the content based on the current object
-const currentObject = printLabelData[currentIndex];
+  const onClickofyesPS = () => {
+    setAskPrintSelected(false);
+    const currentObject1 = selectedRows[currentIndex1];
+    setOnclickofYesPS(currentObject1);
+    askPrintSelectedModal();
+  };
+  const currentObject1 = selectedRows[currentIndex1];
 
-
-// ...
-
-// Additional state to track whether it has looped back to index 0
-const [loopedBack, setLoopedBack] = useState(false);
-
-const handleClosepdf = () => {
-  setOnclickofYes(false);
-
-  // Check if there are more objects to process
-  if (currentIndex + 1 < printLabelData.length) {
-    // Increment the index to move to the next object
-    setCurrentIndex(currentIndex + 1);
-
-    // Open the GlobalModal for the next object
-    askPrintAllModal();
-  } else {
-    // If all objects are processed and not looped back yet
-    if (!loopedBack) {
-      // Set the loopedBack flag to true
-      setLoopedBack(true);
-      setAskPrintAll(false);
+  const handleClosepdf1 = () => {
+    setOnclickofYesPS(false);
+    if (currentIndex1 + 1 < selectedRows.length) {
+      setCurrentIndex1(currentIndex1 + 1);
+      askPrintSelectedModal();
+    } else {
+      if (!loopedBack1) {
+        setLoopedBack1(true);
+        setAskPrintSelected(false);
+      }
     }
-    // If looped back, stop further processing
-  }
-};
+  };
+
+  //Print All Modal
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [askPrintAll, setAskPrintAll] = useState("");
+  const [onClickyes, setOnclickofYes] = useState(false);
+  const [loopedBack, setLoopedBack] = useState(false);
+
+  const askPrintAllModal = () => {
+    setAskPrintAll(true);
+  };
+
+  const hadleclose = () => {
+    setAskPrintAll(false);
+  };
+
+  const onClickofyes = () => {
+    setAskPrintAll(false);
+    const currentObject = printLabelData[currentIndex];
+    setOnclickofYes(currentObject);
+    askPrintAllModal();
+  };
+  const currentObject = printLabelData[currentIndex];
+
+  const handleClosepdf = () => {
+    setOnclickofYes(false);
+    if (currentIndex + 1 < printLabelData.length) {
+      setCurrentIndex(currentIndex + 1);
+      askPrintAllModal();
+    } else {
+      if (!loopedBack) {
+        setLoopedBack(true);
+        setAskPrintAll(false);
+      }
+    }
+  };
+
+
+  //onclick of close
+  const navigate = useNavigate();
+  const onClickofClose = () => {
+    navigate("/Machine");
+  };
+
+  console.log("selectedRows",selectedRows);
+  console.log("printLabelData",printLabelData);
 
 
   return (
@@ -85,13 +105,13 @@ const handleClosepdf = () => {
         </div>
       </div>
 
-      <div className="bg-light row mt-2 col-md-12">
+      <div className="row  col-md-12">
         <div className="col-md-2 mb-1">
           <label className="form-label">Enter NC Program No</label>
           <input type="text" onChange={handleChangeNcProgram} />
         </div>
 
-        <div className="col-md-3">
+        <div className="col-md-2">
           <button
             className="button-style mt-4 group-button ms-2"
             style={{ width: "150px" }}
@@ -101,7 +121,7 @@ const handleClosepdf = () => {
           </button>
         </div>
 
-        <div className="col-md-3" style={{ marginLeft: "-116px" }}>
+        <div className="col-md-2" style={{marginLeft:'-10px'}} >
           <button
             className="button-style mt-4 group-button"
             style={{ width: "150px" }}
@@ -111,35 +131,25 @@ const handleClosepdf = () => {
           </button>
         </div>
 
-        <div className="col-md-3" style={{ marginLeft: "-116px" }}>
+        <div className="col-md-2" style={{marginLeft:'-10px'}}>
           <button
             className="button-style mt-4 group-button"
             style={{ width: "150px" }}
-            onClick={openPrintSelectedPdf}
+            onClick={askPrintSelectedModal}
           >
             Print Selected
           </button>
         </div>
-      </div>
-
-      <PrintSelectedModal
-        openPrintSelect={openPrintSelect}
-        setOpenPrintSelected={setOpenPrintSelected}
-        selectRow={selectRow}
-      />
-
-<GlobalModal
-        show={askPrintAll}
-        title="magod_machine"
-        content={
-          <div>
-            Do You wish to Print '{currentObject?.DwgName}'?
+        <div className="col-md-2" style={{marginLeft:'-20px'}}>
+          <button
+            className="button-style mt-4 group-button"
+            style={{ width: "150px" }}
+            onClick={onClickofClose}
+          >
+            Close
+          </button>
           </div>
-        }
-        onYesClick={() => onClickofyes()}
-        onNoClick={() => hadleclose()}
-        onClose={() => hadleclose()}
-      />
+      </div>
 
       <PrintAllModal
         onClickyes={onClickyes}
@@ -147,6 +157,33 @@ const handleClosepdf = () => {
         currentObject={currentObject?.DwgName}
         onClose={() => handleClosepdf()}
       />
+
+      <PrintSelectedModal
+        openPrintSelect={onClickyesPS}
+        setOpenPrintSelected={setOnclickofYesPS}
+        currentObjectNew={currentObject1?.DwgName}
+        onClose={()=>handleClosepdf1()}
+      />
+
+      <GlobalModal
+        show={askPrintSelected}
+        title="magod_machine"
+        content={<div>Do You wish to Print '{currentObject1?.DwgName}'?</div>}
+        onYesClick={() => onClickofyesPS()}
+        onNoClick={() => hadleclose1()}
+        onClose={() => hadleclose1()}
+      />
+
+<GlobalModal
+        show={askPrintAll}
+        title="magod_machine"
+        content={<div>Do You wish to Print '{currentObject?.DwgName}'?</div>}
+        onYesClick={() => onClickofyes()}
+        onNoClick={() => hadleclose()}
+        onClose={() => hadleclose()}
+      />
+
+     
     </div>
   );
 }

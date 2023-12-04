@@ -69,6 +69,7 @@ export default function LaserCutForm({ selectProductionReport, openTable,selects
         setProductionReportData(response.data);
       });
   };
+  
   useEffect(() => {
     MaterialUsage();
   }, [selectProductionReport]);

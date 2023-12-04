@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ErrorReportForm from "./ErrorReportForm";
 import { baseURL } from "../../../../api/baseUrl";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import StoppageAskModal from "./StoppageAskModal";
 
 export default function OpenShiftLogForm({
@@ -91,6 +92,7 @@ const onClickgetProgram=()=>{
     console.log("select option", e.target.value);
     setStoppageReason(e.target.value);
     if (e.target.value !== " ") {
+      console.log("first condition")
       setAlreadyLoad(true);
     } else {
       console.log("rtyuiop");
@@ -166,21 +168,14 @@ const onClickgetProgram=()=>{
   }, []); // Empty dependency array ensures that the effect runs only once on mount
 
 
+  const navigate = useNavigate();
+  const onClickofClose=()=>{
+    navigate("/Machine");
+  }
+
+
   return (
     <div>
-      <StoppageAskModal
-        alreadyLoad={alreadyLoad}
-        setAlreadyLoad={setAlreadyLoad}
-        stoppageReason={stoppageReason}
-        selectshifttable={selectshifttable}
-        selectedStoppageID={selectedStoppageID}
-        selectedStoppage={selectedStoppage}
-        setShowTable={setShowTable}
-        showTable={showTable}
-        setInputVisible={setInputVisible}
-        isInputVisible={isInputVisible}
-        getMachineShiftStatusForm={getMachineShiftStatusForm}
-      />
       <div className="row">
         <div className="col-md-12">
           <h4 className="title">Machine Log Book</h4>
@@ -256,6 +251,13 @@ const onClickgetProgram=()=>{
               >
                 Refresh
               </button>
+              <button
+                className="button-style group-button"
+                style={{ width: "110px", marginTop: "10px", fontSize: "14px" }}
+                onClick={onClickofClose}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
@@ -293,6 +295,19 @@ const onClickgetProgram=()=>{
         setErrorForm={setErrorForm}
         selectedMachine={selectedMachine}
         selectshifttable={selectshifttable}
+      />
+
+      <StoppageAskModal
+      setAlreadyLoad={setAlreadyLoad}
+      alreadyLoad={alreadyLoad}
+      selectedStoppageID={selectedStoppageID}
+      selectshifttable={selectshifttable}
+      selectedStoppage={selectedStoppage}
+      setShowTable={setShowTable}
+      showTable={showTable}
+      setInputVisible={setInputVisible}
+      isInputVisible={isInputVisible}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
       />
     </div>
   );
