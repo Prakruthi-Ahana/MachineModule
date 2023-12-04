@@ -26,7 +26,7 @@ function App() {
           <Route path="/Machine/MachineOperator" element={<MachineOperator/>}/>
           <Route path="/Machine/MachineOperator/OpenShiftLog" element={<CallFile/>}/>
           <Route path="/Machine/ServerInfo" element={<ServerInfo/>}/>
-          <Route path="/Machine/PrintLable" element={<PrintLable/>}/>
+          <Route path="/Machine/PrintLabel" element={<PrintLable/>}/>
           {/* <Route path="/Machine/StoppageList" element={<StoppageList/>}/> */}
           </Route>
           {/* <Route path="/form" element={<CallFile/>}/> */}

@@ -2,92 +2,84 @@ import React, { useMemo, useState } from "react";
 import ProgramMtrlTableProfile from "./ProgramMtrlTableProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
 import GlobalModal from "../../GlobalModal";
-import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
-import MaterialLoadModal from "./MaterialLoadModal";
-import { useEffect } from "react";
+import ProgrmMatrlTableService from "./ProgrmMatrlTableService";
 
-export default function Form1({ afterloadProgram, showTable, setAfterloadProgram,selectedMachine}) {
+export default function Form1({
+  afterloadProgram,
+  showTable,
+  setAfterloadProgram,
+  selectedMachine,
+  getMachineShiftStatusForm,selectshifttable
+}) {
+  const {
+    afterRefreshData,
+    setAfterRefreshData,
+    formdata,
+    setFormData,
+    hasBOM,machineTaskService
+  } = useGlobalContext();
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
 
-  const{SheetId,setSheetId}=useGlobalContext();
-  const{FormattedDate , setFormattedDate} = useGlobalContext();
-  const{FormattedTime,setFormattedTime} = useGlobalContext();
-  const handleClose=()=>{
-    setLoadProgram(false);
-    setmismatchModal(false)
-        }
+  const handleSubmit = () => {
+    setmismatchModal(true);
+  };
 
-  const{selectedProgram,afterloadData,setAfterloadData }=useGlobalContext();
-  console.log(afterloadData)
+  const handleClose = () => {
+    setLoadProgram(false);
+    setmismatchModal(false);
+  };
 
   //selecting table
-  const[selectedMtrlTable,setSelectedMtrlTable]=useState({})
-  const rowSelectMtrlTable=(item,index)=>{
-      let list={...item,index:index}
-      setSelectedMtrlTable(list);
-  }
+  const [selectedMtrlTable, setSelectedMtrlTable] = useState({});
+  const rowSelectMtrlTable = (item, index) => {
+    let list = { ...item, index: index };
+    setSelectedMtrlTable(list);
+  };
 
-  useMemo(()=>{
-   setSelectedMtrlTable({...afterloadProgram[0],index:0})
-  },[afterloadProgram[0]])
+  useMemo(() => {
+    // console.log("afterRefreshData[0]:", afterRefreshData[0]);
+    setSelectedMtrlTable({ ...afterRefreshData[0], index: 0 });
+  }, [afterRefreshData[0]]);
 
   const loadProgramSubmit = () => {
-    if(selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1 )
-    {
-      toast.error('Cannot Load the Material that is Used or Rejected', {
-        position: toast.POSITION.TOP_CENTER
+    if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
+      toast.error("Cannot Load the Material that is Used or Rejected", {
+        position: toast.POSITION.TOP_CENTER,
       });
-    }
-    else{
+    } else {
       setLoadProgram(true);
     }
   };
 
-  const onclickofYes=()=>{
-    console.log("clicked yes in Load Material");
-    const startTime = new Date();
+  const onclickofYes = () => {
     axios
-    .post(baseURL + "/ShiftOperator/loadMaterial", {
-      selectedMtrlTable,
-      MachineName:selectedMachine
-    })
-    .then((response) => {
-      console.log(response.data);
-      const currentDate = new Date();
-      const options = {
-        day: '2-digit',
-        month: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      };
-      const formattedDateValue = currentDate.toLocaleDateString('en-GB', options)
-        .replace(/\//, '/')
-        .replace(',', '');
-        setFormattedDate(formattedDateValue);
-
-        const endTime = new Date();
-      const elapsedTime = endTime - startTime;
-
-      const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
-      const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-
-      const formattedTime = `${hours} Hours ${minutes} Min`;
-
-
-        setFormattedTime(formattedTime);
-        
-
-    
-    });
+      .post(baseURL + "/ShiftOperator/loadMaterial", {
+        selectedMtrlTable,
+        MachineName: selectedMachine,
+      })
+      .then((response) => {});
     setLoadProgram(false);
-    setSheetId(selectedMtrlTable.ShapeMtrlID)
-  }
+    getMachineShiftStatusForm();
+  };
 
-  
+  // Utility function to convert minutes to "hh:mm" format
+  const convertMinutesToTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    const hoursString = hours > 0 ? `${hours} Hours` : "";
+    const minsString = mins > 0 ? `${mins} Min` : "";
+
+    return `${hoursString} ${minsString}`.trim();
+  };
+
+  // console.log(hasBOM);
+
   return (
     <>
       <div>
@@ -109,9 +101,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                
-                  value={showTable ? afterloadData.NCProgramNo : ''}
-                
+                  value={formdata?.NCProgramNo || ""}
                 />
               </div>
 
@@ -125,7 +115,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                 <input
                   className="in-field "
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={ showTable ? afterloadData.Qty : ''}
+                  value={formdata?.Qty || ""}
                 />
               </div>
 
@@ -139,7 +129,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={ showTable ? afterloadData.QtyAllotted : ''}
+                  value={formdata?.QtyAllotted || ""}
                 />
               </div>
 
@@ -153,7 +143,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={ showTable ? afterloadData.QtyCut : ''}
+                  value={formdata?.QtyCut || ""}
                 />
               </div>
 
@@ -167,7 +157,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={ showTable ? afterloadData?.NoOfDwgs : ''}
+                  value={formdata?.NoOfDwgs || ""}
                 />
               </div>
 
@@ -181,7 +171,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={ showTable ? afterloadData?.TotalParts : ''}
+                  value={formdata?.TotalParts || ""}
                 />
               </div>
 
@@ -195,6 +185,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  value={convertMinutesToTime(formdata?.EstimatedTime || 0)}
                 />
               </div>
 
@@ -208,6 +199,7 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  value={convertMinutesToTime(formdata?.ActualTime || 0)}
                 />
               </div>
 
@@ -216,61 +208,71 @@ export default function Form1({ afterloadProgram, showTable, setAfterloadProgram
                   className="form-label"
                   style={{ fontSize: "12px", marginLeft: "-15px" }}
                 >
-                
                   Remarks
                 </label>
 
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  value={formdata?.Remarks || ""}
                 />
               </div>
 
               <div style={{ textAlign: "center" }} className="col-md-4">
                 <div>
-                  <button
-                    className="button-style mt-3 group-button mt-4 mb-2"
-                    style={{ width: "140px", fontSize: "13px" }}
-                    onClick={loadProgramSubmit}
-                  >
-                    Load Program Material
-                  </button>
+                  {!hasBOM ? (
+                    <button
+                      className="button-style mt-3 group-button mt-4 mb-2"
+                      style={{ width: "140px", fontSize: "13px" }}
+                      onClick={loadProgramSubmit}
+                    >
+                      Load Program Material
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      
       </div>
 
-      <ProgramMtrlTableProfile
-        afterloadProgram={afterloadProgram}
-        setAfterloadProgram={setAfterloadProgram}
+      {hasBOM === true ? (
+        <ProgrmMatrlTableService
         showTable={showTable}
-        selectedMtrlTable={selectedMtrlTable}
-        rowSelectMtrlTable={rowSelectMtrlTable}
-        setSelectedMtrlTable={setSelectedMtrlTable}
+        selectshifttable={selectshifttable}
+        />
+      ) : (
+        <ProgramMtrlTableProfile
+          afterRefreshData={afterRefreshData}
+          setAfterRefreshData={setAfterRefreshData}
+          showTable={showTable}
+          selectedMtrlTable={selectedMtrlTable}
+          rowSelectMtrlTable={rowSelectMtrlTable}
+          setSelectedMtrlTable={setSelectedMtrlTable}
+          selectedMachine={selectedMachine}
+        />
+      )}
+
+      <GlobalModal
+        show={loadProgram}
+        title="magod_machine"
+        content=<div>
+          Do You wish to Load Material ID:{" "}
+          <strong>{selectedMtrlTable.ShapeMtrlID}</strong> ?
+        </div>
+        onYesClick={() => onclickofYes()}
+        onNoClick={() => setLoadProgram(false)}
+        onClose={handleClose}
       />
 
       <GlobalModal
-      show={mismatchModal}
-      title="magod_machine"
-      content=<div>Parts Quantity Mismatch</div>
-      onYesClick={() => setmismatchModal(false)} 
-      onNoClick={() => setmismatchModal(false)} 
-      onClose={handleClose}
+        show={mismatchModal}
+        title="magod_machine"
+        content=<div>Parts Quantity Mismatch</div>
+        onYesClick={() => setmismatchModal(false)}
+        onNoClick={() => setmismatchModal(false)}
+        onClose={handleClose}
       />
-
-      <MaterialLoadModal
-       loadProgram={loadProgram}
-       setLoadProgram={setLoadProgram}
-       selectedMtrlTable={selectedMtrlTable}
-       onclickofYes={onclickofYes}
-
-
-      />
-
-
     </>
   );
 }

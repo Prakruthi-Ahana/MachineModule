@@ -1,7 +1,9 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect } from "react";
 import { Button } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
+import { baseURL } from "../../../api/baseUrl";
 
 export default function OpenShiftModal({
   openmodal,
@@ -11,12 +13,8 @@ export default function OpenShiftModal({
   selectshifttable,
   Shift,
   date,
+  requiredProgram,
 }) {
-
-  const handleClose = () => {
-    setOpenmodal(false);
-  };
-
   const data = {
     selectedMachine: selectedMachine,
     finalDay1: finalDay1,
@@ -27,10 +25,16 @@ export default function OpenShiftModal({
 
   const navigate = useNavigate();
   const openShiftPage = () => {
+    console.log(requiredProgram,"onclick of yes")
     navigate("OpenShiftLog", { state: { data } });
+    axios
+      .post(baseURL + "/ShiftOperator/onClickYes", {
+        requiredProgram,
+        selectshifttable,
+      })
+      .then((response) => {});
   };
 
-  console.log(selectshifttable);
   const countUserDefinedProperties = (obj) => {
     let count = 0;
     for (let key in obj) {
@@ -43,22 +47,47 @@ export default function OpenShiftModal({
 
   const numberOfProperties = countUserDefinedProperties(selectshifttable);
 
+  const handleClose = () => {
+    navigate("OpenShiftLog", { state: { data } });
+    axios
+      .post(baseURL + "/ShiftOperator/onClickNo", {
+        requiredProgram,
+        selectshifttable,
+      })
+      .then((response) => {});
+    setOpenmodal(false);
+  };
+
+  const handleCloseOk = () => {
+    setOpenmodal(false);
+  };
+
+
+
+  // console.log(requiredProgram[0]?.NCProgarmNo)
+
   return (
     <div>
-      <Modal show={openmodal} onHide={handleClose}>
+      <Modal show={openmodal} onHide={handleCloseOk}>
         <Modal.Header closeButton>
           <Modal.Title>Magod Machine</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          {numberOfProperties === 0
+        {numberOfProperties === 0
             ? "No present shift assigned for this machine."
-            : "Is Program Operator Meeting running from the beginning of this shift?"}
+            : (
+              <>
+                {"Is "} {"Program"} {" "}
+                  <strong>{requiredProgram[0]?.NCProgarmNo}</strong>
+                {" running from the beginning of this shift?"}
+              </>
+            )}
         </Modal.Body>
 
         <Modal.Footer>
           {numberOfProperties === 0 ? (
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={handleCloseOk}>
               OK
             </Button>
           ) : (

@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from 'react-bootstrap';
 import ReasonForRejectModal from './ReasonForRejectModal';
+import axios from 'axios';
+import{baseURL} from '../../../../../../api/baseUrl';
+import { toast } from "react-toastify";
 
-export default function MarkasRejectedModal({setMarkasRejected,markasRejected, handleMarkasUsed}) {
+export default function MarkasRejectedModal({setMarkasRejected,markasRejected, handleMarkasUsed,selectProductionReportData,setProductionReportData}) {
     const [reasonForReject, setReasonForReject]=useState(false);
 
     const handleClose=()=>{
@@ -11,10 +14,20 @@ export default function MarkasRejectedModal({setMarkasRejected,markasRejected, h
             }
 
             const reasonSubmit=()=>{
-                setReasonForReject(true);
+                // setReasonForReject(true);
                 setMarkasRejected(false);
                 handleMarkasUsed();
-
+                axios
+                .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+                  NCId: selectProductionReportData,
+                })
+                .then((response) => {
+                  console.log(response);
+                  toast.success("success", {
+                    position: toast.POSITION.TOP_CENTER,
+                  });
+                  setProductionReportData(response.data);
+                });
             }
   return (
     <div>
@@ -37,11 +50,9 @@ export default function MarkasRejectedModal({setMarkasRejected,markasRejected, h
           </Button>
         </Modal.Footer>
       </Modal>
-      {
-        reasonForReject &&
+   
         <ReasonForRejectModal 
         reasonForReject={reasonForReject} setReasonForReject={setReasonForReject}/>
-      }
     </div>
   );
 }

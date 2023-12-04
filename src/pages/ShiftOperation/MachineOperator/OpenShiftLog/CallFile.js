@@ -13,7 +13,7 @@ import { useState } from 'react';
 
 export default function CallFile() {
   const location = useLocation();
-  const {data}=location?.state || null;
+  const {data}=location?.state || '';
   
   let selectedMachine=data?.selectedMachine;
   let finalDay1=data?.finalDay1;
@@ -22,39 +22,27 @@ export default function CallFile() {
   let date=data?.date;
 
 
-  const{NcId,setNcId}=useGlobalContext();
+
+  const{NcId,setAfterRefreshData,setFormData,setNcProgramId,setAfterloadService,setServiceTopData}=useGlobalContext();
+
   const[afterloadProgram,setAfterloadProgram]=useState([])
+
   const [showTable, setShowTable] = useState(true);
+  const [getMachinetaskdata, setMachinetaskdata] = useState([]);
 
-    const{selectedMtrlTable , setSelectedMtrlTable}=useGlobalContext(); 
-  
-  const [formattedDate, setFormattedDate] = useState(''); // State to store the formatted date and time for the current machine
-
-  const afterLoadProgram = () => {
+ 
+  const afterLoadProgram=()=>{
     axios
-      .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
-        NCId: NcId,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setAfterloadProgram(response.data);
-        setShowTable(true);
-
-        const currentDate = new Date();
-        const options = {
-          day: '2-digit',
-          month: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        };
-        const formattedDateValue = currentDate.toLocaleDateString('en-GB', options)
-          .replace(/\//, '/')
-          .replace(',', '');
-
-        setFormattedDate(formattedDateValue); // Set the formatted date and time for the current machine
-      });
+    .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+      NCId: NcId,
+    })
+    .then((response) => {
+      console.log(response.data);
+      setAfterloadProgram(response.data);
+      setAfterRefreshData(response.data);
+      setShowTable(true)
+    });
   }
-  console.log(afterloadProgram.NcId)
 
   // useEffect(() => {
   //   afterLoadProgram();
@@ -70,6 +58,90 @@ export default function CallFile() {
       })
   };
 
+const[machineShiftStatus,setMachineShiftStatus]=useState([])
+  const getMachineShiftStatusForm=()=>{
+    console.log(selectshifttable)
+    axios
+    .post(baseURL + "/ShiftOperator/getmachineShiftStatus", {
+    selectshifttable
+    })
+    .then((response) => {
+     console.log(response.data);
+     setMachineShiftStatus(response.data);
+      });
+  }
+
+  useEffect(()=>{
+    getMachineShiftStatusForm()
+  },[])
+
+    //Machine Task Table
+    let Machine=selectshifttable?.Machine;
+  const getMachineTaskData = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", { MachineName:Machine })
+      .then((response) => {
+        // console.log(response.data);
+        setMachinetaskdata(response.data);
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+      });
+  };
+
+  //get After  Refresh
+  const getmiddleTbaleData = () => {
+    console.log("api called");
+    axios
+      .post(baseURL + "/ShiftOperator/ProgramMaterialAfterRefresh", {
+        selectshifttable,
+        NcId,
+      })
+      .then((response) => {
+        console.log("required result", response.data.complexData2);
+        setAfterRefreshData(response?.data?.complexData1);
+        if (!response.data.complexData1) {
+          setAfterRefreshData([]);
+        }
+        setFormData(response?.data?.complexData2[0]);
+        setNcProgramId(response?.data.complexData2[0].Ncid)
+      });
+  };
+
+  //service middletabledata
+  const serviceMiddleTableData = () => {
+    console.log("api called");
+    axios
+      .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
+        selectshifttable,
+        NcId,
+      })
+      .then((response) => {
+        console.log("required result", response.data);
+        setAfterloadService(response?.data);
+        if (!response.data) {
+          setAfterloadService([]);
+        }
+      });
+  };
+
+  const getTableTopFunc=()=>{
+    axios
+      .post(baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh", {
+        selectshifttable,
+      })
+      .then((response) => {
+        console.log("required result", response.data);
+        setServiceTopData( response.data);
+      });
+  }
+
+  useEffect(() => {
+    // console.log("calling function")
+    getmiddleTbaleData();
+    getTableTopFunc();
+    serviceMiddleTableData();
+  }, []);
 
   return (
     <>
@@ -80,6 +152,10 @@ export default function CallFile() {
       showTable={showTable}
       setShowTable={setShowTable}
       getShiftSummaryData={getShiftSummaryData}
+      getMachinetaskdata={getMachinetaskdata}
+      setMachinetaskdata={setMachinetaskdata}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
+      getMachineTaskData={getMachineTaskData}
       />
       </div>
 
@@ -91,8 +167,8 @@ export default function CallFile() {
       finalDay1={finalDay1}
       date={date}
       showTable={showTable}
-      formattedDate={formattedDate}
-      selectedMtrlTable={selectedMtrlTable}
+      machineShiftStatus={machineShiftStatus}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
       />
       </div>
       <div className='col-md-4'>
@@ -101,6 +177,8 @@ export default function CallFile() {
       afterloadProgram={afterloadProgram}
       showTable={showTable}
       selectedMachine={selectedMachine}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
+      selectshifttable={selectshifttable}
       />
       </div>
 
@@ -111,7 +189,13 @@ export default function CallFile() {
       getShiftSummaryData={getShiftSummaryData}
       shiftSummaryData={shiftSummaryData}
       setShiftSummaryData={setShiftSummaryData}
+      getMachinetaskdata={getMachinetaskdata}
+      setMachinetaskdata={setMachinetaskdata}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
+      setShowTable={setShowTable}
+      getMachineTaskData={getMachineTaskData}
       />
+
      
       </div>
       

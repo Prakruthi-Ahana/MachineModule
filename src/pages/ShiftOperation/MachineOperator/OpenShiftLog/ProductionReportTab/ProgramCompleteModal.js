@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { baseURL } from '../../../../../api/baseUrl';
 
-export default function ProgramCompleteModal({setProgramComplete,programComplete,selectProductionReport}) {
+export default function ProgramCompleteModal({setProgramComplete,programComplete,selectProductionReport,getMachineTaskData}) {
     const handleClose=()=>{
         setProgramComplete(false);
     }
@@ -22,6 +22,7 @@ export default function ProgramCompleteModal({setProgramComplete,programComplete
         toast.success('Data Saved Successfully', {
           position: toast.POSITION.TOP_CENTER
         });
+        getMachineTaskData();
       });
     }
 

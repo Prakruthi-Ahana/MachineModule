@@ -7,80 +7,116 @@ import ShiftSummryTable from './ShiftSummaryTab/ShiftSummryTable';
 import ProgramInfoForms from './ProductionReportTab/ProgramInfoForms';
 import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
+import { useGlobalContext } from '../../../../Context/Context';
 
-export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable,shiftSummaryData,setShiftSummaryData}) {
+export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable,shiftSummaryData,setShiftSummaryData,getMachinetaskdata,setMachinetaskdata,getMachineShiftStatusForm,getMachineTaskData}) {
   
     const [key, setKey] = useState("mt");
-
     const [showtab , setShowtab] = useState(false)
 
+    const[currentTime,setCurrentTime]=useState('')
+    const getCurrentTime = () => {
+      const currentDate = new Date();
+      const hours = currentDate.getHours().toString().padStart(2, '0');
+      const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+      const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+      return `${hours}:${minutes}:${seconds}`;
+    };
+  
 
+  //getCurrent date
+  const[currentDate,setCurrentDate]=useState('')
+  const getCurrentDate = () => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = currentDate.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    // console.log('Effect is running...');
+    const intervalId = setInterval(() => {
+      // console.log('Updating time and date...');
+      setCurrentTime(getCurrentTime());
+      setCurrentDate(getCurrentDate());
+    }, 1000);
+  
+    // Clean up the interval when the component is unmounted
+    return () => {
+      clearInterval(intervalId);
+      // console.log('Interval cleared.');
+    };
+  }, []);
+  
+  let Machine=selectshifttable?.Machine;
+
+const {setShiftLogDetails,shiftLogDetails}=useGlobalContext();
 //ShiftLog Table
-    const[shiftLogDetails,setShiftLogDetails]=useState([])
-    const getShiftLogDetails=()=>{
-      axios
-      .post(baseURL + "/ShiftOperator/getShiftLog", {
-        selectshifttable:selectshifttable
-      })
-      .then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          let dateSplit1 = response.data[i].FromTime.split(" ");
-          let date1 = dateSplit1[0].split("-");
-          let year1 = date1[0];
-          let month1 = date1[1];
-          let day1 = date1[2];
-          let time = dateSplit1[1].split(":");
-          let Time = time[0] + ":" + time[1];
-          let finalDay1 = day1 + "/" + month1 + "/" + year1 + " " + Time;
-          response.data[i].FromTime = finalDay1;
-        }
-        for (let i = 0; i < response.data.length; i++) {
-          let dateSplit2 = response.data[i].ToTime.split(" ");
-          let date2 = dateSplit2[0].split("-");
-          let year2 = date2[0];
-          let month2 = date2[1];
-          let day2 = date2[2];
-          let time1 = dateSplit2[1].split(":");
-          let Time1 = time1[0] + ":" + time1[1];
-          let finalDay2 = day2 + "/" + month2 + "/" + year2 + " " + Time1;
-          response.data[i].ToTime = finalDay2;
+const getShiftLogDetails = () => {
+  axios
+    .post(baseURL + "/ShiftOperator/getShiftLog", {
+      selectshifttable: selectshifttable,
+    })
+    .then((response) => {
+      console.log("response ShiftLog is", response.data);
+      const updatedData = response.data.map((item) => {
+        let dateSplit = item.FromTime.split(" ");
+        let date = dateSplit[0].split("-");
+        let year = date[0];
+        let month = date[1];
+        let day = date[2];
+        let finalDay = `${day}/${month}/${year} ${dateSplit[1]}`;
+        item.FromTime = finalDay;
+
+        let dateSplit1 = item.ToTime.split(" ");
+        let date1 = dateSplit1[0].split("-");
+        let year1 = date1[0];
+        let month1 = date1[1];
+        let day1 = date1[2];
+        let finalDay1 = `${day1}/${month1}/${year1} ${dateSplit1[1]}`;
+        item.ToTime = finalDay1;
+
+        if (item.Locked === 1) {
+          item.rowColor = "#87CEEB";
+        } else {
+          console.log(null);
         }
 
-        for (let i = 0; i < response.data.length; i++) {
-          let dateSplit3 = response.data[i].SrlTime.split(".");
-          console.log(dateSplit3);
-          let date3 = dateSplit3[0];
-          response.data[i].SrlTime = date3;
-        }
-
-        console.log(response.data);
-        setShiftLogDetails(response.data)
+        return item;
       });
-    }
+
+      // Update the state with the modified data
+      setShiftLogDetails(updatedData);
+
+      // Update the last object's ToTime with currentDate and currentTime
+      // if (updatedData.length > 0) {
+      //   const lastObject = updatedData[updatedData.length - 1];
+      //   const currentDate = getCurrentDate();
+      //   const currentTime = getCurrentTime();
+      //   lastObject.ToTime = `${currentDate} ${currentTime}`;
+      // }
+    })
+    .catch((error) => {
+      console.error("Error occurred:", error);
+    });
+};
+
+
 
     useEffect(()=>{
+      // console.log('Calling getShiftLogDetails...');
       getShiftLogDetails();
-    },[selectshifttable])
+    },[])
 
 
-    //Machine Task Table
-    const [getMachinetaskdata, setMachinetaskdata] = useState([]);
-    let Machine=selectshifttable?.Machine;
-  const getMachineTaskData = () => {
-    axios
-      .post(baseURL + "/ShiftOperator/MachineTasksData", { MachineName:Machine })
-      .then((response) => {
-        console.log(response.data);
-        setMachinetaskdata(response.data);
-      })
-      .catch((error) => {
-        console.error("Error occurred:", error);
-      });
-  };
+  
 
   useEffect(() => {
     getMachineTaskData();
   }, [Machine]);
+
+
 
   return (
     <div>
@@ -101,16 +137,23 @@ export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable
       getMachinetaskdata={getMachinetaskdata}
       afterLoadProgram={afterLoadProgram}
       setShowTable={setShowTable}
+      getMachineShiftStatusForm={getMachineShiftStatusForm}
        />
        </Tab>
 
        <Tab eventKey="sl" title="Shift Log">
-      <FormAndTable shiftLogDetails={shiftLogDetails}
-      setShiftLogDetails={setShiftLogDetails}/>
+      <FormAndTable 
+      getShiftLogDetails={getShiftLogDetails}
+      selectshifttable={selectshifttable}
+      setShowTable={setShowTable}
+      />
        </Tab>
 
        <Tab eventKey="pr" title="Production Report">
-       <ProgramInfoForms getMachinetaskdata={getMachinetaskdata}/>
+       <ProgramInfoForms getMachinetaskdata={getMachinetaskdata}
+       selectshifttable={selectshifttable}
+       getMachineTaskData={getMachineTaskData}
+       />
        </Tab>
 
        <Tab eventKey="ss" title="Shift Summary">

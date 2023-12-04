@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import Axios from "axios";
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { baseURL } from "../api/baseUrl";
 
@@ -11,20 +12,34 @@ const SnackbarContext = React.createContext({
 });
 
 const AuthProvider = ({ children }) => {
-// SET NCID TO A STATE
-const[NcId,setNcId]=useState('')
-const [selectedProgram, setSelectedProgram] = useState({});
- const[afterloadData,setAfterloadData]=useState({}) 
- const[SheetId,setSheetId]=useState('');
- const[FormattedDate , setFormattedDate] = useState('');
- const[FormattedTime,setFormattedTime] = useState();
+  // SET NCID TO A STATE
+  const [NcId, setNcId] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState({});
+  const [afterloadData, setAfterloadData] = useState({});
+  const [shiftLogDetails, setShiftLogDetails] = useState([]);
+  const [afterRefreshData,setAfterRefreshData]=useState([])
+  const [formdata,setFormData]=useState([]);
+  const [hasBOM,setHasBOM]=useState('');
+  const [machineTaskService, setMachineTaskDataService] = useState([]);
+  const [afterloadService,setAfterloadService]=useState([])
+  const [shiftSelected,setShiftSelected]=useState({});
+  const [servicetopData,setServiceTopData]=useState([]);
+  const [NcProgramId,setNcProgramId]=useState('');
 
-  
   return (
     <AppContext.Provider
       value={{
-        NcId,setNcId,selectedProgram, setSelectedProgram,afterloadData,setAfterloadData
-        ,SheetId,setSheetId,FormattedDate , setFormattedDate,FormattedTime,setFormattedTime
+        NcId,
+        setNcId,
+        selectedProgram,
+        setSelectedProgram,
+        afterloadData,
+        setAfterloadData,
+        shiftLogDetails,
+        setShiftLogDetails,
+        afterRefreshData,setAfterRefreshData,
+        formdata,setFormData,
+        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId
       }}
     >
       {children}

@@ -4,6 +4,8 @@ import { baseURL } from "../../../../api/baseUrl";
 import axios from "axios";
 import 'react-toastify/dist/ReactToastify.css';
 import ValidationAlertModal from "./ValidationAlertModal";
+import { toast } from 'react-toastify';
+
 
 export default function ErrorReportForm({
   setErrorForm,
@@ -28,6 +30,15 @@ export default function ErrorReportForm({
     setFormValues({ ...formValues, [name]: value });
   };
 
+  const onClickReset = () => {
+    setFormValues({
+      ...formValues,
+      errorNo: "",
+      errorDescription: "",
+      actionTaken: "",
+    });
+  };
+
   const[openalert,setOpenAlert]=useState('');
   const handleSubmit = () => {
     const { errorNo, errorDescription, actionTaken } = formValues;
@@ -37,23 +48,19 @@ export default function ErrorReportForm({
     // setOpenAlert(true);
       return;
     }
-
     axios
       .post(baseURL + "/ShiftOperator/errorForm", { formValues })
       .then((response) => {
         // console.log(response.data);
       });
     handleClose();
+    toast.success("Error Report Added Successfully", {
+      position: toast.POSITION.TOP_CENTER,
+    });
+    onClickReset();
   };
 
-  const onClickReset = () => {
-    setFormValues({
-      ...formValues,
-      errorNo: "",
-      errorDescription: "",
-      actionTaken: "",
-    });
-  };
+  
 
   // console.log(formValues);
 

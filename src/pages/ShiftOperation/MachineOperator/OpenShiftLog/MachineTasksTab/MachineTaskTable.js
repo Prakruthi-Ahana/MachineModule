@@ -6,59 +6,118 @@ import { baseURL } from "../../../../../api/baseUrl";
 import MachineTaskProfile from "./MachineTaskProfile";
 import { useGlobalContext } from "../../../../../Context/Context";
 import GlobalModal from "../../GlobalModal";
-import ErrorModal from './ErrorModal';
-
+import ErrorModal from "./ErrorModal";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+import MachineTaskService from "./MachineTaskService";
 
 export default function MachineTaskTable({
   selectshifttable,
   getMachinetaskdata,
   afterLoadProgram,
-
+  setShowTable,
+  getMachineShiftStatusForm,
+  showTable,
 }) {
-
-  const { NcId, setNcId, selectedProgram, setSelectedProgram,afterloadData,setAfterloadData } =
-    useGlobalContext();
-
+  const {
+    NcId,
+    setNcId,
+    selectedProgram,
+    setSelectedProgram,
+    setShiftLogDetails,
+    shiftLogDetails,
+    setFormData,
+    hasBOM,
+    setHasBOM,
+    machineTaskService,
+    setMachineTaskDataService,
+    afterloadService,
+    setAfterloadService,
+    servicetopData,setServiceTopData
+  } = useGlobalContext();
 
   // Modal Related code....
   const [open, setOpen] = useState(false);
   const [isDataDisplayed, setIsDataDisplayed] = useState(false);
-  const [ErrorshowModal, setErrorshowModal] = useState(false)
-
-
+  const [ErrorshowModal, setErrorshowModal] = useState(false);
 
   const openModal = () => {
     if (isDataDisplayed) {
-     
       setOpen(true); // Open the modal
     } else {
       setErrorshowModal(true); // Display the error message
     }
   };
 
-  
+  //Submit Load
   const handleSubmit = () => {
-    afterLoadProgram();
-    setAfterloadData(selectedProgram); 
+    if (hasBOM === true) {
+      getServiceMachineTask();
+      setAfterloadService(machineTaskService);
+    } else {
+      afterLoadProgram();
+    }
+    setFormData(selectedProgram);
     axios
-    .post(baseURL + "/ShiftOperator/loadProgram", {
-      selectedProgram
-    })
-    .then((response) => {
-      console.log(response.data);
-    });
-    console.log("function called")
+      .post(baseURL + "/ShiftOperator/loadProgram", {
+        selectedProgram,
+        selectshifttable,
+      })
+      .then((response) => {
+        toast.success("Program Loaded Successfully", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      });
+    getMachineShiftStatusForm();
+    console.log("before API Call");
+    axios
+      .post(baseURL + "/ShiftOperator/getShiftLog", {
+        selectshifttable: selectshifttable,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          let dateSplit = response.data[i].FromTime.split(" ");
+          let date = dateSplit[0].split("-");
+          let year = date[0];
+          let month = date[1];
+          let day = date[2];
+          let finalDay = day + "/" + month + "/" + year + " " + dateSplit[1];
+          response.data[i].FromTime = finalDay;
+        }
+        for (let i = 0; i < response.data.length; i++) {
+          let dateSplit1 = response.data[i].ToTime.split(" ");
+          let date1 = dateSplit1[0].split("-");
+          let year1 = date1[0];
+          let month1 = date1[1];
+          let day1 = date1[2];
+          let finalDay1 =
+            day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
+          response.data[i].ToTime = finalDay1;
+        }
+        console.log(response.data);
+        setShiftLogDetails(response.data);
+      });
+      console.log("After API Call");
     setOpen(false);
-  }
+  };
 
   const handleClose = () => {
     setOpen(false);
-  }
+  };
 
-
+  //select MachineTask Row nad Checking BOM
   const selectProgramFun = (item, index) => {
     let list = { ...item, index: index };
     setSelectedProgram(list);
+    // console.log(list);
+    axios
+      .post(baseURL + "/ShiftOperator/checkhasBOM", {
+        NCId: list?.Ncid,
+      })
+      .then((response) => {
+        console.log(response.data);
+        setHasBOM(response.data);
+      });
   };
 
   useEffect(() => {
@@ -66,22 +125,74 @@ export default function MachineTaskTable({
       selectProgramFun(getMachinetaskdata[0], 0); // Select the first row
     }
   }, [getMachinetaskdata, selectedProgram, selectProgramFun]);
-  
 
+  //servicedata
   const [machineTaskData, setMachineTaskData] = useState([]);
-  const machinetask = () => {
+  const getServiceMachineTask = () => {
     axios
-      .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+      .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
         NCId: selectedProgram?.Ncid,
       })
       .then((response) => {
         console.log(response.data);
-        setMachineTaskData(response.data);
-        setIsDataDisplayed(true); // Data is displayed
-      }).catch((err) => {
-        console.log(err)
-        setIsDataDisplayed(false); 
+        setServiceTopData(response.data);
       })
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksService", {
+        NCId: selectedProgram?.Ncid,
+      })
+      .then((response) => {
+        console.log(response.data);
+        setMachineTaskDataService(response.data);
+        setIsDataDisplayed(true); // Data is displayed
+        setShowTable(true);
+        // setIsDataDisplayed(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  //doubleclick row
+const [newTableTopData,setNewTableTopData]=useState([])
+  const machinetask = () => {
+    if (hasBOM === true) {
+      axios
+        .post(baseURL + "/ShiftOperator/MachineTasksService", {
+          NCId: selectedProgram?.Ncid,
+        })
+        .then((response) => {
+          console.log(response.data);
+          setMachineTaskDataService(response.data);
+          setIsDataDisplayed(true); // Data is displayed
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsDataDisplayed(false);
+        });
+        axios
+        .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
+          NCId: selectedProgram?.Ncid,
+        })
+        .then((response) => {
+          console.log(response.data);
+          setNewTableTopData(response.data);
+        })
+    } else {
+      axios
+        .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+          NCId: selectedProgram?.Ncid,
+        })
+        .then((response) => {
+          console.log(response.data);
+          setMachineTaskData(response.data);
+          setIsDataDisplayed(true); // Data is displayed
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsDataDisplayed(false);
+        });
+    }
   };
 
   let NCProgramNo = selectedProgram.NCProgramNo;
@@ -90,28 +201,22 @@ export default function MachineTaskTable({
     setNcId(selectedProgram.Ncid);
   }, [selectedProgram.Ncid]);
 
+  // console.log(selectedProgram);
+
   return (
     <>
-     
-
-       <GlobalModal 
-       show={open}
-       title="magod_machine"
-       content={
-        <>
-          Do you wish to load NC Program No: <strong>{NCProgramNo}</strong> ?
-        </>
-      }
-       onYesClick={handleSubmit}
-       onNoClick={handleClose}
-       onClose={handleClose}
-       />
- 
-
-  
-     
-
-       
+      <GlobalModal
+        show={open}
+        title="magod_machine"
+        content={
+          <>
+            Do you wish to load NC Program No: <strong>{NCProgramNo}</strong> ?
+          </>
+        }
+        onYesClick={handleSubmit}
+        onNoClick={handleClose}
+        onClose={handleClose}
+      />
 
       <div>
         <div
@@ -146,6 +251,7 @@ export default function MachineTaskTable({
                     key === selectedProgram?.index ? "selcted-row-clr" : ""
                   }
                   onDoubleClick={machinetask}
+                  style={{ backgroundColor: data.rowColor }}
                 >
                   <td>{data.NCProgramNo}</td>
                   <td>{data.TaskNo}</td>
@@ -173,7 +279,7 @@ export default function MachineTaskTable({
               height: "280px",
             }}
           >
-            <p style={{ color: "", textAlign: "center",paddingTop:"10px" }}>
+            <p style={{ color: "", textAlign: "center" }}>
               <b>Program Info </b>
             </p>
 
@@ -238,7 +344,7 @@ export default function MachineTaskTable({
               height: "280px",
             }}
           >
-            <p style={{ color: "", textAlign: "center", paddingTop:"10px" }}>
+            <p style={{ color: "", textAlign: "center" }}>
               <b>Material Info</b>
             </p>
 
@@ -339,22 +445,23 @@ export default function MachineTaskTable({
         </div>
       </div>
 
-      <MachineTaskProfile
-        selectedProgram={selectedProgram}
-        machineTaskData={machineTaskData}
-        machinetask={machinetask}
-        setIsDataDisplayed={setIsDataDisplayed}
-      />
+      {hasBOM === true ? (
+        <MachineTaskService machineTaskService={machineTaskService} 
+        servicetopData={newTableTopData}
+        />
+      ) : (
+        <MachineTaskProfile
+          selectedProgram={selectedProgram}
+          machineTaskData={machineTaskData}
+          machinetask={machinetask}
+          setIsDataDisplayed={setIsDataDisplayed}
+        />
+      )}
 
-      {
-        ErrorModal && (
-          <ErrorModal
-          ErrorshowModal={ErrorshowModal}
-          setErrorshowModal={setErrorshowModal}
-          />
-          
-        )
-       }
+      <ErrorModal
+        ErrorshowModal={ErrorshowModal}
+        setErrorshowModal={setErrorshowModal}
+      />
     </>
   );
 }

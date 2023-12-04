@@ -8,8 +8,6 @@ import { useState } from 'react';
 
 export default function MachineTaskProfile({selectedProgram,machineTaskData,machinetask,setIsDataDisplayed}) {
 
-  console.log(selectedProgram)
-
   return (
     <div
     className="col-md-12 mt-2"
@@ -20,8 +18,8 @@ export default function MachineTaskProfile({selectedProgram,machineTaskData,mach
         <tr>
          
           <th style={{ whiteSpace: "nowrap" }}>Shape Id</th>
-          <th>Dim 1</th>
-          <th>Dim 2</th>
+          <th>Length</th>
+          <th>Width</th>
           <th>Used</th>
           <th>Reject</th>
         </tr>
