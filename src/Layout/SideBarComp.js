@@ -23,10 +23,10 @@ const SidebarWrap = styled.div`
 const SidebarComp = () => {
   const location = useLocation();
 
-  // console.log(
-  //   "LOCAL STORAGE DATA",
-  //   JSON.parse(localStorage.getItem("LazerUser"))
-  // );
+  console.log(
+    "LOCAL STORAGE DATA",
+    JSON.parse(localStorage.getItem("LazerUser"))
+  );
 
   const [newSideBarData, setNewSideBarData] = useState(customerSidebar);
   const [accessSideBarData, setAccessSideBarData] = useState([]);
