@@ -4,6 +4,9 @@ import { baseURL } from "../../../../api/baseUrl";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import StoppageAskModal from "./StoppageAskModal";
+import { useGlobalContext } from "../../../../Context/Context";
+import { ToastContainer, toast } from "react-toastify";
+
 
 export default function OpenShiftLogForm({
   selectedMachine,
@@ -13,6 +16,8 @@ export default function OpenShiftLogForm({
   showTable,getShiftSummaryData,
   getMachinetaskdata,setMachinetaskdata,getMachineShiftStatusForm,getMachineTaskData
 }) {
+
+  const{setShiftLogDetails}=useGlobalContext();
 
 const onClickgetProgram=()=>{
   getMachineTaskData()
@@ -74,7 +79,6 @@ const onClickgetProgram=()=>{
           response.data[i].rowColor = "#DC143C";
         } 
       }
-      console.log("AFTER ADDING COLOR", response.data);
       setMachinetaskdata(response.data);
     });
   };
@@ -88,20 +92,42 @@ const onClickgetProgram=()=>{
 
   const [selectedStoppageID, setSelectedStoppageID] = useState("");
   const [selectedStoppage, setSelectedStoppage] = useState("");
+
   const selectBothOption = (e) => {
-    console.log("select option", e.target.value);
-    setStoppageReason(e.target.value);
-    if (e.target.value !== " ") {
-      console.log("first condition")
-      setAlreadyLoad(true);
-    } else {
-      console.log("rtyuiop");
-    }
-    const selectedStoppageID = e.target.value;
-    const selectedStoppage = e.target.selectedOptions[0].dataset.stoppage;
-    setSelectedStoppageID(selectedStoppageID);
-    setSelectedStoppage(selectedStoppage);
-  };
+  axios
+    .post(baseURL + "/ShiftOperator/getShiftLog", {
+      selectshifttable: selectshifttable,
+    })
+    .then((response) => {
+      // Check if the last object's Program is the same as selectedStoppage
+      const lastObject = response.data[response.data.length - 1];
+      if (lastObject && lastObject.Program!== selectedStoppage)  {
+        // Show toastify error because it's already present
+        setAlreadyLoad(true);
+      } else {
+        // Set alreadyLoad to true
+        showToastifyError();
+      }
+    });
+  setStoppageReason(e.target.value);
+  // if (e.target.value !== " ") {
+  //   setAlreadyLoad(true);
+  // } else {
+  //   // Handle the case when e.target.value is " "
+  // }
+  const selectedStoppageID = e.target.value;
+  const selectedStoppage = e.target.selectedOptions[0].dataset.stoppage;
+  setSelectedStoppageID(selectedStoppageID);
+  setSelectedStoppage(selectedStoppage);
+};
+
+const showToastifyError = () => {
+  // Replace this with your actual logic to show a toastify error
+  // Example using toastify or any other notification library
+  toast.error("Already Loaded", {
+    position: toast.POSITION.TOP_CENTER,
+  });
+};
 
 
   const handleChangeStoppageList = (e) => {

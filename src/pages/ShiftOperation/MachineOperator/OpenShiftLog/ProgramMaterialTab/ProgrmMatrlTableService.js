@@ -16,7 +16,7 @@ export default function ProgrmMatrlTableService({
     setAfterloadService,
     NcId,
     servicetopData,
-    NcProgramId,
+    NcProgramId,setServiceTopData
   } = useGlobalContext();
 
   const [rowSelectService, setRowSelectService] = useState({});
@@ -72,11 +72,23 @@ export default function ProgrmMatrlTableService({
             position: toast.POSITION.TOP_CENTER,
           });
         } else {
+          // Check if toCompareData is null or empty
+          if (!toCompareData || toCompareData.length === 0) {
+            toast.error("Parts Quantity is null or mismatch", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+            return;
+          }
+  
           // Flatten toCompareData array
           const flattenedToCompareData = toCompareData.flat();
   
           // Flag to check if any item violates the condition
           let hasValidationError = false;
+  
+          // Declare remainingQty and useNow outside the loop
+          let remainingQty;
+          let useNow;
   
           // Calculate qtyToDistribute and useNow for each item in afterloadService
           const updatedAfterloadService = afterloadService.map((item) => {
@@ -86,11 +98,11 @@ export default function ProgrmMatrlTableService({
   
             if (match) {
               const qtyToDistribute = issuesets * match.Quantity;
-              const useNow = issuesets * match.Quantity;
+              useNow = issuesets * match.Quantity;
   
               // Check if the quantity to be used exceeds the available quantity
-              const remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
-              if (remainingQty < 0) {
+              remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
+              if (remainingQty < 0 || qtyToDistribute !== useNow) {
                 hasValidationError = true;
                 return item; // Do not update state if validation fails
               }
@@ -100,7 +112,7 @@ export default function ProgrmMatrlTableService({
                 ...item,
                 qtyToDistribute: qtyToDistribute,
                 useNow: useNow,
-                QtyReturned: useNow, // Update QtyReturned
+                QtyReturned1: useNow, // Update QtyReturned
               };
   
               // Add the relevant properties to sendobject based on CustBOM_Id
@@ -131,20 +143,27 @@ export default function ProgrmMatrlTableService({
             }
           });
   
+          // Display a single Toastify error message if there are errors
+          if (hasValidationError) {
+            if (remainingQty < 0 || qtyToDistribute !== useNow) {
+              toast.error("Cannot Use More Parts than issued Quantity", {
+                position: toast.POSITION.TOP_CENTER,
+              });
+            } else {
+              toast.error("Parts Quantity mismatch", {
+                position: toast.POSITION.TOP_CENTER,
+              });
+            }
+            return;
+          }
+  
           // Update the state after calculating useNow and updating QtyReturned values
           setAfterloadService(updatedAfterloadService);
           // Set the updated sendobject state
           setSendObject(sendobject);
   
-          // Display a single Toastify error message if there are errors
-          if (hasValidationError) {
-            toast.error("Cannot Use More Parts than issued Quantity", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-          } else {
-            // Open the modal if no errors
-            setModalOpen(true);
-          }
+          // Open the modal if no errors
+          setModalOpen(true);
         }
       })
       .catch((error) => {
@@ -174,6 +193,14 @@ export default function ProgrmMatrlTableService({
             if (!response.data) {
               setAfterloadService([]);
             }
+          });
+          axios
+          .post(baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh", {
+            selectshifttable,
+          })
+          .then((response) => {
+            console.log("required result", response.data);
+            setServiceTopData( response.data);
           });
       })
       .catch((error) => {
@@ -326,7 +353,7 @@ export default function ProgrmMatrlTableService({
                       <td>{item.RV_No}</td>
                       <td>{item.QtyIssued}</td>
                       <td>{item.QtyUsed}</td>
-                      <td>{item.QtyReturned}</td>
+                      <td>{item.QtyReturned1 || 0}</td>
                     </tr>
                   </>
                 );

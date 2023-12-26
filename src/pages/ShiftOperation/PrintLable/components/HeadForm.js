@@ -41,10 +41,12 @@ export default function HeadForm({
   const handleClosepdf1 = () => {
     setOnclickofYesPS(false);
     if (currentIndex1 + 1 < selectedRows.length) {
+      console.log("if condition")
       setCurrentIndex1(currentIndex1 + 1);
       askPrintSelectedModal();
     } else {
       if (!loopedBack1) {
+        console.log("else condition")
         setLoopedBack1(true);
         setAskPrintSelected(false);
       }
@@ -168,7 +170,7 @@ export default function HeadForm({
       <GlobalModal
         show={askPrintSelected}
         title="magod_machine"
-        content={<div>Do You wish to Print '{currentObject1?.DwgName}'?</div>}
+        content={<div>Print Selected Labels?</div>}
         onYesClick={() => onClickofyesPS()}
         onNoClick={() => hadleclose1()}
         onClose={() => hadleclose1()}
@@ -177,7 +179,7 @@ export default function HeadForm({
 <GlobalModal
         show={askPrintAll}
         title="magod_machine"
-        content={<div>Do You wish to Print '{currentObject?.DwgName}'?</div>}
+        content={<div>Print '{currentObject?.DwgName}' Labels?</div>}
         onYesClick={() => onClickofyes()}
         onNoClick={() => hadleclose()}
         onClose={() => hadleclose()}
