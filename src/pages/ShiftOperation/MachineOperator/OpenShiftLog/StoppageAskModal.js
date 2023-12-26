@@ -18,66 +18,68 @@ export default function StoppageAskModal({
   showTable,
   setInputVisible,
   isInputVisible,
-  getMachineShiftStatusForm
+  getMachineShiftStatusForm,
 }) {
-  const {
-    selectedProgram,
-    setShiftLogDetails,
-    shiftLogDetails,
-  } = useGlobalContext();
+  const { selectedProgram, setShiftLogDetails, shiftLogDetails, setFormData } =
+    useGlobalContext();
 
   const handleClose = () => {
     setAlreadyLoad(false);
   };
 
-
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
   const onClickYes = () => {
-    axios
-      .post(baseURL + "/ShiftOperator/addStoppage", {
-        selectshifttable: selectshifttable,
-        selectedStoppageID: selectedStoppageID,
-        selectedStoppage: selectedStoppage,
-      })
-      .then((response) => {
-        toast.success("Stoppage Added Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        setAlreadyLoad(false);
-        setShowTable(false);
-        setInputVisible(!isInputVisible);
-        axios
-          .post(baseURL + "/ShiftOperator/getShiftLog", {
-            selectshifttable: selectshifttable,
-          })
-          .then((response) => {
-            console.log("response ShiftLog is", response.data);
-            for (let i = 0; i < response.data.length; i++) {
-              // FOR TgtDelDate
-              let dateSplit = response.data[i].FromTime.split(" ");
-              let date = dateSplit[0].split("-");
-              let year = date[0];
-              let month = date[1];
-              let day = date[2];
-              let finalDay =
-                day + "/" + month + "/" + year + " " + dateSplit[1];
-              response.data[i].FromTime = finalDay;
-            }
-            for (let i = 0; i < response.data.length; i++) {
-              // Delivery_date
-              let dateSplit1 = response.data[i].ToTime.split(" ");
-              let date1 = dateSplit1[0].split("-");
-              let year1 = date1[0];
-              let month1 = date1[1];
-              let day1 = date1[2];
-              let finalDay1 =
-                day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
-              response.data[i].ToTime = finalDay1;
-            }
-            setShiftLogDetails(response.data);
+    if (!isButtonClicked) {
+      setIsButtonClicked(true);
+      console.log("isButtonClicked once clicked",isButtonClicked)
+      axios
+        .post(baseURL + "/ShiftOperator/addStoppage", {
+          selectshifttable: selectshifttable,
+          selectedStoppageID: selectedStoppageID,
+          selectedStoppage: selectedStoppage,
+        })
+        .then((response) => {
+          toast.success("Stoppage Added Successfully", {
+            position: toast.POSITION.TOP_CENTER,
           });
+          setAlreadyLoad(false);
+          setShowTable(false);
+          setInputVisible(!isInputVisible);
+          setIsButtonClicked(false);
+          axios
+            .post(baseURL + "/ShiftOperator/getShiftLog", {
+              selectshifttable: selectshifttable,
+            })
+            .then((response) => {
+              console.log("response ShiftLog is", response.data);
+              for (let i = 0; i < response.data.length; i++) {
+                // FOR TgtDelDate
+                let dateSplit = response.data[i].FromTime.split(" ");
+                let date = dateSplit[0].split("-");
+                let year = date[0];
+                let month = date[1];
+                let day = date[2];
+                let finalDay =
+                  day + "/" + month + "/" + year + " " + dateSplit[1];
+                response.data[i].FromTime = finalDay;
+              }
+              for (let i = 0; i < response.data.length; i++) {
+                // Delivery_date
+                let dateSplit1 = response.data[i].ToTime.split(" ");
+                let date1 = dateSplit1[0].split("-");
+                let year1 = date1[0];
+                let month1 = date1[1];
+                let day1 = date1[2];
+                let finalDay1 =
+                  day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
+                response.data[i].ToTime = finalDay1;
+              }
+              setShiftLogDetails(response.data);
+            });
           getMachineShiftStatusForm();
-          
-      });
+          setFormData([]);
+        });
+    }
   };
 
   return (
@@ -93,7 +95,11 @@ export default function StoppageAskModal({
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="primary" onClick={onClickYes}>
+            <Button
+              variant="primary"
+              onClick={onClickYes}
+              disabled={isButtonClicked}
+            >
               Yes
             </Button>
             <Button variant="secondary" onClick={handleClose}>

@@ -7,20 +7,25 @@ import { ToastContainer, toast } from "react-toastify";
 import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
 import ProgrmMatrlTableService from "./ProgrmMatrlTableService";
+import { useEffect } from "react";
 
 export default function Form1({
   afterloadProgram,
   showTable,
   setAfterloadProgram,
   selectedMachine,
-  getMachineShiftStatusForm,selectshifttable
+  getMachineShiftStatusForm,
+  selectshifttable,
 }) {
   const {
     afterRefreshData,
     setAfterRefreshData,
     formdata,
     setFormData,
-    hasBOM,machineTaskService
+    hasBOM,
+    machineTaskService,
+    pgmNo,
+    setPgmNo,
   } = useGlobalContext();
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
@@ -80,6 +85,14 @@ export default function Form1({
 
   // console.log(hasBOM);
 
+  useEffect(() => {
+    setPgmNo(formdata?.NCProgramNo);
+  }, [formdata?.NCProgramNo]);
+
+
+console.log(formdata);
+
+
   return (
     <>
       <div>
@@ -101,7 +114,7 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.NCProgramNo || ""}
+                  value={formdata?.NCProgramNo || null}
                 />
               </div>
 
@@ -238,8 +251,8 @@ export default function Form1({
 
       {hasBOM === true ? (
         <ProgrmMatrlTableService
-        showTable={showTable}
-        selectshifttable={selectshifttable}
+          showTable={showTable}
+          selectshifttable={selectshifttable}
         />
       ) : (
         <ProgramMtrlTableProfile

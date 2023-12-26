@@ -9,7 +9,7 @@ import MaterialUsageService from "./MaterialUsageTab/MaterialUsageService";
 export default function MaterialAndPartsTabs({
   selectProductionReport,
   openTable,
-  selectshifttable,rpTopData
+  selectshifttable,rpTopData,setRptTopData
 }) {
   const { hasBOM } = useGlobalContext();
   const [key, setKey] = useState("mu");
@@ -30,6 +30,8 @@ export default function MaterialAndPartsTabs({
               openTable={openTable}
               selectProductionReport={selectProductionReport}
               rpTopData={rpTopData}
+              selectshifttable={selectshifttable}
+              setRptTopData={setRptTopData}
                />
             ) : (
               <LaserCutForm

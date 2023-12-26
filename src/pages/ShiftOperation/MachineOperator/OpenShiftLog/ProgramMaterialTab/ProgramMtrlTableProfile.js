@@ -30,7 +30,7 @@ export default function ProgrmMatrlTableProfile({
   const filterUnusedData = () => {
     // Filter the ProductionReportData array to show only rows where Used and Rejected are both 0
     const filteredData = afterRefreshData.filter(
-      (data) => data.Used === 0 && data.Rejected === 0
+      (data) => data.Used === 0 
     );
     setOriginalData(afterRefreshData); // Save the original data
     setAfterRefreshData(filteredData); // Update the filtered data
@@ -54,11 +54,25 @@ export default function ProgrmMatrlTableProfile({
   const [MarkasReject, setMarkasReject] = useState(false);
 
   const handleMarkasUsedModal = () => {
-    setMarkasUsed(true);
+    if(selectedMtrlTable.Used===1 || selectedMtrlTable.Rejected===1){
+      toast.error("Once material used or Rejected Cannot be used again", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    else{
+      setMarkasUsed(true);
+    }
   };
 
   const handleMarkasRejected = () => {
-    setMarkasReject(true);
+    if(selectedMtrlTable.Used===1 || selectedMtrlTable.Rejected===1){
+      toast.error("Once material used or Rejected Cannot be used again", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    else{
+      setMarkasReject(true);
+    }
   };
 
   const handleMarkasUsed = () => {

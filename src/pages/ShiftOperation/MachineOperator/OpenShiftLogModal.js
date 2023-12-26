@@ -13,7 +13,7 @@ export default function OpenShiftModal({
   selectshifttable,
   Shift,
   date,
-  requiredProgram,
+  requiredProgram,z
 }) {
   const data = {
     selectedMachine: selectedMachine,
@@ -25,7 +25,7 @@ export default function OpenShiftModal({
 
   const navigate = useNavigate();
   const openShiftPage = () => {
-    console.log(requiredProgram,"onclick of yes")
+    // console.log(requiredProgram,"onclick of yes")
     navigate("OpenShiftLog", { state: { data } });
     axios
       .post(baseURL + "/ShiftOperator/onClickYes", {

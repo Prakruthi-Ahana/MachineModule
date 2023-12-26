@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
-import * as FaIcons from "react-icons/fa";
-import * as AiIcons from "react-icons/ai";
 import SubMenuComp from "./SubNavComp";
 import { IconContext } from "react-icons/lib";
 import { customerSidebar, adminSidebar } from "../components/SidebarData";
@@ -25,16 +23,22 @@ const SidebarWrap = styled.div`
 const SidebarComp = () => {
   const location = useLocation();
 
-  const [newSideBarData, setnewSideBarData] = useState(customerSidebar);
+  console.log(
+    "LOCAL STORAGE DATA",
+    JSON.parse(localStorage.getItem("LazerUser"))
+  );
+
+  const [newSideBarData, setNewSideBarData] = useState(customerSidebar);
   const [accessSideBarData, setAccessSideBarData] = useState([]);
 
-  console.log(customerSidebar);
 
   let [lazerUser, setLazerUser] = useState(
-    JSON.parse(localStorage.getItem("LaserUser"))
+    JSON.parse(localStorage.getItem("LazerUser"))
   );
 
   const [sidebar, setSidebar] = useState(true);
+
+  const newAccessSideBarData = [];
 
   function showSidebar() {
     setSidebar(!sidebar);
@@ -44,24 +48,22 @@ const SidebarComp = () => {
   //modify the array in newSideBarData based on laserUserdata
   useEffect(() => {
     const tempArray = [...accessSideBarData]; //creating a copy of the accessSideBar
-    console.log(newSideBarData, "NEW SIDE BAR DATA");
 
-    //console.log(access, 'access')
     function filterSidebarData(data, accessPaths) {
       const result1 = [];
 
-      console.log(data);
+      //  console.log(data)
 
       data.forEach((element) => {
-        console.log(element);
+        // console.log(element)
         if (element.subNav) {
-          console.log(element.subNav);
+          // console.log(element.subNav)
           const subNavFiltered = filterSidebarData(element.subNav, accessPaths);
 
           element.subNav = subNavFiltered;
-          console.log(subNavFiltered);
+          // console.log(subNavFiltered)
           if (subNavFiltered.length > 0 || accessPaths.includes(element.path)) {
-            console.log(element, "existtttttttttttttttttttttttttttttttttt");
+            // console.log(element, 'existtttttttttttttttttttttttttttttttttt')
             result1.push(element);
           }
         } else {
@@ -74,21 +76,11 @@ const SidebarComp = () => {
       return result1;
     }
 
-    const result1 = filterSidebarData(newSideBarData, lazerUser?.data?.access);
-
-    console.log(result1);
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    const result1 = filterSidebarData(newSideBarData, lazerUser.data.access);
     setAccessSideBarData(result1);
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
     // setAccessSideBarData(tempArray);
   }, []);
-
-  console.log(accessSideBarData, "Access Side Bar Data");
-
+  
   return (
     <>
       <nav className={sidebar ? "side-nav" : '"side-nav '}>

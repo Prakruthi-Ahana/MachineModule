@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Table } from "react-bootstrap";
-import MarkasRejectedModal from "./MarkasRejectedModal";
+import MarkasRejectedModal from "./MarkasUsedModal";
 import RowRejectedModal from "./RowRejectedModal";
 import ShowUnusedModal from "./ShowUnusedModal";
 import AllModal from "./AllModal";
@@ -8,21 +8,39 @@ import axios from "axios";
 import { baseURL } from "../../../../../../api/baseUrl";
 import { toast } from "react-toastify";
 import RejectModal from "./RejectModal";
+import MarkasUsedModal from "./MarkasUsedModal";
 // import AltModal from '../../../AltModal';
 
-export default function LaserCutForm({ selectProductionReport, openTable,selectshifttable}) {
+export default function LaserCutForm({
+  selectProductionReport,
+  openTable,
+  selectshifttable,
+}) {
   //  const[showModal,setShowModal]=useState(false);
-  const [markasRejected, setMarkasRejected] = useState(false);
+  const [markasUsed, setMarkasUsed] = useState(false);
   const [rowsRejected, setRowsRejected] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
 
   const handleRejectModal = () => {
-    setRowsRejected(true);
+    // console.log(selectdefaultRow.Used)
+    if (selectdefaultRow.Used === 1 || selectdefaultRow.Rejected === 1) {
+      toast.error("Once material used or Rejected Cannot be used again", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else {
+      setRowsRejected(true);
+    }
   };
 
   const handlemarkasUsed = () => {
-    setMarkasRejected(true);
+    if (selectdefaultRow.Used === 1 || selectdefaultRow.Rejected === 1) {
+      toast.error("Once material used or Rejected Cannot be used again", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else {
+      setMarkasUsed(true);
+    }
   };
 
   // console.log("Laser Data", selectProductionReport);
@@ -38,7 +56,7 @@ export default function LaserCutForm({ selectProductionReport, openTable,selects
 
   const filterUnusedData = () => {
     const filteredData = ProductionReportData.filter(
-      (data) => data.Used === 0 && data.Rejected === 0
+      (data) => data.Used === 0 
     );
     setOriginalData(ProductionReportData); // Save the original data
     setProductionReportData(filteredData); // Update the filtered data
@@ -58,7 +76,6 @@ export default function LaserCutForm({ selectProductionReport, openTable,selects
     }
   };
 
-
   const MaterialUsage = () => {
     axios
       .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
@@ -69,7 +86,7 @@ export default function LaserCutForm({ selectProductionReport, openTable,selects
         setProductionReportData(response.data);
       });
   };
-  
+
   useEffect(() => {
     MaterialUsage();
   }, [selectProductionReport]);
@@ -87,18 +104,18 @@ export default function LaserCutForm({ selectProductionReport, openTable,selects
     axios
       .post(baseURL + "/ShiftOperator/markAsUsedProductionReport", {
         selectdefaultRow,
-        selectedMachine:selectshifttable?.Machine
+        selectedMachine: selectshifttable?.Machine,
       })
       .then(() => {
         console.log(selectdefaultRow);
         axios
-        .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
-          NCId: selectProductionReportData,
-        })
-        .then((response) => {
-          console.log(response);
-          setProductionReportData(response.data);
-        });
+          .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+            NCId: selectProductionReportData,
+          })
+          .then((response) => {
+            console.log(response);
+            setProductionReportData(response.data);
+          });
         MaterialUsage();
       })
       .catch((err) => {
@@ -119,7 +136,6 @@ export default function LaserCutForm({ selectProductionReport, openTable,selects
   const valueSepertor = Object.values(RejecteReasonFun);
   const newReason = valueSepertor.join(" ");
 
-
   const UpdateRejectedReason = () => {
     if (
       !Object.values(RejecteReasonFun).some((reason) => reason.trim() !== "")
@@ -130,25 +146,23 @@ export default function LaserCutForm({ selectProductionReport, openTable,selects
       return; // Prevent further execution if the reason is empty
     }
     axios
-    .post(baseURL + "/ShiftOperator/markAsRejectedProductionReport", {
-      selectdefaultRow,
-      RejectedReason: newReason,
-    })
-    .then(() => {
-      console.log("RejectReason Posted");
-      toast.success("Rejected Reason Saved", {
-        position: toast.POSITION.TOP_CENTER,
+      .post(baseURL + "/ShiftOperator/markAsRejectedProductionReport", {
+        selectdefaultRow,
+        RejectedReason: newReason,
+      })
+      .then(() => {
+        console.log("RejectReason Posted");
+        toast.success("Rejected Reason Saved", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        MaterialUsage();
+      })
+      .catch((err) => {
+        toast.error("An error occurred while updating reject reason", {
+          position: toast.POSITION.TOP_CENTER,
+        });
       });
-      MaterialUsage();
-    })
-    .catch((err) => {
-      toast.error("An error occurred while updating reject reason", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    });
   };
-
-  
 
   return (
     <div>
@@ -264,34 +278,30 @@ export default function LaserCutForm({ selectProductionReport, openTable,selects
         ) : null}
       </div>
 
-        <MarkasRejectedModal
-          markasRejected={markasRejected}
-          setMarkasRejected={setMarkasRejected}
-          handleMarkasUsed={handleMarkasUsed}
-          selectProductionReportData={selectProductionReportData}
-          setProductionReportData={setProductionReportData}
-        />
+      <MarkasUsedModal
+        markasUsed={markasUsed}
+        setMarkasUsed={setMarkasUsed}
+        handleMarkasUsed={handleMarkasUsed}
+        selectProductionReportData={selectProductionReportData}
+        setProductionReportData={setProductionReportData}
+      />
 
-        <RowRejectedModal
-          rowsRejected={rowsRejected}
-          setRowsRejected={setRowsRejected}
-        />
-      
+      <RowRejectedModal
+        rowsRejected={rowsRejected}
+        setRowsRejected={setRowsRejected}
+      />
 
-      
-        <ShowUnusedModal
-          showUnused={showUnused}
-          setShowUnused={setShowUnused}
-          filterUnusedData={filterUnusedData}
-        />
-      
-      
-        <RejectModal
-          rowsRejected={rowsRejected}
-          setRowsRejected={setRowsRejected}
-          handleRejectedRow={UpdateRejectedReason}
-        />
-    
+      <ShowUnusedModal
+        showUnused={showUnused}
+        setShowUnused={setShowUnused}
+        filterUnusedData={filterUnusedData}
+      />
+
+      <RejectModal
+        rowsRejected={rowsRejected}
+        setRowsRejected={setRowsRejected}
+        handleRejectedRow={UpdateRejectedReason}
+      />
 
       <AllModal
         allModal={allModal}
