@@ -47,8 +47,8 @@ export default function FormAndTable({
     setOpen(false);
   };
 
-  //disable inputs 
-  const[disableInputs,setDisableInputs]=useState(false)
+  //disable inputs
+  const [disableInputs, setDisableInputs] = useState(false);
   //PreapreShift
   const onClickPrepareShift = () => {
     axios
@@ -313,9 +313,12 @@ export default function FormAndTable({
                   // console.error("Invalid date format");
                 }
               }
+              const rowStyle = {
+                backgroundColor: item.Locked === 1 ? item.rowColor : "inherit",
+              };
 
               return (
-                <tr style={{ backgroundColor: item.rowColor }} key={key}>
+                <tr style={rowStyle} key={key}>
                   <td>{item.Srl}</td>
                   <td>{item.Program}</td>
                   <td>
@@ -326,7 +329,7 @@ export default function FormAndTable({
                       onChange={(e) =>
                         handleTimeChange(key, "FromTime", e.target.value)
                       }
-                      disabled={disableInputs}
+                      disabled={item.Locked === 1}
                     />
                   </td>
                   <td>
@@ -336,6 +339,7 @@ export default function FormAndTable({
                         style={{ textAlign: "center", width: "150px" }}
                         value={`${currentDate} ${currentTime}`}
                         readOnly
+                        disabled={item.Locked === 1}
                       />
                     ) : (
                       <input
@@ -345,7 +349,7 @@ export default function FormAndTable({
                         onChange={(e) =>
                           handleTimeChange(key, "ToTime", e.target.value)
                         }
-                        disabled={disableInputs}
+                        disabled={item.Locked === 1}
                       />
                     )}
                   </td>

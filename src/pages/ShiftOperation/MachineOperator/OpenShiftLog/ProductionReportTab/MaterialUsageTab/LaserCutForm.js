@@ -55,9 +55,7 @@ export default function LaserCutForm({
   const [isDataFiltered, setIsDataFiltered] = useState(false);
 
   const filterUnusedData = () => {
-    const filteredData = ProductionReportData.filter(
-      (data) => data.Used === 0 
-    );
+    const filteredData = ProductionReportData.filter((data) => data.Used === 0);
     setOriginalData(ProductionReportData); // Save the original data
     setProductionReportData(filteredData); // Update the filtered data
     setIsDataFiltered(true); // Set the flag to indicate data is filtered
@@ -91,29 +89,36 @@ export default function LaserCutForm({
     MaterialUsage();
   }, [selectProductionReport]);
 
-  const [selectdefaultRow, setSelectdefaultRow] = useState({});
-
+  // Multiple Row Select Function for Table
+  const [selectdefaultRow, setSelectdefaultRow] = useState([]);
   const initialRowSelection = (item, index) => {
-    setSelectdefaultRow({ ...item, index });
-  };
-  useMemo(() => {
-    setSelectdefaultRow({ ...selectProductionReport[0], index: 0 });
-  }, [selectProductionReport[0]]);
+      // let list = { ...item, index: index };
+      // setSelectedMtrlTable(list);
+      const selectedRowData = ProductionReportData[index];
+      const isSelected = selectdefaultRow.some((row) => row === selectedRowData);
+      if (isSelected) {
+        setSelectdefaultRow(selectdefaultRow.filter((row) => row !== selectedRowData));
+      } else {
+        setSelectdefaultRow([...selectdefaultRow, selectedRowData]);
+      }
+    }; 
 
+    console.log("selectdefaultRow",selectdefaultRow)
+ 
+
+  //Mark as Used Button
   const handleMarkasUsed = () => {
     axios
       .post(baseURL + "/ShiftOperator/markAsUsedProductionReport", {
         selectdefaultRow,
         selectedMachine: selectshifttable?.Machine,
       })
-      .then(() => {
-        console.log(selectdefaultRow);
+      .then((response) => {
         axios
           .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
             NCId: selectProductionReportData,
           })
           .then((response) => {
-            console.log(response);
             setProductionReportData(response.data);
           });
         MaterialUsage();
@@ -123,22 +128,20 @@ export default function LaserCutForm({
       });
   };
 
-  const [RejecteReasonFun, setRejectReasonFun] = useState({});
-
-  const onChangefield = (key, e) => {
+  //mark as Reject
+  const [RejecteReason, setRejectReason] = useState({});
+  const onChangeInput = (key, e) => {
     const { value } = e.target;
-    setRejectReasonFun((prevState) => ({
+    setRejectReason((prevState) => ({
       ...prevState,
       [key]: value,
     }));
   };
-
-  const valueSepertor = Object.values(RejecteReasonFun);
+  const valueSepertor = Object.values(RejecteReason);
   const newReason = valueSepertor.join(" ");
-
   const UpdateRejectedReason = () => {
     if (
-      !Object.values(RejecteReasonFun).some((reason) => reason.trim() !== "")
+      !Object.values(RejecteReason).some((reason) => reason.trim() !== "")
     ) {
       toast.error("Rejected Reason is empty", {
         position: toast.POSITION.TOP_CENTER,
@@ -148,10 +151,9 @@ export default function LaserCutForm({
     axios
       .post(baseURL + "/ShiftOperator/markAsRejectedProductionReport", {
         selectdefaultRow,
-        RejectedReason: newReason,
+        RejectedReason: RejecteReason,
       })
       .then(() => {
-        console.log("RejectReason Posted");
         toast.success("Rejected Reason Saved", {
           position: toast.POSITION.TOP_CENTER,
         });
@@ -243,13 +245,13 @@ export default function LaserCutForm({
               <tbody className="tablebody table-space">
                 {ProductionReportData?.map((data, key) => (
                   <tr
-                    onClick={() => {
-                      initialRowSelection(data, key);
-                    }}
-                    className={
-                      key === selectdefaultRow?.index ? "selcted-row-clr" : ""
-                    }
-                  >
+                  onClick={() => {
+                    initialRowSelection(data, key);
+                  }}
+                  className={
+                    selectdefaultRow.includes(data) ? "selcted-row-clr" : ""
+                  }
+                >
                     <td>{data.ShapeMtrlID}</td>
                     <td>{data.Para1}</td>
                     <td>{data.Para2}</td>
@@ -261,15 +263,20 @@ export default function LaserCutForm({
                     </td>
 
                     <td>
-                      <div key={data.index}>
-                        <input
-                          className="table-cell-editor"
-                          style={{ textAlign: "center", width: "150px" }}
-                          value={RejecteReasonFun[key] || ""} // Bind to the specific state for this row
-                          onChange={(e) => onChangefield(key, e)}
-                        />
-                      </div>
-                    </td>
+                    <div key={data.index}>
+                      <input
+                        className="table-cell-editor"
+                        style={{ textAlign: "center", width: "150px" }}
+                        value={
+                          data.Rejected === 1
+                            ? data.RejectionReason
+                            : RejecteReason[data.NcPgmMtrlId] || ""
+                        }
+                        readOnly={data.Rejected === 1}
+                        onChange={(e) => onChangeInput(data.NcPgmMtrlId, e)}
+                      />
+                    </div>
+                  </td>
                   </tr>
                 ))}
               </tbody>
@@ -284,6 +291,7 @@ export default function LaserCutForm({
         handleMarkasUsed={handleMarkasUsed}
         selectProductionReportData={selectProductionReportData}
         setProductionReportData={setProductionReportData}
+        setSelectdefaultRow={setSelectdefaultRow}
       />
 
       <RowRejectedModal
@@ -301,6 +309,8 @@ export default function LaserCutForm({
         rowsRejected={rowsRejected}
         setRowsRejected={setRowsRejected}
         handleRejectedRow={UpdateRejectedReason}
+        setSelectdefaultRow={setSelectdefaultRow}
+        setRejectReason={setRejectReason}
       />
 
       <AllModal

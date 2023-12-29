@@ -103,10 +103,11 @@ export default function CallFile() {
         NcId,
       })
       .then((response) => {
-        console.log("required result", response.data.complexData2);
         setAfterRefreshData(response?.data?.complexData1);
+        setShowTable(true)
         if (!response.data.complexData1) {
-          setAfterRefreshData([]);
+          setAfterRefreshData([]);  
+          setShowTable(false)
         }
         setFormData(response?.data?.complexData2[0]);
         if (!response?.data?.complexData2[0]) {
@@ -118,17 +119,17 @@ export default function CallFile() {
 
   //service middletabledata
   const serviceMiddleTableData = () => {
-    console.log("api called");
     axios
       .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
         selectshifttable,
         NcId,
       })
       .then((response) => {
-        console.log("required result", response.data);
-        setAfterloadService(response?.data);
+        setAfterloadService(response?.data);      
+          // setShowTable(true)
         if (!response.data) {
           setAfterloadService([]);
+          // setShowTable(false)
         }
       });
   };
@@ -188,6 +189,7 @@ export default function CallFile() {
             selectedMachine={selectedMachine}
             getMachineShiftStatusForm={getMachineShiftStatusForm}
             selectshifttable={selectshifttable}
+            getmiddleTbaleData={getmiddleTbaleData}
           />
         </div>
 

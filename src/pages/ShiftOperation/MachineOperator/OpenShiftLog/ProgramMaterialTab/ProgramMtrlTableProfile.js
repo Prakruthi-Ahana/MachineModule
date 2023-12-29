@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import ShowUsedModal from "./ShowUsedModal";
 import AllModal from "../ProductionReportTab/MaterialUsageTab/AllModal";
@@ -18,9 +18,10 @@ export default function ProgrmMatrlTableProfile({
   selectedMtrlTable,
   rowSelectMtrlTable,
   setSelectedMtrlTable,
-  selectedMachine
+  selectedMachine,
+  ProgramNo,getmiddleTbaleData
 }) {
-  const{afterRefreshData,setAfterRefreshData,NcId}=useGlobalContext();
+  const { afterRefreshData, setAfterRefreshData, NcId } = useGlobalContext();
   const [showusedModal, setShowusedModal] = useState(false);
   const [allModal, setAllModal] = useState(false);
   const [isCheckboxchecked, setIsCheckboxchecked] = useState(false);
@@ -29,9 +30,7 @@ export default function ProgrmMatrlTableProfile({
 
   const filterUnusedData = () => {
     // Filter the ProductionReportData array to show only rows where Used and Rejected are both 0
-    const filteredData = afterRefreshData.filter(
-      (data) => data.Used === 0 
-    );
+    const filteredData = afterRefreshData.filter((data) => data.Used === 0);
     setOriginalData(afterRefreshData); // Save the original data
     setAfterRefreshData(filteredData); // Update the filtered data
     setIsDataFiltered(true); // Set the flag to indicate data is filtered
@@ -54,23 +53,21 @@ export default function ProgrmMatrlTableProfile({
   const [MarkasReject, setMarkasReject] = useState(false);
 
   const handleMarkasUsedModal = () => {
-    if(selectedMtrlTable.Used===1 || selectedMtrlTable.Rejected===1){
+    if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
       });
-    }
-    else{
+    } else {
       setMarkasUsed(true);
     }
   };
 
   const handleMarkasRejected = () => {
-    if(selectedMtrlTable.Used===1 || selectedMtrlTable.Rejected===1){
+    if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
       });
-    }
-    else{
+    } else {
       setMarkasReject(true);
     }
   };
@@ -79,30 +76,29 @@ export default function ProgrmMatrlTableProfile({
     axios
       .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
         selectedMtrlTable: selectedMtrlTable,
-        selectedMachine:selectedMachine
+        selectedMachine: selectedMachine,
       })
       .then(() => {
         toast.success("Success", {
           position: toast.POSITION.TOP_CENTER,
         });
         axios
-        .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
-          NcId:NcId
-        })
-        .then((response) => {
-          console.log("required result",response.data);
-          setAfterRefreshData(response?.data);
-          if (!response.data) {
-            setAfterRefreshData([]);
-          }
-        });
+          .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
+            NCProgramNo: ProgramNo,
+          })
+          .then((response) => {
+            console.log("required result", response.data);
+            setAfterRefreshData(response?.data);
+            if (!response.data) {
+              setAfterRefreshData([]);
+            }
+          });
       })
 
       .catch((err) => {
         console.error(err);
       });
   };
-
 
   const [RejectedReasonState, setRejectedReasonState] = useState({});
 
@@ -128,37 +124,40 @@ export default function ProgrmMatrlTableProfile({
         position: toast.POSITION.TOP_CENTER,
       });
       return; // Prevent further execution if the reason is empty
-    }
-    else{
+    } else {
       axios
-      .post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial", {
-        selectedMtrlTable,
-        RejectedReason: newReason,
-      })
-      .then((response) => {
-        toast.success("Rejected Reason Saved", {
-          position: toast.POSITION.TOP_CENTER,
-        });
-        axios
-        .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
-          NcId:NcId
+        .post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial", {
+          selectedMtrlTable,
+          RejectedReason: RejectedReasonState,
         })
         .then((response) => {
-          console.log("required result",response.data);
-          setAfterRefreshData(response?.data);
-          if (!response.data) {
-            setAfterRefreshData([]);
-          }
+          toast.success("Rejected Reason Saved", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          setRejectedReasonState({});
+          setSelectedMtrlTable([]);
+          axios
+            .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
+              NCProgramNo: ProgramNo,
+            })
+            .then((response) => {
+              console.log("required result", response.data);
+              setAfterRefreshData(response?.data);
+              if (!response.data) {
+                setAfterRefreshData([]);
+              }
+            });
+        })
+        .catch((error) => {
+          toast.error("An error occurred while updating reject reason", {
+            position: toast.POSITION.TOP_CENTER,
+          });
         });
-      })
-      .catch((error) => {
-        toast.error("An error occurred while updating reject reason", {
-          position: toast.POSITION.TOP_CENTER,
-        });
-      });
     }
   };
 
+
+ 
   return (
     <div>
       {showTable ? (
@@ -241,7 +240,7 @@ export default function ProgrmMatrlTableProfile({
                     rowSelectMtrlTable(data, key);
                   }}
                   className={
-                    key === selectedMtrlTable?.index ? "selcted-row-clr" : ""
+                    selectedMtrlTable.includes(data) ? "selcted-row-clr" : ""
                   }
                 >
                   <td>{data.ShapeMtrlID}</td>
@@ -253,13 +252,19 @@ export default function ProgrmMatrlTableProfile({
                   <td>
                     <input type="checkbox" checked={data.Rejected === 1} />
                   </td>
+
                   <td>
                     <div key={data.index}>
                       <input
                         className="table-cell-editor"
                         style={{ textAlign: "center", width: "150px" }}
-                        value={RejectedReasonState[key] || ""} // Bind to the specific state for this row
-                        onChange={(e) => onChangeInput(key, e)}
+                        value={
+                          data.Rejected === 1
+                            ? data.RejectionReason
+                            : RejectedReasonState[data.NcPgmMtrlId] || ""
+                        }
+                        readOnly={data.Rejected === 1}
+                        onChange={(e) => onChangeInput(data.NcPgmMtrlId, e)}
                       />
                     </div>
                   </td>

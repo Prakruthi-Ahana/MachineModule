@@ -172,9 +172,6 @@ export default function ProgrmMatrlTableService({
   };
   
   
-
-  // console.log(sendobject);
-
   const onClickofYes = () => {
     axios
       .post(baseURL + "/ShiftOperator/ServicemarkasUsed", {
@@ -220,6 +217,9 @@ export default function ProgrmMatrlTableService({
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
+
+  console.log("showTable",showTable);
 
   return (
     <div>

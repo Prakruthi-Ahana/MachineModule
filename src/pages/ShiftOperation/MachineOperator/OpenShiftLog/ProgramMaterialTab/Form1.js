@@ -15,7 +15,7 @@ export default function Form1({
   setAfterloadProgram,
   selectedMachine,
   getMachineShiftStatusForm,
-  selectshifttable,
+  selectshifttable,getmiddleTbaleData
 }) {
   const {
     afterRefreshData,
@@ -40,16 +40,32 @@ export default function Form1({
   };
 
   //selecting table
-  const [selectedMtrlTable, setSelectedMtrlTable] = useState({});
+  const [selectedMtrlTable, setSelectedMtrlTable] = useState([]);
   const rowSelectMtrlTable = (item, index) => {
-    let list = { ...item, index: index };
-    setSelectedMtrlTable(list);
+    // let list = { ...item, index: index };
+    // setSelectedMtrlTable(list);
+    const selectedRowData = afterRefreshData[index];
+    const isSelected = selectedMtrlTable.some((row) => row === selectedRowData);
+    if (isSelected) {
+      setSelectedMtrlTable(selectedMtrlTable.filter((row) => row !== selectedRowData));
+    } else {
+      setSelectedMtrlTable([...selectedMtrlTable, selectedRowData]);
+    }
   };
 
-  useMemo(() => {
-    // console.log("afterRefreshData[0]:", afterRefreshData[0]);
-    setSelectedMtrlTable({ ...afterRefreshData[0], index: 0 });
-  }, [afterRefreshData[0]]);
+  // const[ProgramNo,setProgramNo]=useState('');
+  // console.log(formdata?.NCProgramNo || '');
+
+  // useEffect(()=>{
+  //   setProgramNo(formdata?.NCProgramNo);
+  // },[])
+
+  let ProgramNo=formdata?.NCProgramNo;
+
+  // useMemo(() => {
+  //   // console.log("afterRefreshData[0]:", afterRefreshData[0]);
+  //   setSelectedMtrlTable({ ...afterRefreshData[0], index: 0 });
+  // }, [afterRefreshData[0]]);
 
   const loadProgramSubmit = () => {
     if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
@@ -90,7 +106,6 @@ export default function Form1({
   }, [formdata?.NCProgramNo]);
 
 
-console.log(formdata);
 
 
   return (
@@ -263,6 +278,8 @@ console.log(formdata);
           rowSelectMtrlTable={rowSelectMtrlTable}
           setSelectedMtrlTable={setSelectedMtrlTable}
           selectedMachine={selectedMachine}
+          ProgramNo={ProgramNo}
+          getmiddleTbaleData={getmiddleTbaleData}
         />
       )}
 
