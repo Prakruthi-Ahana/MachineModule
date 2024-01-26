@@ -110,11 +110,6 @@ const onClickgetProgram=()=>{
       }
     });
   setStoppageReason(e.target.value);
-  // if (e.target.value !== " ") {
-  //   setAlreadyLoad(true);
-  // } else {
-  //   // Handle the case when e.target.value is " "
-  // }
   const selectedStoppageID = e.target.value;
   const selectedStoppage = e.target.selectedOptions[0].dataset.stoppage;
   setSelectedStoppageID(selectedStoppageID);
