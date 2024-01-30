@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import "./Login.css"
 import Logo from "../Auth/Magod Laser Logo - Default [2500].png"
 import { useNavigate, } from 'react-router-dom'
-import { baseURL, baseURL1 } from '../../api/baseUrl';
+import { baseURL } from '../../api/baseUrl';
 
 function Login() {
 const navigate=useNavigate();
@@ -27,7 +27,7 @@ let [formPassword, setPassword] = useState("");
 
   function submitLogin() {
     postRequest(
-      baseURL1 +"/user/login",
+      baseURL+"/user/login",
         { username: username, password: formPassword },
         (data) => {
           if (data.accessToken) {
