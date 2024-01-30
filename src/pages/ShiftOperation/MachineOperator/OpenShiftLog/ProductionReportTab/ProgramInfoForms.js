@@ -30,6 +30,7 @@ export default function ProgramInfoForms({
         console.log(response.data);
         setHasBOM(response.data);
       });
+      setOpenTable(false);
   };
 
   //Load Program
@@ -314,6 +315,7 @@ export default function ProgramInfoForms({
         openTable={openTable}
         selectshifttable={selectshifttable}
         rpTopData={rpTopData}
+        setRptTopData={setRptTopData}
       />
 
       <LoadProgramInfoModal

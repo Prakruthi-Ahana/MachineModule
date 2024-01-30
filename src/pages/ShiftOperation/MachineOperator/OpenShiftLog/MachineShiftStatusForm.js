@@ -10,7 +10,7 @@ export default function MachineShiftStatusForm({
   date,
   showTable,
   machineShiftStatus,
-  getMachineShiftStatusForm
+  getMachineShiftStatusForm,
 }) {
   const { selectedProgram } = useGlobalContext();
 
@@ -26,7 +26,9 @@ export default function MachineShiftStatusForm({
       ///ChangeOperator
       axios
         .post(baseURL + "/ShiftOperator/updateOperator", {
-          Operator: ChangedOperator,selectshifttable})
+          Operator: ChangedOperator,
+          selectshifttable,
+        })
         .then((response) => {
           getMachineShiftStatusForm();
         });
@@ -46,18 +48,32 @@ export default function MachineShiftStatusForm({
   };
 
   const formatDateTime = (dateTimeString) => {
-    const options = { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false };
-    return new Date(dateTimeString).toLocaleString(undefined, options).replace(',', '');
+    const dateObject = new Date(dateTimeString);
+
+    // Get day and month components
+    const day = dateObject.getDate().toString().padStart(2, "0");
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+
+    // Get hour and minute components
+    const hour = dateObject.getHours().toString().padStart(2, "0");
+    const minute = dateObject.getMinutes().toString().padStart(2, "0");
+
+    // Combine components to form the desired format
+    const formattedDate = `${day}/${month} ${hour}:${minute}`;
+
+    return formattedDate;
   };
-  
 
   // console.log(machineShiftStatus[0])
 
-  const [runningTime, setRunningTime] = useState("")
+  //program Time
+  const [runningTime, setRunningTime] = useState("");
   useEffect(() => {
     const updateRunningTime = () => {
       if (machineShiftStatus && machineShiftStatus.length > 0) {
-        const programStartTime = new Date(machineShiftStatus[0]?.ProgramStartTime);
+        const programStartTime = new Date(
+          machineShiftStatus[0]?.ProgramStartTime
+        );
 
         if (!isNaN(programStartTime.getTime())) {
           const currentTime = new Date();
@@ -65,7 +81,9 @@ export default function MachineShiftStatusForm({
 
           if (diffInMilliseconds >= 0) {
             const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
-            const minutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+            const minutes = Math.floor(
+              (diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
+            );
 
             setRunningTime(`${hours} hours ${minutes} mins`);
           } else {
@@ -88,51 +106,51 @@ export default function MachineShiftStatusForm({
     localStorage.setItem("runningTime", runningTime);
   }, [runningTime]);
 
+  //update sheettime
+  const [sheetrunTime, setSheetRuntime] = useState("");
 
-//update sheettime
-const[sheetrunTime,setSheetRuntime]=useState("")
-
-const updateSheettime=()=>{
-  if (machineShiftStatus && machineShiftStatus.length > 0) {
-    const SheetStartTime = new Date(machineShiftStatus[0]?.SheetStartTime);
-
-    if (!isNaN(SheetStartTime.getTime())) {
-      const currentTime = new Date();
-      const diffInMilliseconds = currentTime - SheetStartTime;
-
-      if (diffInMilliseconds >= 0) {
-        const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
-        const minutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
-
-        setSheetRuntime(`${hours} hours ${minutes} mins`);
+  const updateSheettime = () => {
+    if (machineShiftStatus && machineShiftStatus.length > 0) {
+      const SheetStartTime = new Date(machineShiftStatus[0]?.SheetStartTime);
+  
+      if (!isNaN(SheetStartTime.getTime())) {
+        const currentTime = new Date();
+        const diffInMilliseconds = currentTime - SheetStartTime;
+  
+        if (diffInMilliseconds >= 0) {
+          const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+          const minutes = Math.floor(
+            (diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
+          );
+  
+          setSheetRuntime(`${hours} hours ${minutes} mins`);
+        } else {
+          setSheetRuntime("0");
+        }
       } else {
         setSheetRuntime("0");
       }
     } else {
       setSheetRuntime("0");
     }
-  } else {
-    setSheetRuntime("0");
-  }
-}
+  };
+  
+  useEffect(() => {
+    if (machineShiftStatus[0]?.MtrlID === "") {
+      setSheetRuntime(runningTime);
+    } else {
+      updateSheettime();
+    }
+  }, [machineShiftStatus, runningTime]);
+  
+  useEffect(() => {
+    localStorage.setItem("runningTime", sheetrunTime);
+  }, [sheetrunTime]);
+  
 
-useEffect(()=>{
-  if(machineShiftStatus[0]?.MtrlID===''){
-    setSheetRuntime(runningTime)
-  }
-  else{
-    updateSheettime();
-    updateSheettime();
-    const intervalId = setInterval(updateSheettime, 30000);
-    return () => clearInterval(intervalId);
-  }
-
-},[machineShiftStatus])
-
-useEffect(() => {
-  localStorage.setItem("runningTime", sheetrunTime);
-}, [sheetrunTime]);
-
+  useEffect(() => {
+    getMachineShiftStatusForm();
+  }, []);
 
   return (
     <>
@@ -154,7 +172,6 @@ useEffect(() => {
           <div className="d-flex ms-4">
             <div style={{ width: "auto", textAlign: "left" }}>
               <div style={{ marginLeft: "5px" }}>
-                {" "}
                 <b>Operator : {selectshifttable.Operator} </b>
               </div>
               <div style={{ marginLeft: "5px" }}>
@@ -220,7 +237,7 @@ useEffect(() => {
               </div>
 
               <div style={{ marginLeft: "15px" }}>
-                <b>Operation : {machineShiftStatus[0]?.Operation } </b>
+                <b>Operation : {machineShiftStatus[0]?.Operation} </b>
               </div>
               <div style={{ color: "", marginLeft: "15px" }}>
                 {" "}
@@ -228,13 +245,13 @@ useEffect(() => {
               </div>
 
               <div style={{ marginLeft: "15px" }}>
-                <b>
-                  Program no : {machineShiftStatus[0]?.NCProgarmNo}
-                </b>
+                <b>Program no : {machineShiftStatus[0]?.NCProgarmNo}</b>
               </div>
               <div style={{ marginLeft: "15px" }}>
-                {" "}
-                <b>Start Time :{formatDateTime(machineShiftStatus[0]?.ProgramStartTime)}</b>
+                <b>
+                  Start Time :
+                  {formatDateTime(machineShiftStatus[0]?.ProgramStartTime)}
+                </b>
               </div>
 
               <div className="mb-3" style={{ color: "", marginLeft: "15px" }}>
@@ -266,8 +283,10 @@ useEffect(() => {
                   <b>Sheet Id :{machineShiftStatus[0]?.MtrlID} </b>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
-                  {" "}
-                  <b>Start Time : {formatDateTime(machineShiftStatus[0]?.SheetStartTime)}</b>
+                  <b>
+                    Start Time :
+                    {formatDateTime(machineShiftStatus[0]?.SheetStartTime)}
+                  </b>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
                   <b>Running For :{sheetrunTime}</b>

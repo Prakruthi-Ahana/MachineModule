@@ -11,18 +11,14 @@ import { useGlobalContext } from "../../../Context/Context";
 
 export default function MachineOperator() {
   const {
-    afterRefreshData,
     setAfterRefreshData,
     NcId,
-    formdata,
     setFormData,
     hasBOM,
-    afterloadService,
     setAfterloadService,
-    shiftSelected,
-    setShiftSelected,
-    servicetopData,setServiceTopData,NcProgramId,setNcProgramId
+    setShiftSelected,setServiceTopData,setNcProgramId,showTable,setShowTable
   } = useGlobalContext();
+
   //get Machine List
   const [machineList, setMachineList] = useState([]);
   const getMachineList = () => {
@@ -31,6 +27,7 @@ export default function MachineOperator() {
       console.log(response.data);
     });
   };
+
   useEffect(() => {
     getMachineList();
   }, []);
@@ -62,7 +59,7 @@ export default function MachineOperator() {
     Shift = "Third";
   }
 
-  console.log("Shift:", Shift);
+  // console.log("Shift:", Shift);
 
   const [selectedMachine, setSelectedMachine] = useState("");
   const [shiftDetails, setShiftDetails] = useState([]);
@@ -77,9 +74,10 @@ export default function MachineOperator() {
       .then((response) => {
         setShiftDetails(response.data);
       });
+      setFormData([]);
   };
 
-  console.log(selectedMachine);
+  // console.log(selectedMachine);
 
   //Open ShiftLog  Modal
   const [openmodal, setOpenmodal] = useState("");
@@ -110,36 +108,42 @@ export default function MachineOperator() {
 
   //profile
   const getmiddleTbaleData = () => {
-    console.log("api called");
     axios
       .post(baseURL + "/ShiftOperator/ProgramMaterialAfterRefresh", {
         selectshifttable,
         NcId,
       })
       .then((response) => {
-        console.log("required result", response.data.complexData2);
         setAfterRefreshData(response?.data?.complexData1);
+        setShowTable(true);
         if (!response.data.complexData1) {
           setAfterRefreshData([]);
+          setShowTable(false)
         }
         setFormData(response?.data?.complexData2[0]);
+        if (!response?.data?.complexData2[0]) {
+          setFormData([]);
+        }
         setNcProgramId(response?.data.complexData2[0].Ncid)
+        setShowTable(true);
       });
   };
 
   //service middletabledata
   const serviceMiddleTableData = () => {
-    console.log("api called");
+    console.log("function called")
     axios
       .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
         selectshifttable,
         NcId,
       })
       .then((response) => {
-        console.log("required result", response.data);
+        console.log(response?.data);
         setAfterloadService(response?.data);
+        // setShowTable(true);
         if (!response.data) {
           setAfterloadService([]);
+          // setShowTable(false)
         }
       });
   };
@@ -169,7 +173,7 @@ export default function MachineOperator() {
               MachineName: selectedMachine,
             })
             .then((response) => {
-              console.log("required program", response.data);
+              // console.log("required program", response.data);
               setRequiredProgram(response.data);
             });
           //ProcessTaskStatus
@@ -187,11 +191,14 @@ export default function MachineOperator() {
       });
   };
 
-
-
   const onClickofClose=()=>{
     navigate("/Machine");
   }
+
+  useEffect(() => {
+    getmiddleTbaleData();
+    serviceMiddleTableData();
+  }, []);
 
   return (
     <div>

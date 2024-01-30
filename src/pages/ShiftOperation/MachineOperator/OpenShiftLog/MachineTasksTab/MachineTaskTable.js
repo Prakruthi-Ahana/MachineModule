@@ -33,7 +33,10 @@ export default function MachineTaskTable({
     setMachineTaskDataService,
     afterloadService,
     setAfterloadService,
-    servicetopData,setServiceTopData
+    servicetopData,
+    setServiceTopData,
+    pgmNo,
+    setPgmNo,
   } = useGlobalContext();
 
   // Modal Related code....
@@ -42,12 +45,15 @@ export default function MachineTaskTable({
   const [ErrorshowModal, setErrorshowModal] = useState(false);
 
   const openModal = () => {
-    if (isDataDisplayed) {
+    if (isDataDisplayed && pgmNo != selectedProgram.NCProgramNo) {
       setOpen(true); // Open the modal
+    } else if (isDataDisplayed && pgmNo === selectedProgram.NCProgramNo) {
+      setOpen(false);
     } else {
       setErrorshowModal(true); // Display the error message
     }
   };
+
 
   //Submit Load
   const handleSubmit = () => {
@@ -67,37 +73,38 @@ export default function MachineTaskTable({
         toast.success("Program Loaded Successfully", {
           position: toast.POSITION.TOP_CENTER,
         });
+        axios
+          .post(baseURL + "/ShiftOperator/getShiftLog", {
+            selectshifttable: selectshifttable,
+          })
+          .then((response) => {
+            for (let i = 0; i < response.data.length; i++) {
+              let dateSplit = response.data[i].FromTime.split(" ");
+              let date = dateSplit[0].split("-");
+              let year = date[0];
+              let month = date[1];
+              let day = date[2];
+              let finalDay =
+                day + "/" + month + "/" + year + " " + dateSplit[1];
+              response.data[i].FromTime = finalDay;
+            }
+            for (let i = 0; i < response.data.length; i++) {
+              let dateSplit1 = response.data[i].ToTime.split(" ");
+              let date1 = dateSplit1[0].split("-");
+              let year1 = date1[0];
+              let month1 = date1[1];
+              let day1 = date1[2];
+              let finalDay1 =
+                day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
+              response.data[i].ToTime = finalDay1;
+            }
+            console.log(response.data);
+            setShiftLogDetails(response.data);
+          });
+        getMachineShiftStatusForm();
       });
-    getMachineShiftStatusForm();
-    console.log("before API Call");
-    axios
-      .post(baseURL + "/ShiftOperator/getShiftLog", {
-        selectshifttable: selectshifttable,
-      })
-      .then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          let dateSplit = response.data[i].FromTime.split(" ");
-          let date = dateSplit[0].split("-");
-          let year = date[0];
-          let month = date[1];
-          let day = date[2];
-          let finalDay = day + "/" + month + "/" + year + " " + dateSplit[1];
-          response.data[i].FromTime = finalDay;
-        }
-        for (let i = 0; i < response.data.length; i++) {
-          let dateSplit1 = response.data[i].ToTime.split(" ");
-          let date1 = dateSplit1[0].split("-");
-          let year1 = date1[0];
-          let month1 = date1[1];
-          let day1 = date1[2];
-          let finalDay1 =
-            day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
-          response.data[i].ToTime = finalDay1;
-        }
-        console.log(response.data);
-        setShiftLogDetails(response.data);
-      });
-      console.log("After API Call");
+    setMachineTaskData([]);
+    setMachineTaskDataService([]);
     setOpen(false);
   };
 
@@ -136,7 +143,7 @@ export default function MachineTaskTable({
       .then((response) => {
         console.log(response.data);
         setServiceTopData(response.data);
-      })
+      });
     axios
       .post(baseURL + "/ShiftOperator/MachineTasksService", {
         NCId: selectedProgram?.Ncid,
@@ -154,8 +161,9 @@ export default function MachineTaskTable({
   };
 
   //doubleclick row
-const [newTableTopData,setNewTableTopData]=useState([])
+  const [newTableTopData, setNewTableTopData] = useState([]);
   const machinetask = () => {
+    // console.log(hasBOM)
     if (hasBOM === true) {
       axios
         .post(baseURL + "/ShiftOperator/MachineTasksService", {
@@ -170,14 +178,14 @@ const [newTableTopData,setNewTableTopData]=useState([])
           console.log(err);
           setIsDataDisplayed(false);
         });
-        axios
+      axios
         .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
           NCId: selectedProgram?.Ncid,
         })
         .then((response) => {
           console.log(response.data);
           setNewTableTopData(response.data);
-        })
+        });
     } else {
       axios
         .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
@@ -446,8 +454,9 @@ const [newTableTopData,setNewTableTopData]=useState([])
       </div>
 
       {hasBOM === true ? (
-        <MachineTaskService machineTaskService={machineTaskService} 
-        servicetopData={newTableTopData}
+        <MachineTaskService
+          machineTaskService={machineTaskService}
+          servicetopData={newTableTopData}
         />
       ) : (
         <MachineTaskProfile

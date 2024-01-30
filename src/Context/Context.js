@@ -25,6 +25,9 @@ const AuthProvider = ({ children }) => {
   const [shiftSelected,setShiftSelected]=useState({});
   const [servicetopData,setServiceTopData]=useState([]);
   const [NcProgramId,setNcProgramId]=useState('');
+  const [pgmNo,setPgmNo]=useState('')
+  const [showTable, setShowTable] = useState('');
+
 
   return (
     <AppContext.Provider
@@ -39,7 +42,7 @@ const AuthProvider = ({ children }) => {
         setShiftLogDetails,
         afterRefreshData,setAfterRefreshData,
         formdata,setFormData,
-        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId
+        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId,pgmNo,setPgmNo,showTable, setShowTable
       }}
     >
       {children}
