@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 export default function RejectModal({
   rowsRejected,
   setRowsRejected,
-  handleRejectedRow,
+  handleRejectedRow,setSelectdefaultRow,setRejectReason
 }) {
   const handleClose = () => {
     setRowsRejected(false);
@@ -14,6 +14,8 @@ export default function RejectModal({
   const reasonSubmit = () => {
     setRowsRejected(false);
     handleRejectedRow();
+    setSelectdefaultRow([]);
+    setRejectReason({})
   };
   return (
     <div>

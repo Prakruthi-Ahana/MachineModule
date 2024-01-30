@@ -7,20 +7,25 @@ import { ToastContainer, toast } from "react-toastify";
 import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
 import ProgrmMatrlTableService from "./ProgrmMatrlTableService";
+import { useEffect } from "react";
 
 export default function Form1({
   afterloadProgram,
   showTable,
   setAfterloadProgram,
   selectedMachine,
-  getMachineShiftStatusForm,selectshifttable
+  getMachineShiftStatusForm,
+  selectshifttable,getmiddleTbaleData
 }) {
   const {
     afterRefreshData,
     setAfterRefreshData,
     formdata,
     setFormData,
-    hasBOM,machineTaskService
+    hasBOM,
+    machineTaskService,
+    pgmNo,
+    setPgmNo,
   } = useGlobalContext();
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
@@ -35,16 +40,32 @@ export default function Form1({
   };
 
   //selecting table
-  const [selectedMtrlTable, setSelectedMtrlTable] = useState({});
+  const [selectedMtrlTable, setSelectedMtrlTable] = useState([]);
   const rowSelectMtrlTable = (item, index) => {
-    let list = { ...item, index: index };
-    setSelectedMtrlTable(list);
+    // let list = { ...item, index: index };
+    // setSelectedMtrlTable(list);
+    const selectedRowData = afterRefreshData[index];
+    const isSelected = selectedMtrlTable.some((row) => row === selectedRowData);
+    if (isSelected) {
+      setSelectedMtrlTable(selectedMtrlTable.filter((row) => row !== selectedRowData));
+    } else {
+      setSelectedMtrlTable([...selectedMtrlTable, selectedRowData]);
+    }
   };
 
-  useMemo(() => {
-    // console.log("afterRefreshData[0]:", afterRefreshData[0]);
-    setSelectedMtrlTable({ ...afterRefreshData[0], index: 0 });
-  }, [afterRefreshData[0]]);
+  // const[ProgramNo,setProgramNo]=useState('');
+  // console.log(formdata?.NCProgramNo || '');
+
+  // useEffect(()=>{
+  //   setProgramNo(formdata?.NCProgramNo);
+  // },[])
+
+  let ProgramNo=formdata?.NCProgramNo;
+
+  // useMemo(() => {
+  //   // console.log("afterRefreshData[0]:", afterRefreshData[0]);
+  //   setSelectedMtrlTable({ ...afterRefreshData[0], index: 0 });
+  // }, [afterRefreshData[0]]);
 
   const loadProgramSubmit = () => {
     if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
@@ -80,6 +101,13 @@ export default function Form1({
 
   // console.log(hasBOM);
 
+  useEffect(() => {
+    setPgmNo(formdata?.NCProgramNo);
+  }, [formdata?.NCProgramNo]);
+
+
+
+
   return (
     <>
       <div>
@@ -101,7 +129,7 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.NCProgramNo || ""}
+                  value={formdata?.NCProgramNo || null}
                 />
               </div>
 
@@ -238,8 +266,8 @@ export default function Form1({
 
       {hasBOM === true ? (
         <ProgrmMatrlTableService
-        showTable={showTable}
-        selectshifttable={selectshifttable}
+          showTable={showTable}
+          selectshifttable={selectshifttable}
         />
       ) : (
         <ProgramMtrlTableProfile
@@ -250,6 +278,8 @@ export default function Form1({
           rowSelectMtrlTable={rowSelectMtrlTable}
           setSelectedMtrlTable={setSelectedMtrlTable}
           selectedMachine={selectedMachine}
+          ProgramNo={ProgramNo}
+          getmiddleTbaleData={getmiddleTbaleData}
         />
       )}
 

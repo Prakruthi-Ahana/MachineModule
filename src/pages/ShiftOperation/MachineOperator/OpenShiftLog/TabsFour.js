@@ -59,7 +59,6 @@ const getShiftLogDetails = () => {
       selectshifttable: selectshifttable,
     })
     .then((response) => {
-      console.log("response ShiftLog is", response.data);
       const updatedData = response.data.map((item) => {
         let dateSplit = item.FromTime.split(" ");
         let date = dateSplit[0].split("-");
@@ -82,20 +81,11 @@ const getShiftLogDetails = () => {
         } else {
           console.log(null);
         }
-
         return item;
       });
 
       // Update the state with the modified data
       setShiftLogDetails(updatedData);
-
-      // Update the last object's ToTime with currentDate and currentTime
-      // if (updatedData.length > 0) {
-      //   const lastObject = updatedData[updatedData.length - 1];
-      //   const currentDate = getCurrentDate();
-      //   const currentTime = getCurrentTime();
-      //   lastObject.ToTime = `${currentDate} ${currentTime}`;
-      // }
     })
     .catch((error) => {
       console.error("Error occurred:", error);
