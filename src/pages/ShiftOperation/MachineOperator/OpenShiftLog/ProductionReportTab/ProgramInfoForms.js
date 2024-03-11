@@ -12,9 +12,9 @@ import axios from "axios";
 export default function ProgramInfoForms({
   getMachinetaskdata,
   selectshifttable,
-  getMachineTaskData,
+  getMachineTaskData,setMachinetaskdata
 }) {
-  const { setHasBOM, NcId, shiftSelected } = useGlobalContext();
+  const { setHasBOM,shiftSelected } = useGlobalContext();
   const [loadProgramInfo, setloadProgramInfo] = useState(false);
   const [programComplete, setProgramComplete] = useState(false);
 
@@ -32,6 +32,8 @@ export default function ProgramInfoForms({
       });
       setOpenTable(false);
   };
+
+
 
   //Load Program
   const[rpTopData,setRptTopData]=useState([]);
@@ -71,10 +73,6 @@ export default function ProgramInfoForms({
           setOpenTable(true);
         }
       })
-      .catch((error) => {
-        // Handle error if the request fails
-        // console.error("Error fetching data:", error);
-      });
   };
   
 
@@ -127,6 +125,35 @@ export default function ProgramInfoForms({
     }
   };
 
+  // console.log(selectProductionReport,"selectProductionReport is ")
+
+    //sorting
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+    const requestSort = (key) => {
+      let direction = "asc";
+      if (sortConfig.key === key && sortConfig.direction === "asc") {
+        direction = "desc";
+      }
+      setSortConfig({ key, direction });
+    };
+  
+    const sortedData = () => {
+      const dataCopy = [...getMachinetaskdata];
+      if (sortConfig.key) {
+        dataCopy.sort((a, b) => {
+          if (a[sortConfig.key] < b[sortConfig.key]) {
+            return sortConfig.direction === "asc" ? -1 : 1;
+          }
+          if (a[sortConfig.key] > b[sortConfig.key]) {
+            return sortConfig.direction === "asc" ? 1 : -1;
+          }
+          return 0;
+        });
+      }
+      return dataCopy;
+    };
+
   return (
     <div>
       <div
@@ -136,14 +163,14 @@ export default function ProgramInfoForms({
         <Table striped className="table-data border table-space">
           <thead className="tableHeaderBGColor" style={{ fontSize: "13px" }}>
             <tr>
-              <th style={{ whiteSpace: "nowrap" }}>Program No</th>
-              <th style={{ whiteSpace: "nowrap" }}>Task No</th>
-              <th style={{ whiteSpace: "nowrap" }}>Customer</th>
+              <th onClick={() => requestSort("NCProgramNo")}>Program No</th>
+              <th onClick={() => requestSort("TaskNo")}>Task No</th>
+              <th onClick={() => requestSort("cust_name")}>Customer</th>
             </tr>
           </thead>
 
           <tbody className="tablebody table-space" style={{ fontSize: "13px" }}>
-            {getMachinetaskdata.map((item, key) => {
+            {sortedData().map((item, key) => {
               return (
                 <>
                   <tr
@@ -316,6 +343,7 @@ export default function ProgramInfoForms({
         selectshifttable={selectshifttable}
         rpTopData={rpTopData}
         setRptTopData={setRptTopData}
+        setMachinetaskdata={setMachinetaskdata}
       />
 
       <LoadProgramInfoModal

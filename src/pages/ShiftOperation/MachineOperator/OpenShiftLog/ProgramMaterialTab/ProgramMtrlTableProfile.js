@@ -19,9 +19,17 @@ export default function ProgrmMatrlTableProfile({
   rowSelectMtrlTable,
   setSelectedMtrlTable,
   selectedMachine,
-  ProgramNo,getmiddleTbaleData
+  ProgramNo,
+  getmiddleTbaleData,selectshifttable,setMachinetaskdata
 }) {
-  const { afterRefreshData, setAfterRefreshData, NcId } = useGlobalContext();
+  const {
+    afterRefreshData,
+    setAfterRefreshData,
+    NcId,
+    formdata,
+    setProgramPartsData,setFormData
+  } = useGlobalContext();
+
   const [showusedModal, setShowusedModal] = useState(false);
   const [allModal, setAllModal] = useState(false);
   const [isCheckboxchecked, setIsCheckboxchecked] = useState(false);
@@ -53,7 +61,10 @@ export default function ProgrmMatrlTableProfile({
   const [MarkasReject, setMarkasReject] = useState(false);
 
   const handleMarkasUsedModal = () => {
-    if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
+    if (
+      selectedMtrlTable[0]?.Used === 1 ||
+      selectedMtrlTable[0]?.Rejected === 1
+    ) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -63,7 +74,10 @@ export default function ProgrmMatrlTableProfile({
   };
 
   const handleMarkasRejected = () => {
-    if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
+    if (
+      selectedMtrlTable[0]?.Used === 1 ||
+      selectedMtrlTable[0]?.Rejected === 1
+    ) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -72,6 +86,56 @@ export default function ProgrmMatrlTableProfile({
     }
   };
 
+  let Machine = selectshifttable?.Machine;
+  const getMachineTaskAfterMU=()=>{
+    axios
+    .post(baseURL + "/ShiftOperator/MachineTasksData", {
+      MachineName: Machine,
+    })
+    .then((response) => {
+      for (let i = 0; i < response.data.length; i++) {
+        if (
+          response.data[i].Qty ===0
+        ) {
+          response.data[i].rowColor = "#DC143C";
+        } 
+        else if (
+          response.data[i].QtyAllotted ===0
+        ) {
+          response.data[i].rowColor = "#E0FFFF";
+        } 
+        else if (
+          response.data[i].QtyCut===0
+        ) {
+          response.data[i].rowColor = "#778899";
+        } 
+        else if (
+          response.data[i].QtyCut ===
+          response.data[i].Qty
+        ) {
+          response.data[i].rowColor = "#008000";
+        } 
+        else if (
+          response.data[i].QtyCut ===
+          response.data[i].QtyAllotted
+        ) {
+          response.data[i].rowColor = "#ADFF2F";
+        } 
+        else if (
+          response.data[i].Remarks!==''
+        ) {
+          response.data[i].rowColor = "#DC143C";
+        } 
+      }
+      setMachinetaskdata(response.data);
+    })
+  }
+
+
+  useEffect(()=>{
+    getMachineTaskAfterMU();
+  },[]);
+  
   const handleMarkasUsed = () => {
     axios
       .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
@@ -79,9 +143,18 @@ export default function ProgrmMatrlTableProfile({
         selectedMachine: selectedMachine,
       })
       .then(() => {
-        toast.success("Success", {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        axios
+          .post(baseURL + "/ShiftOperator/getprogramParts", {
+            NcId: formdata?.Ncid,
+          })
+          .then((response) => {
+            // console.log("excuted data")
+            setProgramPartsData(response.data);
+          });
+        setSelectedMtrlTable([]);
+      })
+      .then(() => {
+        // Fetch data after marking as used
         axios
           .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
             NCProgramNo: ProgramNo,
@@ -93,12 +166,28 @@ export default function ProgrmMatrlTableProfile({
               setAfterRefreshData([]);
             }
           });
-      })
 
+          axios
+          .post(baseURL + "/ShiftOperator/updateformafterMarkasUsed", {
+            NcId: formdata?.Ncid,
+          })
+          .then((response) => {
+            setFormData(response.data[0]);
+          });
+      })
+      .then(() => {
+        // Show success toast
+        toast.success("Success", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        getMachineTaskAfterMU();
+      })
       .catch((err) => {
         console.error(err);
       });
   };
+
+ 
 
   const [RejectedReasonState, setRejectedReasonState] = useState({});
 
@@ -147,6 +236,7 @@ export default function ProgrmMatrlTableProfile({
                 setAfterRefreshData([]);
               }
             });
+            getMachineTaskAfterMU();
         })
         .catch((error) => {
           toast.error("An error occurred while updating reject reason", {
@@ -156,8 +246,43 @@ export default function ProgrmMatrlTableProfile({
     }
   };
 
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
- 
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+    const dataCopy = [...afterRefreshData];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
+
+  // Add a state variable to track whether all rows are selected
+const [selectAll, setSelectAll] = useState(false);
+
+const handleSelectAll = () => {
+  const allRowsSelected = selectedMtrlTable.length === afterRefreshData.length;
+  setSelectedMtrlTable(allRowsSelected ? [] : afterRefreshData);
+};
+
+
+
   return (
     <div>
       {showTable ? (
@@ -221,12 +346,15 @@ export default function ProgrmMatrlTableProfile({
               style={{ fontSize: "13px" }}
             >
               <tr>
-                <th style={{ whiteSpace: "nowrap" }}>Material ID</th>
-                <th>Length</th>
-                <th>Width</th>
-                <th>Used</th>
-                <th>Rejected</th>
-                <th>Rejection Reason</th>
+              <th onClick={handleSelectAll}></th>
+                <th onClick={() => requestSort("ShapeMtrlID")}>Material ID</th>
+                <th onClick={() => requestSort("Para1")}>Width</th>
+                <th onClick={() => requestSort("Para2")}>Length</th>
+                <th onClick={() => requestSort("Used")}>Used</th>
+                <th onClick={() => requestSort("Rejected")}>Rejected</th>
+                <th onClick={() => requestSort("RejectionReason")}>
+                  Rejection Reason
+                </th>
               </tr>
             </thead>
 
@@ -234,7 +362,7 @@ export default function ProgrmMatrlTableProfile({
               className="tablebody table-space"
               style={{ fontSize: "12px" }}
             >
-              {afterRefreshData?.map((data, key) => (
+              {sortedData()?.map((data, key) => (
                 <tr
                   onClick={() => {
                     rowSelectMtrlTable(data, key);
@@ -243,6 +371,7 @@ export default function ProgrmMatrlTableProfile({
                     selectedMtrlTable.includes(data) ? "selcted-row-clr" : ""
                   }
                 >
+                  <td></td>
                   <td>{data.ShapeMtrlID}</td>
                   <td>{data.Para1}</td>
                   <td>{data.Para2}</td>

@@ -9,9 +9,9 @@ export default function MaterialUsageService({
   openTable,
   selectProductionReport,
   rpTopData,
-  setRptTopData,
+  setRptTopData,setMachinetaskdata,selectshifttable
 }) {
-  const { NcId, NcProgramId } = useGlobalContext();
+  const { NcId, NcProgramId,setPartDetailsData } = useGlobalContext();
 
   const [servicedata, setService] = useState([]);
   const [selectedRowService, setSelectedRowService] = useState({});
@@ -19,6 +19,56 @@ export default function MaterialUsageService({
   const [toCompareData, setToCompareData] = useState([]);
   const [sendobject, setSendObject] = useState([]);
   const [NC_Pgme_Part_ID, setNC_Pgme_Part_ID] = useState("");
+
+  let Machine = selectshifttable?.Machine;
+  const getMachineTaskAfterMU=()=>{
+    axios
+    .post(baseURL + "/ShiftOperator/MachineTasksData", {
+      MachineName: Machine,
+    })
+    .then((response) => {
+      for (let i = 0; i < response.data.length; i++) {
+        if (
+          response.data[i].Qty ===0
+        ) {
+          response.data[i].rowColor = "#DC143C";
+        } 
+        else if (
+          response.data[i].QtyAllotted ===0
+        ) {
+          response.data[i].rowColor = "#E0FFFF";
+        } 
+        else if (
+          response.data[i].QtyCut===0
+        ) {
+          response.data[i].rowColor = "#778899";
+        } 
+        else if (
+          response.data[i].QtyCut ===
+          response.data[i].Qty
+        ) {
+          response.data[i].rowColor = "#008000";
+        } 
+        else if (
+          response.data[i].QtyCut ===
+          response.data[i].QtyAllotted
+        ) {
+          response.data[i].rowColor = "#ADFF2F";
+        } 
+        else if (
+          response.data[i].Remarks!==''
+        ) {
+          response.data[i].rowColor = "#DC143C";
+        } 
+      }
+      setMachinetaskdata(response.data);
+    })
+  }
+
+
+  useEffect(()=>{
+    getMachineTaskAfterMU();
+  },[]);
 
   const materialUsageService = () => {
     axios
@@ -180,8 +230,18 @@ export default function MaterialUsageService({
                   NCId: selectProductionReport?.Ncid,
                 })
                 .then((response) => {
-                  console.log(response.data);
+                  // console.log(response.data);
                   setRptTopData(response.data);
+                  axios
+                  .post(baseURL + "/ShiftOperator/getpartDetails", {
+                    selectProductionReport,
+                  })
+                  .then((response) => {
+                    console.log("excuted data refresh func");
+                    setPartDetailsData(response.data);
+                  });
+                  getMachineTaskAfterMU();
+
                 });
             });
         }
@@ -191,7 +251,6 @@ export default function MaterialUsageService({
       });
   };
 
-  //onclick of mark as returned
  //onclick of mark as returned
 const markasReturned = () => {
   axios
@@ -310,6 +369,42 @@ const markasReturned = () => {
 };
 
   // console.log(selectedRowService)
+
+   //sorting
+   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+   const requestSort = (key) => {
+     let direction = "asc";
+     if (sortConfig.key === key && sortConfig.direction === "asc") {
+       direction = "desc";
+     }
+     setSortConfig({ key, direction });
+   };
+ 
+   const sortedData = () => {
+     const dataCopy = [...servicedata];
+     if (sortConfig.key) {
+       dataCopy.sort((a, b) => {
+         if (a[sortConfig.key] < b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? -1 : 1;
+         }
+         if (a[sortConfig.key] > b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? 1 : -1;
+         }
+         return 0;
+       });
+     }
+     return dataCopy;
+   };
+
+   
+  // Add a state variable to track whether all rows are selected
+const [selectAll, setSelectAll] = useState(false);
+
+const handleSelectAll = () => {
+  const allRowsSelected = selectedRowService.length === servicedata.length;
+  setSelectedRowService(allRowsSelected ? [] : servicedata);
+};
 
   return (
     <div>
@@ -434,12 +529,13 @@ const markasReturned = () => {
               style={{ fontSize: "13px" }}
             >
               <tr>
-                <th>Part Id</th>
-                <th>RV_No</th>
-                <th>Issued</th>
-                <th>Used</th>
-                <th>Returned</th>
-                <th>Process Now</th>
+              <th onClick={handleSelectAll}></th>
+                <th onClick={() => requestSort("PartId")}>Part Id</th>
+                <th onClick={() => requestSort("RV_No")}>RV_No</th>
+                <th onClick={() => requestSort("QtyIssued")}>Issued</th>
+                <th onClick={() => requestSort("QtyUsed")}>Used</th>
+                <th onClick={() => requestSort("QtyReturned")}>Returned</th>
+                <th onClick={() => requestSort("0")}>Process Now</th>
               </tr>
             </thead>
 
@@ -447,7 +543,7 @@ const markasReturned = () => {
               className="tablebody table-space"
               style={{ fontSize: "12px" }}
             >
-              {servicedata.map((item, key) => (
+              {sortedData().map((item, key) => (
                 <tr
                   key={key}
                   onClick={() => {
@@ -457,6 +553,7 @@ const markasReturned = () => {
                     key === selectedRowService?.index ? "selcted-row-clr" : ""
                   }
                 >
+                  <td></td>
                   <td>{item.PartId}</td>
                   <td>{item.RV_No}</td>
                   <td>{item.QtyIssued}</td>

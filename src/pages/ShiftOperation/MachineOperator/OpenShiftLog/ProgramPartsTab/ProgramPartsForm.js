@@ -4,26 +4,27 @@ import { Table } from "react-bootstrap";
 import { baseURL } from "../../../../../api/baseUrl";
 import { useEffect } from "react";
 import { useGlobalContext } from "../../../../../Context/Context";
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function ProgramPartsForm() {
-  const { NcId, setNcId } = useGlobalContext();
+  const { NcId,programPartsData, setProgramPartsData,formdata} = useGlobalContext();
 
-  const [programPartsData, setProgramPartsData] = useState([]);
+  console.log(formdata?.Ncid)
+
   const getProgramParts = () => {
     axios
       .post(baseURL + "/ShiftOperator/getprogramParts", {
-        NcId: NcId,
+        NcId: formdata?.Ncid,
       })
       .then((response) => {
-        console.log(response.data);
         setProgramPartsData(response.data);
       });
   };
+
   useEffect(() => {
     getProgramParts();
-  }, [NcId]);
+  }, [formdata?.Ncid]);
 
   const [programPatsSelectedRow, setProgramPatsSelectedRow] = useState({});
   const selectRowProgramParts = (item, index) => {
@@ -35,7 +36,6 @@ export default function ProgramPartsForm() {
     setProgramPatsSelectedRow({ ...programPatsSelectedRow[0], index: 0 });
   }, [programPatsSelectedRow[0]]);
 
-  
   const remarksChange = (e, key, valueRemarks) => {
     const updatedRow = { ...programPatsSelectedRow };
     updatedRow.Remarks = e.target.value;
@@ -56,18 +56,44 @@ export default function ProgramPartsForm() {
     setProgramPatsSelectedRow(updatedRow);
   };
 
-
   const SaveProgramParts = () => {
     axios
       .post(baseURL + "/ShiftOperator/SaveprogramParts", {
         programPatsSelectedRow,
       })
       .then((response) => {
-        toast.success('Data Saved Successfully', {
-          position: toast.POSITION.TOP_CENTER
+        toast.success("Data Saved Successfully", {
+          position: toast.POSITION.TOP_CENTER,
         });
       });
   };
+
+   //sorting
+   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+   const requestSort = (key) => {
+     let direction = "asc";
+     if (sortConfig.key === key && sortConfig.direction === "asc") {
+       direction = "desc";
+     }
+     setSortConfig({ key, direction });
+   };
+ 
+   const sortedData = () => {
+     const dataCopy = [...programPartsData];
+     if (sortConfig.key) {
+       dataCopy.sort((a, b) => {
+         if (a[sortConfig.key] < b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? -1 : 1;
+         }
+         if (a[sortConfig.key] > b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? 1 : -1;
+         }
+         return 0;
+       });
+     }
+     return dataCopy;
+   };
 
   return (
     <div>
@@ -112,16 +138,16 @@ export default function ProgramPartsForm() {
         <Table striped className="table-data border table-space">
           <thead className="tableHeaderBGColor" style={{ fontSize: "12px" }}>
             <tr>
-              <th>Part Name </th>
-              <th>Total Nested</th>
-              <th>Processed</th>
-              <th>Rejected</th>
-              <th>Remarks</th>
+              <th onClick={() => requestSort("DwgName")}>Part Name </th>
+              <th onClick={() => requestSort("TotQtyNested")}>Total Nested</th>
+              <th onClick={() => requestSort("QtyCut")}>Processed</th>
+              <th onClick={() => requestSort("QtyRejected")}>Rejected</th>
+              <th onClick={() => requestSort("Remarks")}>Remarks</th>
             </tr>
           </thead>
 
           <tbody className="tablebody table-space">
-            {programPartsData.map((value, key) => {
+            {sortedData().map((value, key) => {
               return (
                 <>
                   <tr
@@ -140,29 +166,25 @@ export default function ProgramPartsForm() {
                     <td>
                       <input
                         className="table-cell-editor"
-                        defaultValue={
-                           value.QtyNested || ''
-                        }
+                        value={value.QtyCut}
                         onChange={(e) =>
-                          onChangeProcessed(e, key, value.QtyNested)
+                          onChangeProcessed(e, key, value.QtyCut)
                         }
                       />
                     </td>
                     <td>
                       <input
                         className="table-cell-editor"
-                        defaultValue={
-                          value.QtyRejected || ''
-                        }
+                        defaultValue={value.QtyRejected || ""}
                         onChange={(e) =>
-                          onChnageReject(e, key,value.QtyRejected)
+                          onChnageReject(e, key, value.QtyRejected)
                         }
                       />
                     </td>
                     <td>
                       <input
                         className="table-cell-editor"
-                        defaultValue={value.Remarks || ''}
+                        defaultValue={value.Remarks || ""}
                         onChange={(e) => remarksChange(e, key, value.Remarks)}
                       />
                     </td>

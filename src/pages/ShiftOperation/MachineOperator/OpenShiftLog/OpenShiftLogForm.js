@@ -14,10 +14,11 @@ export default function OpenShiftLogForm({
   selectshifttable,
   setShowTable,
   showTable,getShiftSummaryData,
-  getMachinetaskdata,setMachinetaskdata,getMachineShiftStatusForm,getMachineTaskData
+  getMachinetaskdata,setMachinetaskdata,getMachineShiftStatusForm,getMachineTaskData,getmiddleTbaleData
 }) {
 
   const{setShiftLogDetails}=useGlobalContext();
+  console.log(selectshifttable);
 
 const onClickgetProgram=()=>{
   getMachineTaskData()
@@ -124,9 +125,16 @@ const showToastifyError = () => {
   });
 };
 
-
+   const[disableTaskNo,setDisableTaskNo]=useState(true);
   const handleChangeStoppageList = (e) => {
-    setStoppageID(e.target.value);
+    if(e.target.value==='9'){
+      setStoppageID(e.target.value);
+      setDisableTaskNo(false);
+    }
+    else{   
+      setStoppageID(e.target.value);
+      setDisableTaskNo(true);
+    }
   };
 
   const getStoppageReasonList = () => {
@@ -316,6 +324,8 @@ const showToastifyError = () => {
         setErrorForm={setErrorForm}
         selectedMachine={selectedMachine}
         selectshifttable={selectshifttable}
+        setShowTable={setShowTable}
+
       />
 
       <StoppageAskModal
@@ -329,6 +339,8 @@ const showToastifyError = () => {
       setInputVisible={setInputVisible}
       isInputVisible={isInputVisible}
       getMachineShiftStatusForm={getMachineShiftStatusForm}
+      disableTaskNo={disableTaskNo}
+      getmiddleTbaleData={getmiddleTbaleData}
       />
     </div>
   );

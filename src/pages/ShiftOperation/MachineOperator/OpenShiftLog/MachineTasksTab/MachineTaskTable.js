@@ -54,6 +54,19 @@ export default function MachineTaskTable({
     }
   };
 
+  //update Machine Time
+  const updateMachineTime=()=>{
+    axios.post(baseURL + "/ShiftOperator/updateMachineTime",
+    {Machine:selectshifttable?.Machine})
+    .then((response) => {
+    });
+  }
+
+  
+  useEffect(() => {
+    updateMachineTime();
+  }, [selectshifttable]);
+
 
   //Submit Load
   const handleSubmit = () => {
@@ -73,6 +86,7 @@ export default function MachineTaskTable({
         toast.success("Program Loaded Successfully", {
           position: toast.POSITION.TOP_CENTER,
         });
+        updateMachineTime();
         axios
           .post(baseURL + "/ShiftOperator/getShiftLog", {
             selectshifttable: selectshifttable,
@@ -211,6 +225,49 @@ export default function MachineTaskTable({
 
   // console.log(selectedProgram);
 
+   //sorting
+   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+   const requestSort = (key) => {
+     let direction = "asc";
+     if (sortConfig.key === key && sortConfig.direction === "asc") {
+       direction = "desc";
+     }
+     setSortConfig({ key, direction });
+   };
+ 
+   const sortedData = () => {
+     const dataCopy = [...getMachinetaskdata];
+     if (sortConfig.key) {
+       dataCopy.sort((a, b) => {
+         if (a[sortConfig.key] < b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? -1 : 1;
+         }
+         if (a[sortConfig.key] > b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? 1 : -1;
+         }
+         return 0;
+       });
+     }
+     return dataCopy;
+   };
+
+
+   //Format Time
+   const convertMinutesToTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    if (hours === 0 && mins === 0) {
+      return "0 Hours 0 Min";
+    }
+
+    const hoursString = hours > 0 ? `${hours} Hours` : "";
+    const minsString = mins > 0 ? `${mins} Min` : "";
+
+    return `${hoursString} ${minsString}`.trim();
+  };
+ 
   return (
     <>
       <GlobalModal
@@ -237,20 +294,20 @@ export default function MachineTaskTable({
               style={{ fontSize: "12px" }}
             >
               <tr>
-                <th>Program No</th>
-                <th>Task No</th>
-                <th>Operation</th>
-                <th>Material</th>
-                <th>Quantity</th>
-                <th>Allotted</th>
-                <th>Process</th>
-                <th>Customer</th>
-                <th>Remarks</th>
+                <th onClick={() => requestSort("NCProgramNo")}>Program No</th>
+                <th onClick={() => requestSort("TaskNo")}>Task No</th>
+                <th onClick={() => requestSort("Operation")}>Operation</th>
+                <th onClick={() => requestSort("Mtrl_Code")}>Material</th>
+                <th onClick={() => requestSort("Qty")}>Quantity</th>
+                <th onClick={() => requestSort("QtyAllotted")}>Allotted</th>
+                <th onClick={() => requestSort("QtyCut")}>Process</th>
+                <th onClick={() => requestSort("cust_name")}>Customer</th>
+                <th onClick={() => requestSort("Remarks")}>Remarks</th>
               </tr>
             </thead>
 
             <tbody className="tablebody table-space">
-              {getMachinetaskdata.map((data, key) => (
+              {sortedData().map((data, key) => (
                 <tr
                   onClick={() => {
                     selectProgramFun(data, key);
@@ -445,7 +502,9 @@ export default function MachineTaskTable({
 
               <div style={{ color: "" }}>
                 <p style={{ margin: 5 }}>
-                  Machine Time: <b style={{ textAlign: "right" }}></b>
+                  Machine Time: <b style={{ textAlign: "right" }}>
+                  {convertMinutesToTime(selectedProgram?.ActualTime)}
+                  </b>
                 </p>
               </div>
             </div>

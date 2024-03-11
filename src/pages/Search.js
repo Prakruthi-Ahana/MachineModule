@@ -1702,7 +1702,8 @@ Public Class MachineLog
         DA_prodBOMIV = Machine.getDBLink.getMySqlDataAdopter
         With DA_prodBOMIV
             With .SelectCommand
-                .CommandText = "SELECT * FROM magodmis.`shopfloor_part _issueregister` s WHERE s.`NcId`=@NcId AND s.`Status`='Created';"
+                .CommandText = "SELECT * FROM magodmis.`shopfloor_part _issueregister` 
+                s WHERE s.`NcId`=@NcId AND s.`Status`='Created';"
                 .Parameters.Add("@NcId", MySql.Data.MySqlClient.MySqlDbType.Int32)
             End With
         End With

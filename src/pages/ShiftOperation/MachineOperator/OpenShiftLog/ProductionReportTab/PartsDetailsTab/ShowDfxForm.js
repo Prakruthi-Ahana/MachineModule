@@ -7,14 +7,15 @@ import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
-export default function ShowDfxForm({ openTable }) {
-  const { NcId, setNcId } = useGlobalContext();
+export default function ShowDfxForm({ openTable,selectProductionReport }) {
+  const { NcId,partDetailsData, setPartDetailsData} = useGlobalContext();
 
-  const [partDetailsData, setPartDetailsData] = useState([]);
+
   const getPartDetails = () => {
+    console.log("selectProductionReport",selectProductionReport);
     axios
       .post(baseURL + "/ShiftOperator/getpartDetails", {
-        NcId: NcId,
+        selectProductionReport,
       })
       .then((response) => {
         console.log(response.data);
@@ -25,7 +26,7 @@ export default function ShowDfxForm({ openTable }) {
   // console.log(NcId)
   useEffect(() => {
     getPartDetails();
-  }, [NcId]);
+  }, [selectProductionReport]);
 
   const [partDetailsRowSelect, setPartDetailsRowSelect] = useState({});
   const selectRowPartsDetails = (item, index) => {
@@ -62,6 +63,32 @@ export default function ShowDfxForm({ openTable }) {
       });
   };
 
+   //sorting
+   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+   const requestSort = (key) => {
+     let direction = "asc";
+     if (sortConfig.key === key && sortConfig.direction === "asc") {
+       direction = "desc";
+     }
+     setSortConfig({ key, direction });
+   };
+ 
+   const sortedData = () => {
+     const dataCopy = [...partDetailsData];
+     if (sortConfig.key) {
+       dataCopy.sort((a, b) => {
+         if (a[sortConfig.key] < b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? -1 : 1;
+         }
+         if (a[sortConfig.key] > b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? 1 : -1;
+         }
+         return 0;
+       });
+     }
+     return dataCopy;
+   };
 
   return (
     <div>
@@ -103,11 +130,11 @@ export default function ShowDfxForm({ openTable }) {
             <thead className="tableHeaderBGColor" style={{ fontSize: "13px" }}>
               <tr>
                 <th></th>
-                <th>Dwg Name</th>
-                <th>Total Nested</th>
-                <th>Produced</th>
-                <th>Rejected</th>
-                <th>Remarks</th>
+                <th onClick={() => requestSort("DwgName")}>Dwg Name</th>
+                <th onClick={() => requestSort("TotQtyNested")}>Total Nested</th>
+                <th onClick={() => requestSort("QtyCut")}>Produced</th>
+                <th onClick={() => requestSort("QtyRejected")}>Rejected</th>
+                <th onClick={() => requestSort("Remarks")}>Remarks</th>
               </tr>
             </thead>
 
@@ -120,7 +147,7 @@ export default function ShowDfxForm({ openTable }) {
                   <td colSpan="6">No data to show</td>
                 </tr>
               ) : (
-                partDetailsData.map((value, key) => (
+                sortedData().map((value, key) => (
                   <tr
                     key={key}
                     onClick={() => {
@@ -132,11 +159,10 @@ export default function ShowDfxForm({ openTable }) {
                         : ""
                     }
                   >
-                    {" "}
                     <td></td>
                     <td>{value?.DwgName}</td>
                     <td>{value?.TotQtyNested}</td>
-                    <td>{value?.QtyNested}</td>
+                    <td>{value?.QtyCut}</td>
                     <td>
                       <input
                         className="table-cell-editor"

@@ -27,6 +27,10 @@ const AuthProvider = ({ children }) => {
   const [NcProgramId,setNcProgramId]=useState('');
   const [pgmNo,setPgmNo]=useState('')
   const [showTable, setShowTable] = useState('');
+  const [programPartsData, setProgramPartsData] = useState([]);
+  const [partDetailsData, setPartDetailsData] = useState([]);
+  const [timeDiffInMinutes, setTimeDiffInMinutes] = useState(0);
+
 
 
   return (
@@ -42,7 +46,7 @@ const AuthProvider = ({ children }) => {
         setShiftLogDetails,
         afterRefreshData,setAfterRefreshData,
         formdata,setFormData,
-        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId,pgmNo,setPgmNo,showTable, setShowTable
+        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId,pgmNo,setPgmNo,showTable, setShowTable,programPartsData, setProgramPartsData,partDetailsData, setPartDetailsData,timeDiffInMinutes, setTimeDiffInMinutes
       }}
     >
       {children}

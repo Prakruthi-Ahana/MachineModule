@@ -9,7 +9,7 @@ import axios from 'axios';
 import { baseURL } from '../../../../api/baseUrl';
 import { useGlobalContext } from '../../../../Context/Context';
 
-export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable,shiftSummaryData,setShiftSummaryData,getMachinetaskdata,setMachinetaskdata,getMachineShiftStatusForm,getMachineTaskData}) {
+export default function TabsFour({selectshifttable,afterLoadProgram,setShowTable,shiftSummaryData,setShiftSummaryData,getMachinetaskdata,setMachinetaskdata,getMachineShiftStatusForm,getMachineTaskData,getShiftSummaryData}) {
   
     const [key, setKey] = useState("mt");
     const [showtab , setShowtab] = useState(false)
@@ -93,9 +93,7 @@ const getShiftLogDetails = () => {
 };
 
 
-
     useEffect(()=>{
-      // console.log('Calling getShiftLogDetails...');
       getShiftLogDetails();
     },[])
 
@@ -143,6 +141,7 @@ const getShiftLogDetails = () => {
        <ProgramInfoForms getMachinetaskdata={getMachinetaskdata}
        selectshifttable={selectshifttable}
        getMachineTaskData={getMachineTaskData}
+       setMachinetaskdata={setMachinetaskdata}
        />
        </Tab>
 
@@ -151,6 +150,7 @@ const getShiftLogDetails = () => {
       selectshifttable ={selectshifttable}
       shiftSummaryData={shiftSummaryData}
       setShiftSummaryData={setShiftSummaryData}
+      getShiftSummaryData={getShiftSummaryData}
       />
        </Tab>
       

@@ -14,19 +14,20 @@ export default function MachineOperator() {
     setAfterRefreshData,
     NcId,
     setFormData,
-    hasBOM,
     setAfterloadService,
-    setShiftSelected,setServiceTopData,setNcProgramId,showTable,setShowTable
+    setShiftSelected,setServiceTopData,setNcProgramId,setShowTable,programPartsData, setProgramPartsData
   } = useGlobalContext();
 
   //get Machine List
   const [machineList, setMachineList] = useState([]);
   const getMachineList = () => {
-    axios.get(baseURL + "/ShiftOperator/getallMachines").then((response) => {
+    axios.get(baseURL + "/ShiftOperator/getallMachines")
+    .then((response) => {
       setMachineList(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     });
   };
+
 
   useEffect(() => {
     getMachineList();
@@ -59,7 +60,6 @@ export default function MachineOperator() {
     Shift = "Third";
   }
 
-  // console.log("Shift:", Shift);
 
   const [selectedMachine, setSelectedMachine] = useState("");
   const [shiftDetails, setShiftDetails] = useState([]);
@@ -77,7 +77,6 @@ export default function MachineOperator() {
       setFormData([]);
   };
 
-  // console.log(selectedMachine);
 
   //Open ShiftLog  Modal
   const [openmodal, setOpenmodal] = useState("");
@@ -96,7 +95,7 @@ export default function MachineOperator() {
     setSelectshifttable({ ...shiftDetails[0], index: 0 });
   }, [shiftDetails[0]]);
 
-  console.log(selectshifttable);
+  // console.log(selectshifttable);
 
   const data = {
     selectedMachine: selectedMachine || "",
@@ -129,16 +128,20 @@ export default function MachineOperator() {
       });
   };
 
+  useEffect(()=>{
+    getmiddleTbaleData();
+  },[])
+
   //service middletabledata
   const serviceMiddleTableData = () => {
-    console.log("function called")
+    // console.log("function called")
     axios
       .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
         selectshifttable,
         NcId,
       })
       .then((response) => {
-        console.log(response?.data);
+        // console.log(response?.data);
         setAfterloadService(response?.data);
         // setShowTable(true);
         if (!response.data) {
@@ -148,17 +151,27 @@ export default function MachineOperator() {
       });
   };
 
+  // const getProgramParts = () => {
+  //   axios
+  //     .post(baseURL + "/ShiftOperator/getprogramParts", {
+  //       NcId: NcId,
+  //     })
+  //     .then((response) => {
+  //       setProgramPartsData(response.data);
+  //     });
+  // };
+
   //openShiftLog Button
   const openShiftLogModal = () => {
     setShiftSelected(selectshifttable);
     serviceMiddleTableData();
     getmiddleTbaleData();
+    // getProgramParts();
     axios
       .post(baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh", {
         selectshifttable,
       })
       .then((response) => {
-        console.log("required result", response.data);
         setServiceTopData( response.data);
       });
     axios
@@ -166,7 +179,6 @@ export default function MachineOperator() {
         selectshifttable,
       })
       .then((response) => {
-        console.log(response.data);
         if (response.data === true) {
           axios
             .post(baseURL + "/ShiftOperator/getProgram", {
@@ -187,6 +199,14 @@ export default function MachineOperator() {
           setOpenmodal(true);
         } else {
           navigate("OpenShiftLog", { state: { data } });
+          // //update operator
+          // axios
+          // .post(baseURL + "/ShiftOperator/updateOpertaorafterChange", {
+          //   selectshifttable
+          // })
+          // .then((response) => {
+          //   // console.log(response.data);
+          // });
         }
       });
   };
@@ -199,6 +219,20 @@ export default function MachineOperator() {
     getmiddleTbaleData();
     serviceMiddleTableData();
   }, []);
+
+  
+  //update Machine Time
+  const updateMachineTime=()=>{
+    axios.post(baseURL + "/ShiftOperator/updateMachineTime",
+    {Machine:selectshifttable?.Machine})
+    .then((response) => {
+    });
+  }
+
+  
+  useEffect(() => {
+    updateMachineTime();
+  }, [selectshifttable]);
 
   return (
     <div>

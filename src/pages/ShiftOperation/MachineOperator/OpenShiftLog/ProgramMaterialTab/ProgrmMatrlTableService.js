@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import { useGlobalContext } from "../../../../../Context/Context";
 import { useMemo } from "react";
@@ -10,13 +10,17 @@ import GlobalModal from "../../GlobalModal";
 export default function ProgrmMatrlTableService({
   showTable,
   selectshifttable,
+  setMachinetaskdata,
 }) {
   const {
     afterloadService,
     setAfterloadService,
     NcId,
     servicetopData,
-    NcProgramId,setServiceTopData
+    NcProgramId,
+    setServiceTopData,
+    formdata,
+    setProgramPartsData,
   } = useGlobalContext();
 
   const [rowSelectService, setRowSelectService] = useState({});
@@ -26,11 +30,39 @@ export default function ProgrmMatrlTableService({
   };
 
   useMemo(() => {
-    // console.log("afterRefreshData[0]:", afterRefreshData[0]);
     setRowSelectService({ ...afterloadService[0], index: 0 });
   }, [afterloadService[0]]);
 
-  console.log(rowSelectService);
+
+  let Machine = selectshifttable?.Machine;
+  const getMachineTaskAfterMU = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", {
+        MachineName: Machine,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].Qty === 0) {
+            response.data[i].rowColor = "#DC143C";
+          } else if (response.data[i].QtyAllotted === 0) {
+            response.data[i].rowColor = "#E0FFFF";
+          } else if (response.data[i].QtyCut === 0) {
+            response.data[i].rowColor = "#778899";
+          } else if (response.data[i].QtyCut === response.data[i].Qty) {
+            response.data[i].rowColor = "#008000";
+          } else if (response.data[i].QtyCut === response.data[i].QtyAllotted) {
+            response.data[i].rowColor = "#ADFF2F";
+          } else if (response.data[i].Remarks !== "") {
+            response.data[i].rowColor = "#DC143C";
+          }
+        }
+        setMachinetaskdata(response.data);
+      });
+  };
+
+  useEffect(() => {
+    getMachineTaskAfterMU();
+  }, []);
 
   const [issuesets, setIssueSets] = useState("");
   const [toCompareData, setToCompareData] = useState([]);
@@ -66,7 +98,7 @@ export default function ProgrmMatrlTableService({
         // Explicitly set NC_Pgme_Part_ID to response data
         const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
         setNC_Pgme_Part_ID(ncPgmePartId);
-  
+
         if (issuesets < 0) {
           toast.error("Enter a Positive Number", {
             position: toast.POSITION.TOP_CENTER,
@@ -79,34 +111,34 @@ export default function ProgrmMatrlTableService({
             });
             return;
           }
-  
+
           // Flatten toCompareData array
           const flattenedToCompareData = toCompareData.flat();
-  
+
           // Flag to check if any item violates the condition
           let hasValidationError = false;
-  
+
           // Declare remainingQty and useNow outside the loop
           let remainingQty;
           let useNow;
-  
+
           // Calculate qtyToDistribute and useNow for each item in afterloadService
           const updatedAfterloadService = afterloadService.map((item) => {
             const match = flattenedToCompareData.find(
               (data) => data.Cust_BOM_ListId === item.CustBOM_Id
             );
-  
+
             if (match) {
               const qtyToDistribute = issuesets * match.Quantity;
               useNow = issuesets * match.Quantity;
-  
+
               // Check if the quantity to be used exceeds the available quantity
               remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
               if (remainingQty < 0 || qtyToDistribute !== useNow) {
                 hasValidationError = true;
                 return item; // Do not update state if validation fails
               }
-  
+
               // Update QtyReturned in afterloadService
               const updatedItem = {
                 ...item,
@@ -114,7 +146,7 @@ export default function ProgrmMatrlTableService({
                 useNow: useNow,
                 QtyReturned1: useNow, // Update QtyReturned
               };
-  
+
               // Add the relevant properties to sendobject based on CustBOM_Id
               const existingSendObjectIndex = sendobject.findIndex(
                 (obj) => obj.CustBOM_Id === item.CustBOM_Id
@@ -135,14 +167,14 @@ export default function ProgrmMatrlTableService({
                   NcId: NcProgramId,
                 });
               }
-  
+
               return updatedItem;
             } else {
               console.log(`Row ${item.CustBOM_Id}: No match found`);
               return item;
             }
           });
-  
+
           // Display a single Toastify error message if there are errors
           if (hasValidationError) {
             if (remainingQty < 0 || qtyToDistribute !== useNow) {
@@ -156,22 +188,22 @@ export default function ProgrmMatrlTableService({
             }
             return;
           }
-  
+
           // Update the state after calculating useNow and updating QtyReturned values
           setAfterloadService(updatedAfterloadService);
           // Set the updated sendobject state
           setSendObject(sendobject);
-  
+
           // Open the modal if no errors
           setModalOpen(true);
+          getMachineTaskAfterMU();
         }
       })
       .catch((error) => {
         console.error("Error in axios request", error);
       });
   };
-  
-  
+
   const onClickofYes = () => {
     axios
       .post(baseURL + "/ShiftOperator/ServicemarkasUsed", {
@@ -191,13 +223,24 @@ export default function ProgrmMatrlTableService({
               setAfterloadService([]);
             }
           });
-          axios
-          .post(baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh", {
-            selectshifttable,
+        axios
+          .post(baseURL + "/ShiftOperator/getprogramParts", {
+            NcId: formdata?.Ncid,
           })
           .then((response) => {
+            // console.log("excuted data")
+            setProgramPartsData(response.data);
+          });
+        axios
+          .post(
+            baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh",
+            {
+              selectshifttable,
+            }
+          )
+          .then((response) => {
             console.log("required result", response.data);
-            setServiceTopData( response.data);
+            setServiceTopData(response.data);
           });
       })
       .catch((error) => {
@@ -218,8 +261,42 @@ export default function ProgrmMatrlTableService({
     return `${day}/${month}/${year}`;
   };
 
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
-  console.log("showTable",showTable);
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+    const dataCopy = [...afterloadService];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
+
+  //select ALL
+
+  // Add a state variable to track whether all rows are selected
+  const [selectAll, setSelectAll] = useState(false);
+
+  const handleSelectAll = () => {
+    const allRowsSelected = rowSelectService.length === afterloadService.length;
+    setRowSelectService(allRowsSelected ? [] : afterloadService);
+  };
 
   return (
     <div>
@@ -253,7 +330,7 @@ export default function ProgrmMatrlTableService({
                     className="form-label"
                     style={{ fontSize: "10px", marginLeft: "-45px" }}
                   >
-                    Issue Date :{formatDate(servicetopData[0]?.Issue_date)}
+                   Issue Date: {servicetopData[0]?.Issue_date ? formatDate(servicetopData[0]?.Issue_date) : "null"}
                   </label>
                 </div>
 
@@ -326,11 +403,12 @@ export default function ProgrmMatrlTableService({
               style={{ fontSize: "13px" }}
             >
               <tr>
-                <th>Part Id</th>
-                <th>RV No</th>
-                <th>Issued</th>
-                <th>Used</th>
-                <th>UsedNow</th>
+                <th onClick={handleSelectAll}></th>
+                <th onClick={() => requestSort("PartId")}>Part Id</th>
+                <th onClick={() => requestSort("RV_No")}>RV No</th>
+                <th onClick={() => requestSort("QtyIssued")}>Issued</th>
+                <th onClick={() => requestSort("QtyUsed")}>Used</th>
+                <th onClick={() => requestSort("QtyReturned1")}>UsedNow</th>
               </tr>
             </thead>
 
@@ -338,7 +416,7 @@ export default function ProgrmMatrlTableService({
               className="tablebody table-space"
               style={{ fontSize: "12px" }}
             >
-              {afterloadService.map((item, key) => {
+              {sortedData().map((item, key) => {
                 return (
                   <>
                     <tr
@@ -349,6 +427,7 @@ export default function ProgrmMatrlTableService({
                         key === rowSelectService?.index ? "selcted-row-clr" : ""
                       }
                     >
+                      <td></td>
                       <td>{item.PartId}</td>
                       <td>{item.RV_No}</td>
                       <td>{item.QtyIssued}</td>
