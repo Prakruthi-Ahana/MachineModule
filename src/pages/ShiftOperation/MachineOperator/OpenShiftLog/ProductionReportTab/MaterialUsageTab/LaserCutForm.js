@@ -9,18 +9,71 @@ import { baseURL } from "../../../../../../api/baseUrl";
 import { toast } from "react-toastify";
 import RejectModal from "./RejectModal";
 import MarkasUsedModal from "./MarkasUsedModal";
+import { useGlobalContext } from "../../../../../../Context/Context";
 // import AltModal from '../../../AltModal';
 
 export default function LaserCutForm({
   selectProductionReport,
   openTable,
-  selectshifttable,
+  selectshifttable,setMachinetaskdata
 }) {
+
+  const { NcId,partDetailsData, setPartDetailsData} = useGlobalContext();
+
   //  const[showModal,setShowModal]=useState(false);
   const [markasUsed, setMarkasUsed] = useState(false);
   const [rowsRejected, setRowsRejected] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
+
+  let Machine = selectshifttable?.Machine;
+  const getMachineTaskAfterMU=()=>{
+    axios
+    .post(baseURL + "/ShiftOperator/MachineTasksData", {
+      MachineName: Machine,
+    })
+    .then((response) => {
+      for (let i = 0; i < response.data.length; i++) {
+        if (
+          response.data[i].Qty ===0
+        ) {
+          response.data[i].rowColor = "#DC143C";
+        } 
+        else if (
+          response.data[i].QtyAllotted ===0
+        ) {
+          response.data[i].rowColor = "#E0FFFF";
+        } 
+        else if (
+          response.data[i].QtyCut===0
+        ) {
+          response.data[i].rowColor = "#778899";
+        } 
+        else if (
+          response.data[i].QtyCut ===
+          response.data[i].Qty
+        ) {
+          response.data[i].rowColor = "#008000";
+        } 
+        else if (
+          response.data[i].QtyCut ===
+          response.data[i].QtyAllotted
+        ) {
+          response.data[i].rowColor = "#ADFF2F";
+        } 
+        else if (
+          response.data[i].Remarks!==''
+        ) {
+          response.data[i].rowColor = "#DC143C";
+        } 
+      }
+      setMachinetaskdata(response.data);
+    })
+  }
+
+  useEffect(()=>{
+    getMachineTaskAfterMU();
+  },[]);
 
   const handleRejectModal = () => {
     // console.log(selectdefaultRow.Used)
@@ -89,22 +142,26 @@ export default function LaserCutForm({
     MaterialUsage();
   }, [selectProductionReport]);
 
+
+
   // Multiple Row Select Function for Table
   const [selectdefaultRow, setSelectdefaultRow] = useState([]);
   const initialRowSelection = (item, index) => {
-      // let list = { ...item, index: index };
-      // setSelectedMtrlTable(list);
-      const selectedRowData = ProductionReportData[index];
-      const isSelected = selectdefaultRow.some((row) => row === selectedRowData);
-      if (isSelected) {
-        setSelectdefaultRow(selectdefaultRow.filter((row) => row !== selectedRowData));
-      } else {
-        setSelectdefaultRow([...selectdefaultRow, selectedRowData]);
-      }
-    }; 
+    // let list = { ...item, index: index };
+    // setSelectedMtrlTable(list);
+    const selectedRowData = ProductionReportData[index];
+    const isSelected = selectdefaultRow.some((row) => row === selectedRowData);
+    if (isSelected) {
+      setSelectdefaultRow(
+        selectdefaultRow.filter((row) => row !== selectedRowData)
+      );
+    } else {
+      setSelectdefaultRow([...selectdefaultRow, selectedRowData]);
+    }
+  };
 
-    console.log("selectdefaultRow",selectdefaultRow)
- 
+  // console.log("selectdefaultRow",selectdefaultRow)
+
 
   //Mark as Used Button
   const handleMarkasUsed = () => {
@@ -115,6 +172,14 @@ export default function LaserCutForm({
       })
       .then((response) => {
         axios
+        .post(baseURL + "/ShiftOperator/getpartDetails", {
+          selectProductionReport,
+        })
+        .then((response) => {
+          console.log("excuted data refresh func");
+          setPartDetailsData(response.data);
+        });
+          axios
           .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
             NCId: selectProductionReportData,
           })
@@ -122,6 +187,7 @@ export default function LaserCutForm({
             setProductionReportData(response.data);
           });
         MaterialUsage();
+        getMachineTaskAfterMU();
       })
       .catch((err) => {
         console.log(err);
@@ -140,9 +206,7 @@ export default function LaserCutForm({
   const valueSepertor = Object.values(RejecteReason);
   const newReason = valueSepertor.join(" ");
   const UpdateRejectedReason = () => {
-    if (
-      !Object.values(RejecteReason).some((reason) => reason.trim() !== "")
-    ) {
+    if (!Object.values(RejecteReason).some((reason) => reason.trim() !== "")) {
       toast.error("Rejected Reason is empty", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -158,6 +222,7 @@ export default function LaserCutForm({
           position: toast.POSITION.TOP_CENTER,
         });
         MaterialUsage();
+        getMachineTaskAfterMU();
       })
       .catch((err) => {
         toast.error("An error occurred while updating reject reason", {
@@ -165,6 +230,43 @@ export default function LaserCutForm({
         });
       });
   };
+
+
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+    const dataCopy = [...ProductionReportData];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
+
+    // Add a state variable to track whether all rows are selected
+const [selectAll, setSelectAll] = useState(false);
+
+const handleSelectAll = () => {
+  const allRowsSelected = selectdefaultRow.length === ProductionReportData.length;
+  setSelectdefaultRow(allRowsSelected ? [] : ProductionReportData);
+}
+
 
   return (
     <div>
@@ -234,24 +336,26 @@ export default function LaserCutForm({
                 style={{ fontSize: "12px" }}
               >
                 <tr>
-                  <th style={{ whiteSpace: "nowrap" }}>Material Id</th>
-                  <th>Length</th>
-                  <th>width</th>
-                  <th>Used</th>
-                  <th>Rejected</th>
-                  <th style={{ whiteSpace: "nowrap" }}>Rejection Reason</th>
+                <th onClick={handleSelectAll}></th>
+                  <th  onClick={() => requestSort("ShapeMtrlID")} >Material Id</th>
+                  <th  onClick={() => requestSort("Para2")}>width</th>
+                  <th  onClick={() => requestSort("Para1")}>Length</th>
+                  <th  onClick={() => requestSort("Used")}>Used</th>
+                  <th  onClick={() => requestSort("ShapeRejectedtrlID")}>Rejected</th>
+                  <th  onClick={() => requestSort("RejectionReason")}>Rejection Reason</th>
                 </tr>
               </thead>
               <tbody className="tablebody table-space">
-                {ProductionReportData?.map((data, key) => (
+                {sortedData()?.map((data, key) => (
                   <tr
-                  onClick={() => {
-                    initialRowSelection(data, key);
-                  }}
-                  className={
-                    selectdefaultRow.includes(data) ? "selcted-row-clr" : ""
-                  }
-                >
+                    onClick={() => {
+                      initialRowSelection(data, key);
+                    }}
+                    className={
+                      selectdefaultRow.includes(data) ? "selcted-row-clr" : ""
+                    }
+                  >
+                    <td></td>
                     <td>{data.ShapeMtrlID}</td>
                     <td>{data.Para1}</td>
                     <td>{data.Para2}</td>
@@ -263,20 +367,20 @@ export default function LaserCutForm({
                     </td>
 
                     <td>
-                    <div key={data.index}>
-                      <input
-                        className="table-cell-editor"
-                        style={{ textAlign: "center", width: "150px" }}
-                        value={
-                          data.Rejected === 1
-                            ? data.RejectionReason
-                            : RejecteReason[data.NcPgmMtrlId] || ""
-                        }
-                        readOnly={data.Rejected === 1}
-                        onChange={(e) => onChangeInput(data.NcPgmMtrlId, e)}
-                      />
-                    </div>
-                  </td>
+                      <div key={data.index}>
+                        <input
+                          className="table-cell-editor"
+                          style={{ textAlign: "center", width: "150px" }}
+                          value={
+                            data.Rejected === 1
+                              ? data.RejectionReason
+                              : RejecteReason[data.NcPgmMtrlId] || ""
+                          }
+                          readOnly={data.Rejected === 1}
+                          onChange={(e) => onChangeInput(data.NcPgmMtrlId, e)}
+                        />
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

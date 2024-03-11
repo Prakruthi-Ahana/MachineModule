@@ -15,7 +15,9 @@ export default function Form1({
   setAfterloadProgram,
   selectedMachine,
   getMachineShiftStatusForm,
-  selectshifttable,getmiddleTbaleData
+  selectshifttable,
+  getmiddleTbaleData,
+  setMachinetaskdata,
 }) {
   const {
     afterRefreshData,
@@ -25,7 +27,7 @@ export default function Form1({
     hasBOM,
     machineTaskService,
     pgmNo,
-    setPgmNo,
+    setPgmNo,timeDiffInMinutes, setTimeDiffInMinutes
   } = useGlobalContext();
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
@@ -39,51 +41,74 @@ export default function Form1({
     setmismatchModal(false);
   };
 
+  useEffect(() => {
+    getmiddleTbaleData();
+  }, []);
+
+  //update Machine Time
+  const updateMachineTime=()=>{
+    axios.post(baseURL + "/ShiftOperator/updateMachineTime",
+    {Machine:selectshifttable?.Machine})
+    .then((response) => {
+    });
+  }
+
+  
+  useEffect(() => {
+    updateMachineTime();
+  }, [selectshifttable]);
+
+
   //selecting table
   const [selectedMtrlTable, setSelectedMtrlTable] = useState([]);
+
   const rowSelectMtrlTable = (item, index) => {
-    // let list = { ...item, index: index };
-    // setSelectedMtrlTable(list);
     const selectedRowData = afterRefreshData[index];
-    const isSelected = selectedMtrlTable.some((row) => row === selectedRowData);
+    const isSelected = selectedMtrlTable.includes(selectedRowData);
     if (isSelected) {
-      setSelectedMtrlTable(selectedMtrlTable.filter((row) => row !== selectedRowData));
+      // If the row is already selected, remove it from the selection
+      setSelectedMtrlTable(
+        selectedMtrlTable.filter((row) => row !== selectedRowData)
+      );
     } else {
+      // If the row is not selected, add it to the selection
       setSelectedMtrlTable([...selectedMtrlTable, selectedRowData]);
     }
   };
 
-  // const[ProgramNo,setProgramNo]=useState('');
-  // console.log(formdata?.NCProgramNo || '');
 
-  // useEffect(()=>{
-  //   setProgramNo(formdata?.NCProgramNo);
-  // },[])
-
-  let ProgramNo=formdata?.NCProgramNo;
-
-  // useMemo(() => {
-  //   // console.log("afterRefreshData[0]:", afterRefreshData[0]);
-  //   setSelectedMtrlTable({ ...afterRefreshData[0], index: 0 });
-  // }, [afterRefreshData[0]]);
-
+  let ProgramNo = formdata?.NCProgramNo;
   const loadProgramSubmit = () => {
-    if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
-      toast.error("Cannot Load the Material that is Used or Rejected", {
+    console.log(selectedMtrlTable.length);
+    if (selectedMtrlTable.length < 1) {
+      toast.error("Please Select a Material", {
         position: toast.POSITION.TOP_CENTER,
       });
     } else {
-      setLoadProgram(true);
+      if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
+        toast.error("Cannot Load the Material that is Used or Rejected", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        setLoadProgram(true);
+      }
     }
   };
 
+  // console.log("selectedMtrlTable is",selectedMtrlTable)
+
   const onclickofYes = () => {
+    // console.log("selectedMtrlTable is",selectedMtrlTable)
     axios
       .post(baseURL + "/ShiftOperator/loadMaterial", {
         selectedMtrlTable,
         MachineName: selectedMachine,
       })
-      .then((response) => {});
+      .then((response) => {
+        toast.success("Material Loaded Successfully", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      });
     setLoadProgram(false);
     getMachineShiftStatusForm();
   };
@@ -93,21 +118,57 @@ export default function Form1({
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
 
+    if (hours === 0 && mins === 0) {
+      return "0 Hours 0 Min";
+    }
+
     const hoursString = hours > 0 ? `${hours} Hours` : "";
     const minsString = mins > 0 ? `${mins} Min` : "";
 
     return `${hoursString} ${minsString}`.trim();
   };
 
-  // console.log(hasBOM);
-
   useEffect(() => {
     setPgmNo(formdata?.NCProgramNo);
   }, [formdata?.NCProgramNo]);
 
+  // console.log("timeDiffInMinutes in Form is ",timeDiffInMinutes);
+
+  
+const[MachineTime,setMachineTime]=useState('');
+const updateMachineTime1 = () => {
+  if (formdata?.ActualTime === null || isNaN(formdata?.ActualTime) || isNaN(timeDiffInMinutes)) {
+    setMachineTime(null); // Set MachineTime to null if data is unavailable
+    return;
+  }
+
+  const hoursActualTime = Math.floor(formdata?.ActualTime / 60); // Calculate hours from ActualTime
+  const minsActualTime = formdata?.ActualTime % 60; // Calculate remaining minutes from ActualTime
+  const hoursTimeDiff = Math.floor(timeDiffInMinutes / 60); // Calculate hours from timeDiffInMinutes
+  const minsTimeDiff = timeDiffInMinutes % 60; // Calculate remaining minutes from timeDiffInMinutes
+
+  // Calculate total hours and minutes for MachineTime
+  const totalHours = hoursActualTime + hoursTimeDiff;
+  const totalMins = minsActualTime + minsTimeDiff;
+
+  // Adjust the total if minutes exceed 60
+  const adjustedHours = totalHours + Math.floor(totalMins / 60);
+  const adjustedMins = totalMins % 60;
+
+  // Update MachineTime
+  const newMachineTime = `${adjustedHours} Hours ${adjustedMins} Min`;
+  setMachineTime(newMachineTime);
+};
+
+
+useEffect(() => {
+  updateMachineTime1();
+}, [formdata?.ActualTime, timeDiffInMinutes]);
 
 
 
+  // console.log("MachineTime is",MachineTime);
+  
   return (
     <>
       <div>
@@ -129,7 +190,12 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.NCProgramNo || null}
+                  // value={formdata?.NCProgramNo || ""}
+                  value={
+                    formdata?.NCProgramNo !== undefined
+                      ? formdata?.NCProgramNo
+                      : ""
+                  }
                 />
               </div>
 
@@ -143,7 +209,8 @@ export default function Form1({
                 <input
                   className="in-field "
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.Qty || ""}
+                  // value={formdata?.Qty || ""}
+                  value={formdata?.Qty !== undefined ? formdata?.Qty : ""}
                 />
               </div>
 
@@ -157,7 +224,11 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.QtyAllotted || ""}
+                  value={
+                    formdata?.QtyAllotted !== undefined
+                      ? formdata?.QtyAllotted
+                      : ""
+                  }
                 />
               </div>
 
@@ -171,7 +242,8 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.QtyCut || ""}
+                  // value={formdata?.QtyCut}
+                  value={formdata?.QtyCut !== undefined ? formdata?.QtyCut : ""}
                 />
               </div>
 
@@ -185,7 +257,10 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.NoOfDwgs || ""}
+                  // value={formdata?.NoOfDwgs || ""}
+                  value={
+                    formdata?.NoOfDwgs !== undefined ? formdata?.NoOfDwgs : ""
+                  }
                 />
               </div>
 
@@ -199,7 +274,12 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={formdata?.TotalParts || ""}
+                  // value={formdata?.TotalParts || ""}
+                  value={
+                    formdata?.TotalParts !== undefined
+                      ? formdata?.TotalParts
+                      : ""
+                  }
                 />
               </div>
 
@@ -213,7 +293,11 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={convertMinutesToTime(formdata?.EstimatedTime || 0)}
+                  value={
+                    formdata?.EstimatedTime !== null
+                      ? convertMinutesToTime(formdata?.EstimatedTime)
+                      : " "
+                  }
                 />
               </div>
 
@@ -227,7 +311,7 @@ export default function Form1({
                 <input
                   className="in-field"
                   style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  value={convertMinutesToTime(formdata?.ActualTime || 0)}
+                    value={MachineTime ?? ''}
                 />
               </div>
 
@@ -268,6 +352,7 @@ export default function Form1({
         <ProgrmMatrlTableService
           showTable={showTable}
           selectshifttable={selectshifttable}
+          setMachinetaskdata={setMachinetaskdata}
         />
       ) : (
         <ProgramMtrlTableProfile
@@ -280,6 +365,8 @@ export default function Form1({
           selectedMachine={selectedMachine}
           ProgramNo={ProgramNo}
           getmiddleTbaleData={getmiddleTbaleData}
+          selectshifttable={selectshifttable}
+          setMachinetaskdata={setMachinetaskdata}
         />
       )}
 
@@ -288,7 +375,7 @@ export default function Form1({
         title="magod_machine"
         content=<div>
           Do You wish to Load Material ID:{" "}
-          <strong>{selectedMtrlTable.ShapeMtrlID}</strong> ?
+          <strong>{selectedMtrlTable[0]?.ShapeMtrlID}</strong> ?
         </div>
         onYesClick={() => onclickofYes()}
         onNoClick={() => setLoadProgram(false)}

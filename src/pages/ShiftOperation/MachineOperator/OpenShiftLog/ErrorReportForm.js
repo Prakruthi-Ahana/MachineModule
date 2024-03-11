@@ -1,18 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { baseURL } from "../../../../api/baseUrl";
 import axios from "axios";
 import 'react-toastify/dist/ReactToastify.css';
 import ValidationAlertModal from "./ValidationAlertModal";
 import { toast } from 'react-toastify';
+import { useGlobalContext } from "../../../../Context/Context";
 
 
 export default function ErrorReportForm({
   setErrorForm,
   errorForm,
   selectedMachine,
-  selectshifttable,
+  selectshifttable,setShowTable
 }) {
+
+  const {setShiftLogDetails,setFormData} =useGlobalContext();
+
+  const getShiftLog=()=>{
+    axios
+    .post(baseURL + "/ShiftOperator/getShiftLog", {
+      selectshifttable: selectshifttable,
+    })
+    .then((response) => {
+      for (let i = 0; i < response.data.length; i++) {
+        // FOR TgtDelDate
+        let dateSplit = response.data[i].FromTime.split(" ");
+        let date = dateSplit[0].split("-");
+        let year = date[0];
+        let month = date[1];
+        let day = date[2];
+        let finalDay = day + "/" + month + "/" + year + " " + dateSplit[1];
+        response.data[i].FromTime = finalDay;
+      }
+      for (let i = 0; i < response.data.length; i++) {
+        // Delivery_date
+        let dateSplit1 = response.data[i].ToTime.split(" ");
+        let date1 = dateSplit1[0].split("-");
+        let year1 = date1[0];
+        let month1 = date1[1];
+        let day1 = date1[2];
+        let finalDay1 =
+          day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
+        response.data[i].ToTime = finalDay1;
+      }
+      setShiftLogDetails(response.data);
+    });
+  }
+
   const handleClose = () => {
     setErrorForm(false);
   };
@@ -49,17 +84,23 @@ export default function ErrorReportForm({
       return;
     }
     axios
-      .post(baseURL + "/ShiftOperator/errorForm", { formValues })
+      .post(baseURL + "/ShiftOperator/errorForm", { formValues,selectshifttable})
       .then((response) => {
-        // console.log(response.data);
+        getShiftLog();
       });
     handleClose();
     toast.success("Error Report Added Successfully", {
       position: toast.POSITION.TOP_CENTER,
     });
+    setFormData([]);
+    setShowTable(false);
     onClickReset();
   };
 
+
+  useEffect(()=>{
+    getShiftLog();
+  },[]);
   
 
   // console.log(formValues);

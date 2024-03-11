@@ -4,8 +4,12 @@ import { baseURL } from "../../../../../api/baseUrl";
 import axios from "axios";
 
 
-export default function ShiftSummryTable({selectshifttable,shiftSummaryData,setShiftSummaryData}) {
+export default function ShiftSummryTable({selectshifttable,shiftSummaryData,setShiftSummaryData,getShiftSummaryData}) {
   
+
+  useEffect(()=>{
+    getShiftSummaryData();
+  },[])
   
   return (
     <div>

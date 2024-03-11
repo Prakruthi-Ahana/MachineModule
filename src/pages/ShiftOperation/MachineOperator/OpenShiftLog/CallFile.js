@@ -86,7 +86,40 @@ export default function CallFile() {
         MachineName: Machine,
       })
       .then((response) => {
-        // console.log(response.data);
+        for (let i = 0; i < response.data.length; i++) {
+          if (
+            response.data[i].Qty ===0
+          ) {
+            response.data[i].rowColor = "#DC143C";
+          } 
+          else if (
+            response.data[i].QtyAllotted ===0
+          ) {
+            response.data[i].rowColor = "#E0FFFF";
+          } 
+          else if (
+            response.data[i].QtyCut===0
+          ) {
+            response.data[i].rowColor = "#778899";
+          } 
+          else if (
+            response.data[i].QtyCut ===
+            response.data[i].Qty
+          ) {
+            response.data[i].rowColor = "#008000";
+          } 
+          else if (
+            response.data[i].QtyCut ===
+            response.data[i].QtyAllotted
+          ) {
+            response.data[i].rowColor = "#ADFF2F";
+          } 
+          else if (
+            response.data[i].Remarks!==null
+          ) {
+            response.data[i].rowColor = "#DC143C";
+          } 
+        }
         setMachinetaskdata(response.data);
       })
       .catch((error) => {
@@ -166,6 +199,7 @@ export default function CallFile() {
           setMachinetaskdata={setMachinetaskdata}
           getMachineShiftStatusForm={getMachineShiftStatusForm}
           getMachineTaskData={getMachineTaskData}
+          getmiddleTbaleData={getmiddleTbaleData}
         />
       </div>
 
@@ -190,6 +224,7 @@ export default function CallFile() {
             getMachineShiftStatusForm={getMachineShiftStatusForm}
             selectshifttable={selectshifttable}
             getmiddleTbaleData={getmiddleTbaleData}
+            setMachinetaskdata={setMachinetaskdata}
           />
         </div>
 

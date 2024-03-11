@@ -95,8 +95,8 @@ export default function HeadForm({
     navigate("/Machine");
   };
 
-  console.log("selectedRows",selectedRows);
-  console.log("printLabelData",printLabelData);
+  // console.log("selectedRows",selectedRows);
+  // console.log("printLabelData",printLabelData);
 
 
   return (

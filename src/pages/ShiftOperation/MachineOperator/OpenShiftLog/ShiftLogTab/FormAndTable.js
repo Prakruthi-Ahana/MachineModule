@@ -13,7 +13,7 @@ export default function FormAndTable({
   selectshifttable,
   setShowTable,
 }) {
-  const { setShiftLogDetails, shiftLogDetails } = useGlobalContext();
+  const { setShiftLogDetails, shiftLogDetails,timeDiffInMinutes, setTimeDiffInMinutes } = useGlobalContext();
   const [open, setOpen] = useState(false);
 
   const handleTimeChange = (index, field, value) => {
@@ -215,6 +215,77 @@ export default function FormAndTable({
     getShiftLogDetails();
   }, []);
 
+   //sorting
+   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+   const requestSort = (key) => {
+     let direction = "asc";
+     if (sortConfig.key === key && sortConfig.direction === "asc") {
+       direction = "desc";
+     }
+     setSortConfig({ key, direction });
+   };
+ 
+   const sortedData = () => {
+     const dataCopy = [...shiftLogDetails];
+     if (sortConfig.key) {
+       dataCopy.sort((a, b) => {
+         if (a[sortConfig.key] < b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? -1 : 1;
+         }
+         if (a[sortConfig.key] > b[sortConfig.key]) {
+           return sortConfig.direction === "asc" ? 1 : -1;
+         }
+         return 0;
+       });
+     }
+     return dataCopy;
+   };
+   
+
+   //
+    // Function to calculate time difference based on provided fromTime and toTime
+  const calculateTimeDiffInMinutes = (fromTime, toTime) => {
+    const fromTimeMoment = moment(fromTime, "DD/MM/YYYY HH:mm:ss", true);
+    const toTimeMoment = moment(toTime, "DD/MM/YYYY HH:mm:ss", true);
+
+    if (fromTimeMoment.isValid() && toTimeMoment.isValid()) {
+      const timeDiffInMinutes = Math.floor(toTimeMoment.diff(fromTimeMoment, "minutes"));
+      return timeDiffInMinutes;
+    } else {
+      return 0; // Return 0 if invalid date format
+    }
+  };
+  const updateTime = () => {
+    const formattedTime = getCurrentTime();
+    setCurrentTime(formattedTime);
+  };
+  
+  useEffect(() => {
+    // Update the current time every minute
+    const intervalId = setInterval(updateTime, 60000); // 60000 milliseconds = 1 minute
+  
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+  
+  const updateTimeDiffState = () => {
+    const lastShiftFromTime = shiftLogDetails[shiftLogDetails.length - 1].FromTime;
+    const toTime = `${currentDate} ${currentTime}`;
+    const diffInMinutes = calculateTimeDiffInMinutes(lastShiftFromTime, toTime);
+    // console.log("toTime is",toTime);
+    setTimeDiffInMinutes(diffInMinutes);
+  };
+  
+  useEffect(() => {
+    // Update time difference state when component mounts
+    if (shiftLogDetails.length > 0) {
+      updateTimeDiffState();
+    }
+  }, [shiftLogDetails, currentTime]);
+
+  // console.log("timeDiffInMinutes is",timeDiffInMinutes);
+
   return (
     <div>
       <GlobalModal
@@ -282,18 +353,18 @@ export default function FormAndTable({
         <Table striped className="table-data border table-space">
           <thead className="tableHeaderBGColor" style={{ fontSize: "12PX" }}>
             <tr>
-              <th>Srl</th>
-              <th>Program </th>
-              <th>From Time</th>
-              <th>To Time</th>
-              <th>Remarks</th>
-              <th>Srl Time</th>
-              <th>Locked</th>
-              <th>Process</th>
+              <th onClick={() => requestSort("Srl")}>Srl</th>
+              <th onClick={() => requestSort("Program")}>Program </th>
+              <th >From Time</th>
+              <th >To Time</th>
+              <th onClick={() => requestSort("Remarks")}>Remarks</th>
+              <th >Srl Time</th>
+              <th onClick={() => requestSort("Locked")}>Locked</th>
+              <th onClick={() => requestSort("QtyProcessed")}>Process</th>
             </tr>
           </thead>
           <tbody className="tablebody table-space">
-            {shiftLogDetails.map((item, key) => {
+            {sortedData().map((item, key) => {
               const isLastRow = key === shiftLogDetails.length - 1;
               let srlTime = "";
 
@@ -319,7 +390,7 @@ export default function FormAndTable({
 
               return (
                 <tr style={rowStyle} key={key}>
-                  <td>{item.Srl}</td>
+                  <td>{key+1}</td>
                   <td>{item.Program}</td>
                   <td>
                     <input

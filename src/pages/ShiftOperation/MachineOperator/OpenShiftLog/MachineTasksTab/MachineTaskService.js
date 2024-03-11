@@ -7,7 +7,6 @@ export default function MachineTaskService({
   machineTaskService,
   servicetopData,
 }) {
-
   const [rowselectMachineTaskService, setRowSelectMachineTaskService] =
     useState({});
   const rowSelectMTService = (item, index) => {
@@ -23,7 +22,11 @@ export default function MachineTaskService({
   // Function to format the date to "dd/mm/yyyy"
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    if (isNaN(date.getDate()) || isNaN(date.getMonth() + 1) || isNaN(date.getFullYear())) {
+    if (
+      isNaN(date.getDate()) ||
+      isNaN(date.getMonth() + 1) ||
+      isNaN(date.getFullYear())
+    ) {
       return null; // Return null if any date component is NaN
     }
     const day = date.getDate().toString().padStart(2, "0");
@@ -31,7 +34,35 @@ export default function MachineTaskService({
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-  
+
+  // console.log("Machine Task Service data is", machineTaskService);
+
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+    const dataCopy = [...machineTaskService];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
 
   return (
     <div>
@@ -45,7 +76,10 @@ export default function MachineTaskService({
                 </label>
               </div>
               <div className="col-md-4">
-                <label className="form-label" style={{ fontSize: "11px",marginLeft:"-20px"}}>
+                <label
+                  className="form-label"
+                  style={{ fontSize: "11px", marginLeft: "-20px" }}
+                >
                   Issue Date :{formatDate(servicetopData[0]?.Issue_date)}
                 </label>
               </div>
@@ -70,16 +104,16 @@ export default function MachineTaskService({
             style={{ fontSize: "12px" }}
           >
             <tr>
-              <th>Part Id</th>
-              <th>Rv_No</th>
-              <th>Qty Issued</th>
-              <th>Qty Used</th>
-              <th>Qty Returned</th>
+              <th onClick={() => requestSort("PartId")}>Part Id</th>
+              <th onClick={() => requestSort("RV_No")}>Rv_No</th>
+              <th onClick={() => requestSort("QtyIssued")}>Qty Issued</th>
+              <th onClick={() => requestSort("QtyUsed")}>Qty Used</th>
+              <th onClick={() => requestSort("QtyReturned")}>Qty Returned</th>
             </tr>
           </thead>
 
           <tbody className="tablebody table-space" style={{ fontSize: "12px" }}>
-            {machineTaskService.map((item, key) => {
+            {sortedData().map((item, key) => {
               return (
                 <>
                   <tr
@@ -92,7 +126,6 @@ export default function MachineTaskService({
                         : ""
                     }
                   >
-                    {" "}
                     <td>{item.PartId}</td>
                     <td>{item.RV_No}</td>
                     <td>{item.QtyIssued}</td>

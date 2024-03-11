@@ -201,7 +201,6 @@ export default function MachineShiftStatusForm({
                   <select
                     className="ip-select"
                     onChange={handleShiftIncharge}
-                    value={selectshifttable.Operator}
                   >
                     <option selected>Select Shift Incharge</option>
                     {operatorsList.map((operatorsList) => (
