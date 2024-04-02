@@ -16,6 +16,8 @@ export default function FormAndTable({
   const { setShiftLogDetails, shiftLogDetails,timeDiffInMinutes, setTimeDiffInMinutes } = useGlobalContext();
   const [open, setOpen] = useState(false);
 
+  console.log("shiftLogDetails",shiftLogDetails);
+
   const handleTimeChange = (index, field, value) => {
     const updatedshiftLogDetails = [...shiftLogDetails]; // Create a copy of the array
     // Update the specific item's field with the new value

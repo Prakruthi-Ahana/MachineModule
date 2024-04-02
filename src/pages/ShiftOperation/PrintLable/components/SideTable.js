@@ -7,7 +7,7 @@ export default function SideTable({ printLabelData, selectRowPrintLabel, selecte
       <div className="mt-3">
         <div style={{ height: "350px", overflowY: "scroll", overflowX: "scroll" }}>
           <Table striped className="table-data border">
-            <thead className="tableHeaderBGColor" style={{ fontSize: "12px" }}>
+            <thead className="tableHeaderBGColor table-space" style={{ fontSize: "12px" }}>
               <tr>
                 <th>DwgName</th>
                 <th>Qty Nested</th>

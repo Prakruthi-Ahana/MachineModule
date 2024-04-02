@@ -27,7 +27,7 @@ export default function ProgramInfoForms({
         NCId: list?.Ncid,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setHasBOM(response.data);
       });
       setOpenTable(false);
@@ -45,7 +45,6 @@ export default function ProgramInfoForms({
       NCId: selectProductionReport?.Ncid,
     })
     .then((response) => {
-      console.log(response.data);
       setRptTopData(response.data);
     })
         axios
@@ -57,7 +56,7 @@ export default function ProgramInfoForms({
           newNcid = response.data[0].Ncid;
   
           // Move the following code inside the if condition
-          console.log(selectProductionReport.Ncid, newNcid);
+          // console.log(selectProductionReport.Ncid, newNcid);
           if (selectProductionReport.Ncid === newNcid) {
             toast.error(
               "Program Currently Being Processed, Use Current Program Window To Update Values",
@@ -78,7 +77,10 @@ export default function ProgramInfoForms({
 
   const handleSubmit = () => {
     setloadProgramInfo(true);
+
   };
+
+
 
   //mark as Completed
   const programCompleteSubmit = async () => {
@@ -86,11 +88,11 @@ export default function ProgramInfoForms({
       const response = await axios.post(baseURL + "/ShiftOperator/getNCId", {
         shiftSelected,
       });
+      // console.log("response.data.lengt",response.data.length)
   
       if (response.data && response.data.length > 0) {
-        newNcid = response.data[0].Ncid;
+        const newNcid = response.data[0].Ncid;
   
-        // console.log(selectProductionReport.Ncid, newNcid);
         if (selectProductionReport.Ncid === newNcid) {
           toast.error(
             "Program Currently Being Processed, Use Current Program Window To Update Values",
@@ -98,11 +100,18 @@ export default function ProgramInfoForms({
               position: toast.POSITION.TOP_CENTER,
             }
           );
-        } else {
-          setProgramComplete(true);
+          return; // Exit the function early if program is currently being processed
         }
+      }
+  
+      if (selectProductionReport.QtyCut < selectProductionReport.Qty) {
+        toast.error(
+          "Either mark the material allotted as used or rejected before changing status to completed",
+          {
+            position: toast.POSITION.TOP_CENTER,
+          }
+        );
       } else {
-        // If response.data is empty, execute setProgramComplete(true)
         setProgramComplete(true);
       }
     } catch (error) {
@@ -110,6 +119,7 @@ export default function ProgramInfoForms({
       console.error("Error fetching data:", error);
     }
   };
+  
   
 
   useEffect(() => {
@@ -356,6 +366,9 @@ export default function ProgramInfoForms({
         setProgramComplete={setProgramComplete}
         selectProductionReport={selectProductionReport}
         getMachineTaskData={getMachineTaskData}
+        setOpenTable={setOpenTable}
+        getMachinetaskdata={getMachinetaskdata}
+        setSelectProductionReport={setSelectProductionReport}
       />
     </div>
   );

@@ -60,11 +60,13 @@ export default function ProgrmMatrlTableProfile({
   const [MarkasUsed, setMarkasUsed] = useState(false);
   const [MarkasReject, setMarkasReject] = useState(false);
 
+
   const handleMarkasUsedModal = () => {
-    if (
-      selectedMtrlTable[0]?.Used === 1 ||
-      selectedMtrlTable[0]?.Rejected === 1
-    ) {
+    const isAnyUsedOrRejected = selectedMtrlTable.some(
+      (item) => item.Used === 1 || item.Rejected === 1
+    );
+  
+    if (isAnyUsedOrRejected) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -72,11 +74,15 @@ export default function ProgrmMatrlTableProfile({
       setMarkasUsed(true);
     }
   };
+  
 
   const handleMarkasRejected = () => {
+    const isAnyUsedOrRejected = selectedMtrlTable.some(
+      (item) => item.Used === 1 || item.Rejected === 1
+    );
+
     if (
-      selectedMtrlTable[0]?.Used === 1 ||
-      selectedMtrlTable[0]?.Rejected === 1
+    isAnyUsedOrRejected
     ) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
