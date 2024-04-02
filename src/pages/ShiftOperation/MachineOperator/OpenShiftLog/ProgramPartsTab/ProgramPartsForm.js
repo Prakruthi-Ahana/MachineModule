@@ -10,7 +10,6 @@ import { ToastContainer, toast } from "react-toastify";
 export default function ProgramPartsForm() {
   const { NcId,programPartsData, setProgramPartsData,formdata} = useGlobalContext();
 
-  console.log(formdata?.Ncid)
 
   const getProgramParts = () => {
     axios
@@ -162,7 +161,7 @@ export default function ProgramPartsForm() {
                     }
                   >
                     <td>{value.DwgName}</td>
-                    <td>{value.TotQtyNested}</td>
+                    <td>{value.QtyNested * value.Sheets}</td>
                     <td>
                       <input
                         className="table-cell-editor"

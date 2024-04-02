@@ -6,26 +6,37 @@ import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { baseURL } from '../../../../../api/baseUrl';
 
-export default function ProgramCompleteModal({setProgramComplete,programComplete,selectProductionReport,getMachineTaskData}) {
+export default function ProgramCompleteModal({setProgramComplete,programComplete,selectProductionReport,getMachineTaskData,setOpenTable,getMachinetaskdata,setSelectProductionReport}) {
+
+  console.log("selectProductionReport",selectProductionReport);
     const handleClose=()=>{
         setProgramComplete(false);
     }
 
-    const onClickYes=()=>{
-      // console.log(selectProductionReport);
+    const onClickYes = () => {
+      // Get the first item from getMachinetaskdata array
+      const firstItem = getMachinetaskdata[0];
+      
+      // Update selectProductionReport state with the first item
+      setSelectProductionReport({ ...firstItem, index: 0 });
+      
+      // Make the API call
       axios
-      .post(baseURL + "/ShiftOperator/programCompleted", {
-        selectProductionReport
-      })
-      .then((response) => {
-        setProgramComplete(false);
-        toast.success('Data Saved Successfully', {
-          position: toast.POSITION.TOP_CENTER
+        .post(baseURL + "/ShiftOperator/programCompleted", {
+          selectProductionReport
+        })
+        .then((response) => {
+          setProgramComplete(false);
+          toast.success('Success', {
+            position: toast.POSITION.TOP_CENTER
+          });
+          setOpenTable(false);
+          // Set selectProductionReport state to the first item again
+          setSelectProductionReport({ ...firstItem, index: 0 });
+          getMachineTaskData();
         });
-        getMachineTaskData();
-      });
-    }
-
+    };
+    
   return (
     <div>
       <Modal show={programComplete} onHide={handleClose}>

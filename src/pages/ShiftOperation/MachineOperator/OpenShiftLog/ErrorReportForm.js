@@ -79,7 +79,9 @@ export default function ErrorReportForm({
     const { errorNo, errorDescription, actionTaken } = formValues;
     // Validate required fields
     if (!errorNo || !errorDescription || !actionTaken) {
-      alert("ErrorNo,Error Description are mandatory")
+      toast.error("ErrorNo,Error Description are mandatory", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     // setOpenAlert(true);
       return;
     }

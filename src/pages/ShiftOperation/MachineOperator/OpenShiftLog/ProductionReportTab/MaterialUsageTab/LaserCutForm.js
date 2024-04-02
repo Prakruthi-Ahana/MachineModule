@@ -75,9 +75,27 @@ export default function LaserCutForm({
     getMachineTaskAfterMU();
   },[]);
 
+  // Multiple Row Select Function for Table
+  const [selectdefaultRow, setSelectdefaultRow] = useState([]);
+  const initialRowSelection = (item, index) => {
+    // let list = { ...item, index: index };
+    // setSelectedMtrlTable(list);
+    const selectedRowData = ProductionReportData[index];
+    const isSelected = selectdefaultRow.some((row) => row === selectedRowData);
+    if (isSelected) {
+      setSelectdefaultRow(
+        selectdefaultRow.filter((row) => row !== selectedRowData)
+      );
+    } else {
+      setSelectdefaultRow([...selectdefaultRow, selectedRowData]);
+    }
+  };
+
   const handleRejectModal = () => {
-    // console.log(selectdefaultRow.Used)
-    if (selectdefaultRow.Used === 1 || selectdefaultRow.Rejected === 1) {
+    const isAnyUsedOrRejected = selectdefaultRow.some(
+      (item) => item.Used === 1 || item.Rejected === 1
+    );   
+     if (isAnyUsedOrRejected) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -87,7 +105,10 @@ export default function LaserCutForm({
   };
 
   const handlemarkasUsed = () => {
-    if (selectdefaultRow.Used === 1 || selectdefaultRow.Rejected === 1) {
+    const isAnyUsedOrRejected = selectdefaultRow.some(
+      (item) => item.Used === 1 || item.Rejected === 1
+    );
+    if (isAnyUsedOrRejected) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -144,21 +165,7 @@ export default function LaserCutForm({
 
 
 
-  // Multiple Row Select Function for Table
-  const [selectdefaultRow, setSelectdefaultRow] = useState([]);
-  const initialRowSelection = (item, index) => {
-    // let list = { ...item, index: index };
-    // setSelectedMtrlTable(list);
-    const selectedRowData = ProductionReportData[index];
-    const isSelected = selectdefaultRow.some((row) => row === selectedRowData);
-    if (isSelected) {
-      setSelectdefaultRow(
-        selectdefaultRow.filter((row) => row !== selectedRowData)
-      );
-    } else {
-      setSelectdefaultRow([...selectdefaultRow, selectedRowData]);
-    }
-  };
+  
 
   // console.log("selectdefaultRow",selectdefaultRow)
 
@@ -176,7 +183,7 @@ export default function LaserCutForm({
           selectProductionReport,
         })
         .then((response) => {
-          console.log("excuted data refresh func");
+          // console.log("excuted data refresh func");
           setPartDetailsData(response.data);
         });
           axios

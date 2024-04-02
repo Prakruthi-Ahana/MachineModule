@@ -5,6 +5,10 @@ import PrintSelectedModal from "../PrintPDF/PrintSelected/PrintSelectedModal";
 import GlobalModal from "../../MachineOperator/GlobalModal";
 import PrintAllModal from "../PrintPDF/PrintAll/PrintAllModal";
 import { useNavigate } from "react-router-dom";
+import PrintAllPdf from "../PrintPDF/PrintAll/PrintAllPdf";
+import { PDFDownloadLink, Document, Page, Text } from '@react-pdf/renderer';
+
+
 
 export default function HeadForm({
   setNcprogramNo,
@@ -41,12 +45,12 @@ export default function HeadForm({
   const handleClosepdf1 = () => {
     setOnclickofYesPS(false);
     if (currentIndex1 + 1 < selectedRows.length) {
-      console.log("if condition")
+      console.log("if condition");
       setCurrentIndex1(currentIndex1 + 1);
       askPrintSelectedModal();
     } else {
       if (!loopedBack1) {
-        console.log("else condition")
+        console.log("else condition");
         setLoopedBack1(true);
         setAskPrintSelected(false);
       }
@@ -70,9 +74,31 @@ export default function HeadForm({
   const onClickofyes = () => {
     setAskPrintAll(false);
     const currentObject = printLabelData[currentIndex];
-    setOnclickofYes(currentObject);
-    askPrintAllModal();
+    
+  
+    // Create a valid React node
+    const pdfComponent = <PrintAllPdf currentObject={currentObject?.DwgName} />;
+  
+    // Programmatically create a hidden link and click it to trigger the download
+    const pdfBlob = new Blob([pdfComponent], { type: 'application/pdf' });
+
+    console.log("pdfBlob",pdfBlob)
+  
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = 'somename.pdf';
+  
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  
+    // Close modal after download starts
+    handleClosepdf();
   };
+  
+  
+  
   const currentObject = printLabelData[currentIndex];
 
   const handleClosepdf = () => {
@@ -88,7 +114,6 @@ export default function HeadForm({
     }
   };
 
-
   //onclick of close
   const navigate = useNavigate();
   const onClickofClose = () => {
@@ -97,7 +122,6 @@ export default function HeadForm({
 
   // console.log("selectedRows",selectedRows);
   // console.log("printLabelData",printLabelData);
-
 
   return (
     <div>
@@ -123,7 +147,7 @@ export default function HeadForm({
           </button>
         </div>
 
-        <div className="col-md-2" style={{marginLeft:'-10px'}} >
+        <div className="col-md-2" style={{ marginLeft: "-10px" }}>
           <button
             className="button-style mt-4 group-button"
             style={{ width: "150px" }}
@@ -133,7 +157,7 @@ export default function HeadForm({
           </button>
         </div>
 
-        <div className="col-md-2" style={{marginLeft:'-10px'}}>
+        <div className="col-md-2" style={{ marginLeft: "-10px" }}>
           <button
             className="button-style mt-4 group-button"
             style={{ width: "150px" }}
@@ -142,7 +166,7 @@ export default function HeadForm({
             Print Selected
           </button>
         </div>
-        <div className="col-md-2" style={{marginLeft:'-20px'}}>
+        <div className="col-md-2" style={{ marginLeft: "-20px" }}>
           <button
             className="button-style mt-4 group-button"
             style={{ width: "150px" }}
@@ -150,7 +174,7 @@ export default function HeadForm({
           >
             Close
           </button>
-          </div>
+        </div>
       </div>
 
       <PrintAllModal
@@ -164,7 +188,7 @@ export default function HeadForm({
         openPrintSelect={onClickyesPS}
         setOpenPrintSelected={setOnclickofYesPS}
         currentObjectNew={currentObject1?.DwgName}
-        onClose={()=>handleClosepdf1()}
+        onClose={() => handleClosepdf1()}
       />
 
       <GlobalModal
@@ -176,7 +200,7 @@ export default function HeadForm({
         onClose={() => hadleclose1()}
       />
 
-<GlobalModal
+      <GlobalModal
         show={askPrintAll}
         title="magod_machine"
         content={<div>Print '{currentObject?.DwgName}' Labels?</div>}
@@ -184,8 +208,6 @@ export default function HeadForm({
         onNoClick={() => hadleclose()}
         onClose={() => hadleclose()}
       />
-
-     
     </div>
   );
 }

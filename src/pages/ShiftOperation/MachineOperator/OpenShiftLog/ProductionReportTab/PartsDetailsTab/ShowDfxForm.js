@@ -161,7 +161,7 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
                   >
                     <td></td>
                     <td>{value?.DwgName}</td>
-                    <td>{value?.TotQtyNested}</td>
+                    <td>{value.QtyNested * value.Sheets}</td>
                     <td>{value?.QtyCut}</td>
                     <td>
                       <input

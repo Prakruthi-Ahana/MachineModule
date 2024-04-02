@@ -81,6 +81,7 @@ export default function CallFile() {
   //Machine Task Table
   let Machine = selectshifttable?.Machine;
   const getMachineTaskData = () => {
+    console.log("func called");
     axios
       .post(baseURL + "/ShiftOperator/MachineTasksData", {
         MachineName: Machine,
@@ -129,7 +130,6 @@ export default function CallFile() {
 
   //get After  Refresh
   const getmiddleTbaleData = () => {
-    console.log("api called");
     axios
       .post(baseURL + "/ShiftOperator/ProgramMaterialAfterRefresh", {
         selectshifttable,

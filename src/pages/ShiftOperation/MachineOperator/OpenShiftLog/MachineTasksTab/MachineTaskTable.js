@@ -155,7 +155,7 @@ export default function MachineTaskTable({
         NCId: selectedProgram?.Ncid,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setServiceTopData(response.data);
       });
     axios
@@ -235,6 +235,7 @@ export default function MachineTaskTable({
      }
      setSortConfig({ key, direction });
    };
+
  
    const sortedData = () => {
      const dataCopy = [...getMachinetaskdata];
@@ -251,6 +252,7 @@ export default function MachineTaskTable({
      }
      return dataCopy;
    };
+
 
 
    //Format Time
