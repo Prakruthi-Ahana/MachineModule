@@ -40,7 +40,7 @@ export default function CallFile() {
         NCId: NcId,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setAfterloadProgram(response.data);
         setAfterRefreshData(response.data);
         setShowTable(true);
@@ -56,20 +56,20 @@ export default function CallFile() {
     axios
       .post(baseURL + "/ShiftOperator/ShiftSummary", { selectshifttable })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setShiftSummaryData(response.data);
       });
   };
 
   const [machineShiftStatus, setMachineShiftStatus] = useState([]);
   const getMachineShiftStatusForm = () => {
-    console.log(selectshifttable);
+    // console.log(selectshifttable);
     axios
       .post(baseURL + "/ShiftOperator/getmachineShiftStatus", {
         selectshifttable,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setMachineShiftStatus(response.data);
       });
   };
@@ -81,7 +81,7 @@ export default function CallFile() {
   //Machine Task Table
   let Machine = selectshifttable?.Machine;
   const getMachineTaskData = () => {
-    console.log("func called");
+    // console.log("func called");
     axios
       .post(baseURL + "/ShiftOperator/MachineTasksData", {
         MachineName: Machine,
@@ -173,7 +173,7 @@ export default function CallFile() {
         selectshifttable,
       })
       .then((response) => {
-        console.log("required result", response.data);
+        // console.log("required result", response.data);
         setServiceTopData(response.data);
       });
   };

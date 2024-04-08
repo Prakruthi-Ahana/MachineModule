@@ -41,10 +41,21 @@ export default function ProgramPartsForm() {
     setProgramPatsSelectedRow(updatedRow);
   };
 
-  const onChnageReject = (e, key, valueQtyRejected) => {
-    const updatedRow = { ...programPatsSelectedRow };
-    updatedRow.QtyRejected = e.target.value;
-    setProgramPatsSelectedRow(updatedRow);
+  // const onChnageReject = (e, key, valueQtyRejected) => {
+  //   const updatedRow = { ...programPatsSelectedRow };
+  //   updatedRow.QtyRejected = e.target.value;
+  //   setProgramPatsSelectedRow(updatedRow);
+  // };
+
+  //
+  const onChnageReject = (index, field, value) => {
+    const updatedprogramPartsData = [...programPartsData]; // Create a copy of the array
+    // Update the specific item's field with the new value
+    updatedprogramPartsData[index] = {
+      ...updatedprogramPartsData[index],
+      [field]: value,
+    };
+    setProgramPartsData(updatedprogramPartsData);
   };
 
   const onChangeProcessed = (e, key, valueQtyNested) => {
@@ -58,7 +69,7 @@ export default function ProgramPartsForm() {
   const SaveProgramParts = () => {
     axios
       .post(baseURL + "/ShiftOperator/SaveprogramParts", {
-        programPatsSelectedRow,
+        programPartsData,
       })
       .then((response) => {
         toast.success("Data Saved Successfully", {
@@ -167,7 +178,7 @@ export default function ProgramPartsForm() {
                         className="table-cell-editor"
                         value={value.QtyCut}
                         onChange={(e) =>
-                          onChangeProcessed(e, key, value.QtyCut)
+                          onChnageReject(key, "QtyCut", e.target.value)
                         }
                       />
                     </td>
@@ -176,15 +187,17 @@ export default function ProgramPartsForm() {
                         className="table-cell-editor"
                         defaultValue={value.QtyRejected || ""}
                         onChange={(e) =>
-                          onChnageReject(e, key, value.QtyRejected)
+                          onChnageReject(key, "QtyRejected", e.target.value)
                         }
                       />
                     </td>
                     <td>
                       <input
                         className="table-cell-editor"
-                        defaultValue={value.Remarks || ""}
-                        onChange={(e) => remarksChange(e, key, value.Remarks)}
+                        defaultValue={value.Remarks==='null' ? '' : value.Remarks}
+                          onChange={(e) =>
+                            onChnageReject(key, "Remarks", e.target.value)
+                        }
                       />
                     </td>
                   </tr>

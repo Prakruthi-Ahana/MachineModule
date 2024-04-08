@@ -27,7 +27,7 @@ export default function OpenShiftModal({
 
 
   const navigate = useNavigate();
-  console.log("requiredProgram",requiredProgram);
+  // console.log("requiredProgram",requiredProgram);
 
   const openShiftPage = () => {
     // console.log(requiredProgram[0].NCProgarmNo);
@@ -115,7 +115,7 @@ const handleClose = () => {
         if (item.Locked === 1) {
           item.rowColor = "#87CEEB";
         } else {
-          console.log(null);
+          // console.log(null);
         }
         return item;
       });

@@ -76,7 +76,7 @@ export default function ProgrmMatrlTableService({
         afterloadService,
       })
       .then((response) => {
-        console.log("input change response", response.data);
+        // console.log("input change response", response.data);
         setToCompareData(response.data);
       })
       .catch((error) => {
@@ -170,7 +170,7 @@ export default function ProgrmMatrlTableService({
 
               return updatedItem;
             } else {
-              console.log(`Row ${item.CustBOM_Id}: No match found`);
+              // console.log(`Row ${item.CustBOM_Id}: No match found`);
               return item;
             }
           });
@@ -210,14 +210,14 @@ export default function ProgrmMatrlTableService({
         sendobject,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         axios
           .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
             selectshifttable,
             NcId,
           })
           .then((response) => {
-            console.log("required result", response.data);
+            // console.log("required result", response.data);
             setAfterloadService(response?.data);
             if (!response.data) {
               setAfterloadService([]);
@@ -239,7 +239,7 @@ export default function ProgrmMatrlTableService({
             }
           )
           .then((response) => {
-            console.log("required result", response.data);
+            // console.log("required result", response.data);
             setServiceTopData(response.data);
           });
       })

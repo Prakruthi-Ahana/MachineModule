@@ -46,7 +46,7 @@ export default function StoppageAskModal({
     setThirdTaskNo(e.target.value);
   };
 
-  console.log(firstTaskNo, secondTaskNo, thirdTaskNo);
+  // console.log(firstTaskNo, secondTaskNo, thirdTaskNo);
 
   const concatenatedString =
     firstTaskNo + " " + secondTaskNo + " " + thirdTaskNo || '';
@@ -87,7 +87,7 @@ export default function StoppageAskModal({
 
   const onClickYes = () => {
     if (concatenatedString.trim()) {
-      console.log("excuting First Condition")
+      // console.log("excuting First Condition")
       if (!isButtonClicked) {
         setIsButtonClicked(true);
         axios
@@ -119,9 +119,9 @@ export default function StoppageAskModal({
             toast.success("Stoppage Added Successfully", {
               position: toast.POSITION.TOP_CENTER,
             });
-            console.log(" before excuted")
+            // console.log(" before excuted")
             setFormData([]);
-            console.log("excuted")
+            // console.log("excuted")
             getShiftLog();
           });
       }

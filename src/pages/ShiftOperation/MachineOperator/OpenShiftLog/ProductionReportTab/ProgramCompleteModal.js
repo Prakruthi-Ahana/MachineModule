@@ -8,7 +8,7 @@ import { baseURL } from '../../../../../api/baseUrl';
 
 export default function ProgramCompleteModal({setProgramComplete,programComplete,selectProductionReport,getMachineTaskData,setOpenTable,getMachinetaskdata,setSelectProductionReport}) {
 
-  console.log("selectProductionReport",selectProductionReport);
+  // console.log("selectProductionReport",selectProductionReport);
     const handleClose=()=>{
         setProgramComplete(false);
     }
