@@ -18,7 +18,7 @@ export default function OpenShiftLogForm({
 }) {
 
   const{setShiftLogDetails}=useGlobalContext();
-  console.log(selectshifttable);
+  // console.log(selectshifttable);
 
 const onClickgetProgram=()=>{
   getMachineTaskData()
@@ -144,7 +144,7 @@ const showToastifyError = () => {
       })
       .then((response) => {
         setStoppageReasonList(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       });
   };
 

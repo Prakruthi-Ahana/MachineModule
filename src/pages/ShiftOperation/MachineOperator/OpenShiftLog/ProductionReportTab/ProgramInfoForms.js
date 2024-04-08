@@ -12,9 +12,10 @@ import axios from "axios";
 export default function ProgramInfoForms({
   getMachinetaskdata,
   selectshifttable,
-  getMachineTaskData,setMachinetaskdata
+  getMachineTaskData,
+  setMachinetaskdata,
 }) {
-  const { setHasBOM,shiftSelected } = useGlobalContext();
+  const { setHasBOM, shiftSelected } = useGlobalContext();
   const [loadProgramInfo, setloadProgramInfo] = useState(false);
   const [programComplete, setProgramComplete] = useState(false);
 
@@ -30,31 +31,30 @@ export default function ProgramInfoForms({
         // console.log(response.data);
         setHasBOM(response.data);
       });
-      setOpenTable(false);
+    setOpenTable(false);
   };
 
 
-
   //Load Program
-  const[rpTopData,setRptTopData]=useState([]);
+  const [rpTopData, setRptTopData] = useState([]);
   const [openTable, setOpenTable] = useState(false);
   let newNcid = "";
   const handleButtonClick = () => {
     axios
-    .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
-      NCId: selectProductionReport?.Ncid,
-    })
-    .then((response) => {
-      setRptTopData(response.data);
-    })
-        axios
+      .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
+        NCId: selectProductionReport?.Ncid,
+      })
+      .then((response) => {
+        setRptTopData(response.data);
+      });
+    axios
       .post(baseURL + "/ShiftOperator/getNCId", {
         shiftSelected,
       })
       .then((response) => {
         if (response.data && response.data.length > 0) {
           newNcid = response.data[0].Ncid;
-  
+
           // Move the following code inside the if condition
           // console.log(selectProductionReport.Ncid, newNcid);
           if (selectProductionReport.Ncid === newNcid) {
@@ -71,28 +71,44 @@ export default function ProgramInfoForms({
           // If response.data is empty, execute setOpenTable(true)
           setOpenTable(true);
         }
-      })
+      });
   };
-  
 
   const handleSubmit = () => {
     setloadProgramInfo(true);
-
   };
 
 
+  // useEffect(() => {
+  //   // Check if selectProductionReport exists before making the request
+  //   if (selectProductionReport) {
+  //     axios
+  //       .post(baseURL + "/ShiftOperator/getQtydata", {
+  //         selectProductionReport,
+  //       })
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         // Further processing of response data if needed
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching quantity data:", error);
+  //       });
+  //   }
+  // }, [selectProductionReport]);
 
+  // console.log("selectProductionReport",selectProductionReport);
+  
+  
   //mark as Completed
   const programCompleteSubmit = async () => {
     try {
       const response = await axios.post(baseURL + "/ShiftOperator/getNCId", {
         shiftSelected,
       });
-      // console.log("response.data.lengt",response.data.length)
-  
+
       if (response.data && response.data.length > 0) {
         const newNcid = response.data[0].Ncid;
-  
+
         if (selectProductionReport.Ncid === newNcid) {
           toast.error(
             "Program Currently Being Processed, Use Current Program Window To Update Values",
@@ -103,23 +119,39 @@ export default function ProgramInfoForms({
           return; // Exit the function early if program is currently being processed
         }
       }
-  
-      if (selectProductionReport.QtyCut < selectProductionReport.Qty) {
-        toast.error(
-          "Either mark the material allotted as used or rejected before changing status to completed",
-          {
-            position: toast.POSITION.TOP_CENTER,
-          }
-        );
-      } else {
+
+    // Find the object in getMachinetaskdata array with matching Ncid
+    const matchingObject = getMachinetaskdata.find(item => item.Ncid === selectProductionReport.Ncid);
+
+    // If matching object is found and QtyCut is less than Qty, show an error toast
+    if (matchingObject && (matchingObject.QtyCut + matchingObject.QtyRejected) < 0) {
+      toast.error(
+        "Either mark the material allotted as used or rejected before changing status to completed",
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
+      return;
+    }
+
+    // // If QtyCut is less than Qty, show an error toast
+    // if (selectProductionReport.QtyCut < selectProductionReport.Qty) {
+    //   toast.error(
+    //     "Either mark the material allotted as used or rejected before changing status to completed",
+    //     {
+    //       position: toast.POSITION.TOP_CENTER,
+    //     }
+    //   );
+    //   return;
+    // }
+
+      else {
         setProgramComplete(true);
       }
     } catch (error) {
       // Handle error if the request fails
-      console.error("Error fetching data:", error);
     }
   };
-  
   
 
   useEffect(() => {
@@ -137,32 +169,32 @@ export default function ProgramInfoForms({
 
   // console.log(selectProductionReport,"selectProductionReport is ")
 
-    //sorting
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
-    const requestSort = (key) => {
-      let direction = "asc";
-      if (sortConfig.key === key && sortConfig.direction === "asc") {
-        direction = "desc";
-      }
-      setSortConfig({ key, direction });
-    };
-  
-    const sortedData = () => {
-      const dataCopy = [...getMachinetaskdata];
-      if (sortConfig.key) {
-        dataCopy.sort((a, b) => {
-          if (a[sortConfig.key] < b[sortConfig.key]) {
-            return sortConfig.direction === "asc" ? -1 : 1;
-          }
-          if (a[sortConfig.key] > b[sortConfig.key]) {
-            return sortConfig.direction === "asc" ? 1 : -1;
-          }
-          return 0;
-        });
-      }
-      return dataCopy;
-    };
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+    const dataCopy = [...getMachinetaskdata];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
 
   return (
     <div>

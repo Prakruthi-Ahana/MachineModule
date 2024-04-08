@@ -112,7 +112,7 @@ export default function MachineTaskTable({
                 day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
               response.data[i].ToTime = finalDay1;
             }
-            console.log(response.data);
+            // console.log(response.data);
             setShiftLogDetails(response.data);
           });
         getMachineShiftStatusForm();
@@ -136,7 +136,7 @@ export default function MachineTaskTable({
         NCId: list?.Ncid,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setHasBOM(response.data);
       });
   };
@@ -163,7 +163,7 @@ export default function MachineTaskTable({
         NCId: selectedProgram?.Ncid,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setMachineTaskDataService(response.data);
         setIsDataDisplayed(true); // Data is displayed
         setShowTable(true);
@@ -184,7 +184,7 @@ export default function MachineTaskTable({
           NCId: selectedProgram?.Ncid,
         })
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           setMachineTaskDataService(response.data);
           setIsDataDisplayed(true); // Data is displayed
         })
@@ -197,7 +197,7 @@ export default function MachineTaskTable({
           NCId: selectedProgram?.Ncid,
         })
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           setNewTableTopData(response.data);
         });
     } else {
@@ -206,7 +206,7 @@ export default function MachineTaskTable({
           NCId: selectedProgram?.Ncid,
         })
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           setMachineTaskData(response.data);
           setIsDataDisplayed(true); // Data is displayed
         })

@@ -12,13 +12,13 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
 
 
   const getPartDetails = () => {
-    console.log("selectProductionReport",selectProductionReport);
+    // console.log("selectProductionReport",selectProductionReport);
     axios
       .post(baseURL + "/ShiftOperator/getpartDetails", {
         selectProductionReport,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setPartDetailsData(response.data);
       });
   };
@@ -38,11 +38,11 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
     setPartDetailsRowSelect({ ...partDetailsData[0], index: 0 });
   }, [partDetailsData[0]]);
 
-  const onChnageReject = (e, key, valueQtyRejected) => {
-    const updatedRow = { ...partDetailsRowSelect };
-    updatedRow.QtyRejected = e.target.value;
-    setPartDetailsRowSelect(updatedRow);
-  };
+  // const onChnageReject = (e, key, valueQtyRejected) => {
+  //   const updatedRow = { ...partDetailsRowSelect };
+  //   updatedRow.QtyRejected = e.target.value;
+  //   setPartDetailsRowSelect(updatedRow);
+  // };
 
   const remarksChange = (e, key, valueRemarks) => {
     const updatedRow = { ...partDetailsRowSelect };
@@ -50,11 +50,22 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
     setPartDetailsRowSelect(updatedRow);
   };
 
+  const onChnageReject = (index, field, value) => {
+    const updatedpartDetailsData = [...partDetailsData]; // Create a copy of the array
+    // Update the specific item's field with the new value
+    updatedpartDetailsData[index] = {
+      ...updatedpartDetailsData[index],
+      [field]: value,
+    };
+    setPartDetailsData(updatedpartDetailsData);
+  };
+
+
   const savePartDetails = () => {
-    console.log(partDetailsRowSelect);
+    // console.log("partDetailsData",partDetailsData);
     axios
       .post(baseURL + "/ShiftOperator/SaveprogramDetails", {
-        partDetailsRowSelect,
+        partDetailsData,
       })
       .then((response) => {
         toast.success("Data Saved Successfully", {
@@ -89,6 +100,7 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
      }
      return dataCopy;
    };
+
 
   return (
     <div>
@@ -166,17 +178,19 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
                     <td>
                       <input
                         className="table-cell-editor"
-                        defaultValue={value?.QtyRejected}
+                        Value={value?.QtyRejected}                         
                         onChange={(e) =>
-                          onChnageReject(e, key, value.QtyRejected)
+                          onChnageReject(key, "QtyRejected", e.target.value)
                         }
                       />
                     </td>
                     <td>
                       <input
                         className="table-cell-editor"
-                        defaultValue={value?.Remarks}
-                        onChange={(e) => remarksChange(e, key, value.Remarks)}
+                        Value={ value?.Remarks==='null' ? '' : value?.Remarks}
+                        onChange={(e) =>
+                          onChnageReject(key, "Remarks", e.target.value)
+                        }
                       />
                     </td>
                   </tr>

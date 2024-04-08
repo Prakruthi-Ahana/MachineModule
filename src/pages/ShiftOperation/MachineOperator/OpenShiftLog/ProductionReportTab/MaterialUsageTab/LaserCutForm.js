@@ -68,6 +68,7 @@ export default function LaserCutForm({
         } 
       }
       setMachinetaskdata(response.data);
+      // console.log("response after mark as used",response.data);
     })
   }
 
@@ -154,7 +155,7 @@ export default function LaserCutForm({
         NCId: selectProductionReportData,
       })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         setProductionReportData(response.data);
       });
   };
@@ -186,6 +187,7 @@ export default function LaserCutForm({
           // console.log("excuted data refresh func");
           setPartDetailsData(response.data);
         });
+        getMachineTaskAfterMU();
           axios
           .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
             NCId: selectProductionReportData,

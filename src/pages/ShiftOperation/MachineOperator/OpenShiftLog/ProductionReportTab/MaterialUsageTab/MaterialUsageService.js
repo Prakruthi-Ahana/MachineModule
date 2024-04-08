@@ -76,7 +76,7 @@ export default function MaterialUsageService({
         NCId: selectProductionReport.Ncid,
       })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         setService(response.data);
       });
   };
@@ -116,7 +116,7 @@ export default function MaterialUsageService({
         afterloadService: servicedata,
       })
       .then((response) => {
-        console.log("input change response", response.data);
+        // console.log("input change response", response.data);
         setToCompareData(response.data);
       })
       .catch((error) => {
@@ -195,7 +195,7 @@ export default function MaterialUsageService({
 
               return updatedItem;
             } else {
-              console.log(`Row ${item.CustBOM_Id}: No match found`);
+              // console.log(`Row ${item.CustBOM_Id}: No match found`);
               return item;
             }
           });
@@ -216,13 +216,13 @@ export default function MaterialUsageService({
               toast.success("Material Parts Used", {
                 position: toast.POSITION.TOP_CENTER,
               });
-              console.log(response.data);
+              // console.log(response.data);
               axios
                 .post(baseURL + "/ShiftOperator/MachineTasksService", {
                   NCId: selectProductionReport.Ncid,
                 })
                 .then((response) => {
-                  console.log("required result", response.data);
+                  // console.log("required result", response.data);
                   setService(response?.data);
                 });
               axios
@@ -237,7 +237,7 @@ export default function MaterialUsageService({
                     selectProductionReport,
                   })
                   .then((response) => {
-                    console.log("excuted data refresh func");
+                    // console.log("excuted data refresh func");
                     setPartDetailsData(response.data);
                   });
                   getMachineTaskAfterMU();
@@ -322,7 +322,7 @@ const markasReturned = () => {
 
             return updatedItem;
           } else {
-            console.log(`Row ${item.CustBOM_Id}: No match found`);
+            // console.log(`Row ${item.CustBOM_Id}: No match found`);
             return item;
           }
         });
@@ -343,13 +343,13 @@ const markasReturned = () => {
             toast.success("Material Parts Returned", {
               position: toast.POSITION.TOP_CENTER,
             });
-            console.log(response.data);
+            // console.log(response.data);
             axios
               .post(baseURL + "/ShiftOperator/MachineTasksService", {
                 NCId: selectProductionReport.Ncid,
               })
               .then((response) => {
-                console.log("required result", response.data);
+                // console.log("required result", response.data);
                 setService(response?.data);
               });
             axios
@@ -357,7 +357,7 @@ const markasReturned = () => {
                 NCId: selectProductionReport?.Ncid,
               })
               .then((response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 setRptTopData(response.data);
               });
           });

@@ -166,7 +166,7 @@ export default function ProgrmMatrlTableProfile({
             NCProgramNo: ProgramNo,
           })
           .then((response) => {
-            console.log("required result", response.data);
+            // console.log("required result", response.data);
             setAfterRefreshData(response?.data);
             if (!response.data) {
               setAfterRefreshData([]);
@@ -236,7 +236,7 @@ export default function ProgrmMatrlTableProfile({
               NCProgramNo: ProgramNo,
             })
             .then((response) => {
-              console.log("required result", response.data);
+              // console.log("required result", response.data);
               setAfterRefreshData(response?.data);
               if (!response.data) {
                 setAfterRefreshData([]);

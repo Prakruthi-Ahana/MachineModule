@@ -79,7 +79,7 @@ const getShiftLogDetails = () => {
         if (item.Locked === 1) {
           item.rowColor = "#87CEEB";
         } else {
-          console.log(null);
+          // console.log(null);
         }
         return item;
       });

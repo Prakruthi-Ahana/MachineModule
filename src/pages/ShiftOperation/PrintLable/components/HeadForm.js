@@ -74,29 +74,9 @@ export default function HeadForm({
   const onClickofyes = () => {
     setAskPrintAll(false);
     const currentObject = printLabelData[currentIndex];
-    
-  
-    // Create a valid React node
-    const pdfComponent = <PrintAllPdf currentObject={currentObject?.DwgName} />;
-  
-    // Programmatically create a hidden link and click it to trigger the download
-    const pdfBlob = new Blob([pdfComponent], { type: 'application/pdf' });
-
-    console.log("pdfBlob",pdfBlob)
-  
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.download = 'somename.pdf';
-  
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  
-    // Close modal after download starts
-    handleClosepdf();
+    setOnclickofYes(currentObject);
+    askPrintAllModal();
   };
-  
   
   
   const currentObject = printLabelData[currentIndex];

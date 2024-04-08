@@ -79,7 +79,7 @@ export default function Form1({
 
   let ProgramNo = formdata?.NCProgramNo;
   const loadProgramSubmit = () => {
-    console.log(selectedMtrlTable.length);
+    // console.log(selectedMtrlTable.length);
     if (selectedMtrlTable.length < 1) {
       toast.error("Please Select a Material", {
         position: toast.POSITION.TOP_CENTER,
