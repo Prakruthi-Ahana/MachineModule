@@ -15,7 +15,7 @@ import { useGlobalContext } from "../../../../../../Context/Context";
 export default function LaserCutForm({
   selectProductionReport,
   openTable,
-  selectshifttable,setMachinetaskdata
+  selectshifttable,setMachinetaskdata,setComplete
 }) {
 
   const { NcId,partDetailsData, setPartDetailsData} = useGlobalContext();
@@ -149,24 +149,54 @@ export default function LaserCutForm({
     }
   };
 
-  const MaterialUsage = () => {
-    axios
-      .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
-        NCId: selectProductionReportData,
-      })
-      .then((response) => {
-        // console.log(response);
-        setProductionReportData(response.data);
-      });
-  };
 
+  
+  const MaterialUsage = () => {
+    axios.post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+      NCId: selectProductionReportData,
+    })
+    .then((response) => {
+      setProductionReportData(response.data);
+      const data = response.data;
+      let count = 0;
+  
+      // Iterate through each object in the response data
+      data.forEach((item) => {
+        // Check if Used or Rejected is zero
+        if (item.Used === 1 || item.Rejected === 1) {
+          count++;
+        }
+      });
+  
+      // Output the count
+
+      // console.log("Number of objects with Used or Rejected as zero:", count);
+      // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
+  
+      // If count equals selectProductionReport.Qty, setComplete(true)
+      if (count === selectProductionReport.Qty) {
+        // console.log("conditon 1")
+        setComplete(true);
+      }else{
+        // console.log("conditon 2")
+        setComplete(false);
+      }
+  
+      // If count is greater than 0, another row is incremented
+      if (count > 0) {
+        // Increment another row
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+  };
+  
   useEffect(() => {
     MaterialUsage();
   }, [selectProductionReport]);
 
 
-
-  
 
   // console.log("selectdefaultRow",selectdefaultRow)
 
@@ -194,6 +224,35 @@ export default function LaserCutForm({
           })
           .then((response) => {
             setProductionReportData(response.data);
+            const data = response.data;
+            let count = 0;
+        
+            // Iterate through each object in the response data
+            data.forEach((item) => {
+              // Check if Used or Rejected is zero
+              if (item.Used === 1 || item.Rejected === 1) {
+                count++;
+              }
+            });
+        
+            // Output the count
+      
+            // console.log("Number of objects with Used or Rejected as zero:", count);
+            // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
+        
+            // If count equals selectProductionReport.Qty, setComplete(true)
+            if (count === selectProductionReport.Qty) {
+              // console.log("conditon 1")
+              setComplete(true);
+            }else{
+              // console.log("conditon 2")
+              setComplete(false);
+            }
+        
+            // If count is greater than 0, another row is incremented
+            if (count > 0) {
+              // Increment another row
+            }
           });
         MaterialUsage();
         getMachineTaskAfterMU();
@@ -405,6 +464,8 @@ const handleSelectAll = () => {
         selectProductionReportData={selectProductionReportData}
         setProductionReportData={setProductionReportData}
         setSelectdefaultRow={setSelectdefaultRow}
+        selectProductionReport={selectProductionReport}
+        setComplete={setComplete}
       />
 
       <RowRejectedModal

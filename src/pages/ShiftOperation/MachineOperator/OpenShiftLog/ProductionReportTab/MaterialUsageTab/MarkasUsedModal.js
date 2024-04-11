@@ -11,7 +11,7 @@ export default function MarkasUsedModal({
   markasUsed,
   handleMarkasUsed,
   selectProductionReportData,
-  setProductionReportData,setSelectdefaultRow
+  setProductionReportData,setSelectdefaultRow,setComplete,selectProductionReport
 }) {
   const [reasonForReject, setReasonForReject] = useState(false);
 
@@ -32,6 +32,35 @@ export default function MarkasUsedModal({
         });
         setSelectdefaultRow([])
         setProductionReportData(response.data);
+        const data = response.data;
+      let count = 0;
+  
+      // Iterate through each object in the response data
+      data.forEach((item) => {
+        // Check if Used or Rejected is zero
+        if (item.Used === 1 || item.Rejected === 1) {
+          count++;
+        }
+      });
+  
+      // Output the count
+      
+      // console.log("Number of objects with Used or Rejected as zero:", count);
+      // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
+  
+      // If count equals selectProductionReport.Qty, setComplete(true)
+      if (count === selectProductionReport.Qty) {
+        console.log("conditon 1")
+        setComplete(true);
+      }else{
+        console.log("conditon 2")
+        setComplete(false);
+      }
+  
+      // If count is greater than 0, another row is incremented
+      if (count > 0) {
+        // Increment another row
+      }
       });
   };
   return (
