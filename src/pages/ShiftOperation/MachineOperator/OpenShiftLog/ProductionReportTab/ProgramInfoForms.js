@@ -18,6 +18,7 @@ export default function ProgramInfoForms({
   const { setHasBOM, shiftSelected } = useGlobalContext();
   const [loadProgramInfo, setloadProgramInfo] = useState(false);
   const [programComplete, setProgramComplete] = useState(false);
+  const [complete,setComplete]=useState(false);
 
   const [selectProductionReport, setSelectProductionReport] = useState({});
   const selectProductionReportFun = (item, index) => {
@@ -34,6 +35,7 @@ export default function ProgramInfoForms({
     setOpenTable(false);
   };
 
+  console.log("complete",complete);
 
   //Load Program
   const [rpTopData, setRptTopData] = useState([]);
@@ -120,11 +122,9 @@ export default function ProgramInfoForms({
         }
       }
 
-    // Find the object in getMachinetaskdata array with matching Ncid
-    const matchingObject = getMachinetaskdata.find(item => item.Ncid === selectProductionReport.Ncid);
-
+  
     // If matching object is found and QtyCut is less than Qty, show an error toast
-    if (matchingObject && (matchingObject.QtyCut + matchingObject.QtyRejected) < 0) {
+    if (complete===false) {
       toast.error(
         "Either mark the material allotted as used or rejected before changing status to completed",
         {
@@ -386,6 +386,7 @@ export default function ProgramInfoForms({
         rpTopData={rpTopData}
         setRptTopData={setRptTopData}
         setMachinetaskdata={setMachinetaskdata}
+        setComplete={setComplete}
       />
 
       <LoadProgramInfoModal
