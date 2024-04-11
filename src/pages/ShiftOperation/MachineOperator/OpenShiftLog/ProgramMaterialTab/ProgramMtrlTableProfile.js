@@ -295,15 +295,14 @@ const handleSelectAll = () => {
         <div className="mt-2">
           <div className="col-md-12 col-sm-12">
             <div className="ip-box form-bg">
-              <div className="row" style={{ gap: "10px", marginLeft: "-5px" }}>
+              <div className="row">
                 <div
-                  style={{ textAlign: "center", marginLeft: "-12px" }}
-                  className="col-md-3"
+                  style={{ textAlign: "center" }}
+                  className="col-md-4"
                 >
                   <div>
                     <button
-                      className="button-style mt-2 group-button mt-4 mb-2"
-                      style={{ width: "90px", fontSize: "13px" }}
+                      className="button-style group-button mb-1"
                       onClick={handleMarkasUsedModal}
                     >
                       Mark as Used
@@ -311,11 +310,10 @@ const handleSelectAll = () => {
                   </div>
                 </div>
 
-                <div style={{ textAlign: "center" }} className="col-md-4">
+                <div style={{ textAlign: "center" }} className="col-md-5">
                   <div>
                     <button
-                      className="button-style mt-2 group-button mt-4 mb-2"
-                      style={{ width: "110px", fontSize: "13px" }}
+                      className="button-style group-button mb-1"
                       onClick={handleMarkasRejected}
                     >
                       Mark as Rejected
@@ -323,17 +321,18 @@ const handleSelectAll = () => {
                   </div>
                 </div>
 
-                <div className="col-md-3 row mt-3">
+                <div className="col-md-2 row">
                   <input
                     type="checkbox"
-                    className="col-md-2"
+                    className="col-md-4"
                     onChange={handleCheckBoxChange}
+                    style={{marginLeft:'-20px'}}
                   />
                   <label
                     className="form-label col-md-1 mt-1"
-                    style={{ whiteSpace: "nowrap", marginLeft: "-6px" }}
+                    style={{ whiteSpace: "nowrap", marginLeft:'-10px'}}
                   >
-                    <b>Show unused</b>
+                    Show unused
                   </label>
                 </div>
               </div>

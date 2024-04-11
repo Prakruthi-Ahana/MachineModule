@@ -14,16 +14,16 @@ export default function ValidationAlertModal({openalert,setOpenAlert}) {
     <div>
          <Modal show={openalert} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Magod Machine</Modal.Title>
+          <Modal.Title style={{fontSize:'14px'}}>Magod Machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>Error No, Error Description  are mandatory fields
+        <Modal.Body style={{fontSize:'12px'}}>Error No, Error Description  are mandatory fields
         </Modal.Body> 
 
         <Modal.Footer>
-          <Button style={{backgroundColor:"#2b3a55",border:"#2b3a55"}} onClick={handleClose} >
+          <button className='button-style group-button' onClick={handleClose} >
             OK
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

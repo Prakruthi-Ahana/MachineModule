@@ -5,7 +5,7 @@ export default function SideTable({ printLabelData, selectRowPrintLabel, selecte
   return (
     <div className="row col-md-12">
       <div className="mt-3">
-        <div style={{ height: "350px", overflowY: "scroll", overflowX: "scroll" }}>
+        <div style={{ height: "390px", overflowY: "scroll" }}>
           <Table striped className="table-data border">
             <thead className="tableHeaderBGColor table-space" style={{ fontSize: "12px" }}>
               <tr>

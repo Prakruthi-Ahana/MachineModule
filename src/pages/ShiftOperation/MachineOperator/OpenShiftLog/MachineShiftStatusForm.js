@@ -112,17 +112,17 @@ export default function MachineShiftStatusForm({
   const updateSheettime = () => {
     if (machineShiftStatus && machineShiftStatus.length > 0) {
       const SheetStartTime = new Date(machineShiftStatus[0]?.SheetStartTime);
-  
+
       if (!isNaN(SheetStartTime.getTime())) {
         const currentTime = new Date();
         const diffInMilliseconds = currentTime - SheetStartTime;
-  
+
         if (diffInMilliseconds >= 0) {
           const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
           const minutes = Math.floor(
             (diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
           );
-  
+
           setSheetRuntime(`${hours} hours ${minutes} mins`);
         } else {
           setSheetRuntime("0");
@@ -134,7 +134,7 @@ export default function MachineShiftStatusForm({
       setSheetRuntime("0");
     }
   };
-  
+
   useEffect(() => {
     if (machineShiftStatus[0]?.MtrlID === "") {
       setSheetRuntime(runningTime);
@@ -142,11 +142,10 @@ export default function MachineShiftStatusForm({
       updateSheettime();
     }
   }, [machineShiftStatus, runningTime]);
-  
+
   useEffect(() => {
     localStorage.setItem("runningTime", sheetrunTime);
   }, [sheetrunTime]);
-  
 
   useEffect(() => {
     getMachineShiftStatusForm();
@@ -198,10 +197,7 @@ export default function MachineShiftStatusForm({
                     width: "140px",
                   }}
                 >
-                  <select
-                    className="ip-select"
-                    onChange={handleShiftIncharge}
-                  >
+                  <select className="ip-select" onChange={handleShiftIncharge}>
                     <option selected>Select Shift Incharge</option>
                     {operatorsList.map((operatorsList) => (
                       <option value={operatorsList}>{operatorsList}</option>

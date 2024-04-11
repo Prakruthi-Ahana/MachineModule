@@ -8,26 +8,28 @@ import OpenShiftModal from "./OpenShiftLogModal";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../../Context/Context";
 
-
 export default function MachineOperator() {
   const {
     setAfterRefreshData,
     NcId,
     setFormData,
     setAfterloadService,
-    setShiftSelected,setServiceTopData,setNcProgramId,setShowTable,programPartsData, setProgramPartsData
+    setShiftSelected,
+    setServiceTopData,
+    setNcProgramId,
+    setShowTable,
+    programPartsData,
+    setProgramPartsData,
   } = useGlobalContext();
 
   //get Machine List
   const [machineList, setMachineList] = useState([]);
   const getMachineList = () => {
-    axios.get(baseURL + "/ShiftOperator/getallMachines")
-    .then((response) => {
+    axios.get(baseURL + "/ShiftOperator/getallMachines").then((response) => {
       setMachineList(response.data);
       // console.log(response.data);
     });
   };
-
 
   useEffect(() => {
     getMachineList();
@@ -60,7 +62,6 @@ export default function MachineOperator() {
     Shift = "Third";
   }
 
-
   const [selectedMachine, setSelectedMachine] = useState("");
   const [shiftDetails, setShiftDetails] = useState([]);
   const handleMachineChange = (e) => {
@@ -74,9 +75,8 @@ export default function MachineOperator() {
       .then((response) => {
         setShiftDetails(response.data);
       });
-      setFormData([]);
+    setFormData([]);
   };
-
 
   //Open ShiftLog  Modal
   const [openmodal, setOpenmodal] = useState("");
@@ -117,20 +117,20 @@ export default function MachineOperator() {
         setShowTable(true);
         if (!response.data.complexData1) {
           setAfterRefreshData([]);
-          setShowTable(false)
+          setShowTable(false);
         }
         setFormData(response?.data?.complexData2[0]);
         if (!response?.data?.complexData2[0]) {
           setFormData([]);
         }
-        setNcProgramId(response?.data.complexData2[0].Ncid)
+        setNcProgramId(response?.data.complexData2[0].Ncid);
         setShowTable(true);
       });
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getmiddleTbaleData();
-  },[])
+  }, []);
 
   //service middletabledata
   const serviceMiddleTableData = () => {
@@ -172,7 +172,7 @@ export default function MachineOperator() {
         selectshifttable,
       })
       .then((response) => {
-        setServiceTopData( response.data);
+        setServiceTopData(response.data);
       });
     axios
       .post(baseURL + "/ShiftOperator/getRowCounts", {
@@ -211,25 +211,24 @@ export default function MachineOperator() {
       });
   };
 
-  const onClickofClose=()=>{
+  const onClickofClose = () => {
     navigate("/Machine");
-  }
+  };
 
   useEffect(() => {
     getmiddleTbaleData();
     serviceMiddleTableData();
   }, []);
 
-  
   //update Machine Time
-  const updateMachineTime=()=>{
-    axios.post(baseURL + "/ShiftOperator/updateMachineTime",
-    {Machine:selectshifttable?.Machine})
-    .then((response) => {
-    });
-  }
+  const updateMachineTime = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/updateMachineTime", {
+        Machine: selectshifttable?.Machine,
+      })
+      .then((response) => {});
+  };
 
-  
   useEffect(() => {
     updateMachineTime();
   }, [selectshifttable]);
@@ -247,19 +246,99 @@ export default function MachineOperator() {
         requiredProgram={requiredProgram}
       />
 
-      <div className="col-md-12">
-        <div className="row">
-          <h4 className="title">Shift Selection Form</h4>
+      <div className="row">
+        <h4 className="title">Shift Selection Form</h4>
+      </div>
+
+      <div className="row">
+        <div className="col-md-11">
+          <label className="form-label">
+            Operator Current Shift Selector Form
+          </label>
+        </div>
+        <div className="col-md-1">
+          <button
+            className="button-style group-button"
+            onClick={onClickofClose}
+          >
+            Close
+          </button>
         </div>
       </div>
+
+      <div className="row mt-1">
+        <div className="d-flex col-md-3 mt-2" style={{ gap: "10px" }}>
+          <label className="form-label" style={{ whiteSpace: "nowrap" }}>
+            Select Machine
+          </label>
+          <select className="ip-select" onChange={handleMachineChange}>
+            <option selected>Select Machine</option>
+            {machineList.map((dataMachineList) => (
+              <option value={dataMachineList.refName}>
+                {dataMachineList.refName}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="col-md-3">
+          <button
+            className="button-style group-button"
+            onClick={openShiftLogModal}
+          >
+            Open Shift Log
+          </button>
+        </div>
+      </div>
+
+      {/* <div className="row">
+        <div className="col-md-1">
+          <label className="form-label">Shift Date</label>
+        </div>
+        <div className="col-md-1">
+          <label className="form-label">{finalDay1}</label>
+        </div>
+        <div className="col-md-1">
+          <label className="form-label">Shift</label>
+        </div>
+        <div className="col-md-1">
+          <label className="form-label">{Shift}</label>
+        </div>
+      </div>
+
       <div className="row">
-        <div className="col-md-3 col-sm-12 mt-2">
+        <div className="col-md-1">
+          <label className="form-label">{finalDay1}</label>
+        </div>
+        <div className="col-md-1">
+          <label className="form-label">
+            <div>
+              {Shift === "First" ? (
+                <p>6:00:00</p>
+              ) : Shift === "Second" ? (
+                <p>14:00:00</p>
+              ) : Shift === "Third" ? (
+                <p>22:00:00</p>
+              ) : null}
+            </div>
+          </label>
+          <span className="mt-1">-</span>
+        </div>
+        <div className="col-md-1">
+          <label className="form-label">Shift</label>
+        </div>
+        <div className="col-md-1">
+          <label className="form-label">{Shift}</label>
+        </div>
+      </div> */}
+
+      <div className="row">
+        {/* <div className="col-md-3 col-sm-12 mt-2">
           <h6 className="mt-2" style={{ whiteSpace: "nowrap" }}>
             <b>Operator Current Shift Selector Form</b>
           </h6>
-        </div>
+        </div> */}
 
-        <div className="row mt-2">
+        {/* <div className="row mt-2">
           <div className="col-md-4" style={{ display: "flex" }}>
             <label style={{ whiteSpace: "nowrap" }} className="form-label">
               Select Machine
@@ -281,14 +360,14 @@ export default function MachineOperator() {
               Open Shift Log
             </button>
             <button
-                className="button-style group-button ms-2"
-                style={{ width: "130px"}}
-                onClick={onClickofClose}
-              >
-                Close
-              </button>
+              className="button-style group-button ms-2"
+              style={{ width: "130px" }}
+              onClick={onClickofClose}
+            >
+              Close
+            </button>
           </div>
-        </div>
+        </div> */}
         <div></div>
 
         <div className="row mt-3 mb-5">
@@ -296,15 +375,15 @@ export default function MachineOperator() {
             className="col-md-3  col-sm-12"
             style={{ display: "flex", gap: "40px" }}
           >
-            <b>Shift Date</b>
-            <b>{finalDay1}</b>
+            <label className="form-label">Shift Date</label>
+            <label className="form-label">{finalDay1}</label>
           </div>
           <div
             className="col-md-3 col-sm-12"
             style={{ display: "flex", gap: "40px", marginLeft: "-50px" }}
           >
-            <b>Shift</b>
-            <b>{Shift}</b>
+            <label className="form-label">Shift</label>
+            <label className="form-label">{Shift}</label>
           </div>
         </div>
         <div></div>
@@ -313,51 +392,47 @@ export default function MachineOperator() {
           style={{ display: "flex", gap: "30px", marginTop: "-30px" }}
           className="ms-2"
         >
-          <div>{finalDay1}</div>
+          <label className="form-label">{finalDay1}</label>
           <div className="col-md-3" style={{ display: "flex", gap: "10px" }}>
-            <span>{finalDay1}</span>
-            <div>
-              {Shift === "First" ? (
-                <p>6:00:00</p>
-              ) : Shift === "Second" ? (
-                <p>14:00:00</p>
-              ) : Shift === "Third" ? (
-                <p>22:00:00</p>
-              ) : null}
-            </div>
+            <label className="form-label">{finalDay1}</label>
+            <label className="form-label">
+              <div>
+                {Shift === "First" ? (
+                  <p>6:00:00</p>
+                ) : Shift === "Second" ? (
+                  <p>14:00:00</p>
+                ) : Shift === "Third" ? (
+                  <p>22:00:00</p>
+                ) : null}
+              </div>
+            </label>
           </div>
           <span style={{ marginLeft: "-170px" }}>-</span>
           <div
             className="col-md-3"
             style={{ display: "flex", gap: "10px", marginLeft: "-12px" }}
           >
-            <span>{finalDay1}</span>
-            <div>
-              {Shift === "First" ? (
-                <p>14:00:00</p>
-              ) : Shift === "Second" ? (
-                <p>22:00:00</p>
-              ) : Shift === "Third" ? (
-                <p>6:00:00</p>
-              ) : null}
-            </div>
+            <label className="form-label">{finalDay1}</label>
+            <label className="form-label">
+              <div>
+                {Shift === "First" ? (
+                  <p>14:00:00</p>
+                ) : Shift === "Second" ? (
+                  <p>22:00:00</p>
+                ) : Shift === "Third" ? (
+                  <p>6:00:00</p>
+                ) : null}
+              </div>
+            </label>
           </div>
         </div>
 
-        <hr
-          style={{
-            backgroundColor: "black",
-            height: "3px",
-          }}
-        />
-
         <div
           style={{
-            height: "400px",
+            height: "275px",
             width: "600px",
             overflowY: "scroll",
             overflowX: "scroll",
-            marginTop: "20px",
           }}
         >
           <Table striped className="table-data border">

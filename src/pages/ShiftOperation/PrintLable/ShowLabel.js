@@ -43,7 +43,7 @@ const MyDoc = ({ selectedRows }) => {
 };
 
 const ShowLabel = ({ selectedRows }) => (
-  <PDFViewer width="500" height="350" filename="somename.pdf">
+  <PDFViewer width="500" height="390" filename="somename.pdf">
     <MyDoc selectedRows={selectedRows} />
   </PDFViewer>
 );

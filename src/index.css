@@ -7,71 +7,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.table-cell-editor {
-  /* font-size: 16px; */
-  background-color: transparent;
-  border: none;
-  /* width: 91%; */
-  /* padding: 12px 12px; */
-  /* font-family: 'Poppins', sans-serif; */
-}
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-    background-color: aqua;
 }
-.selcted-row-clr{
-  background-color:#98A8F8!important;
-    color: white;
-}
-
-.box1{
-  border:1px solid black;
-  padding-right:25px;
-  padding-left:5px;
-  margin-left:20px;
-}
-
-.in-fields{
-  height: 35px;
-  margin-top: 10px;
-  border-radius: 6px;
-  text-indent: 5px;
-}
-.in-field {
-  height: 35px;
-  margin-top: 10px;
-  /* border-radius: 6px; */
-  text-indent: 5px;
-}
-
-.in-field1 {
-  height: 15px;
-  margin-top: 10px;
-  /* border-radius: 6px; */
-  text-indent: 5px;
-}
-
-.ip-select {
-  font-size: 14px;
-  padding: -5px 10px 10px 5px;
-  height: 35px;
-  /* display: block; */
-  width: 100%;
-  /* border: none; */
-  border-radius:6px;
-  /* border-bottom: 1px solid #757575; */
-}
-
-
-.title {
-  text-align: center;
-  height: 34px;
-  color: white;
-  background-color: #2b3a55;
-  border-radius: 10px 10px 0px 0px;
-  }
 
 .admin-title {
   color: white;
@@ -90,7 +29,7 @@ code {
   color: black;
   height: 100vh;
   overflow: hidden;
-  width: 40px;
+  width: 41px;
   display: flex;
   padding: 5px;
   justify-content: center;
@@ -107,7 +46,7 @@ code {
   color: black;
   height: 100vh;
   overflow: hidden;
-  width: 142px;
+  width: 150px;
   display: flex;
   justify-content: center;
   position: sticky;
@@ -120,7 +59,7 @@ code {
 
 .side-nav-main-title {
   display: none;
-  font-size: 14px !important;
+  font-size: 15px !important;
 }
 .side-nav-main-icon {
   font-size: 1.2rem;
@@ -162,22 +101,22 @@ code {
 }
 
 .header {
-  height: 60px !important;
+  height: 40px !important;
 }
 
 .link-default {
-  background-color: #707075;
+  background: rgba(111, 115, 126, 0.3);
   text-decoration: none;
   color: white;
 }
+
 .active-link-url {
   height: 35px;
   display: flex;
   align-items: center;
   text-decoration: none;
   font-size: 12px;
-  /* background-color: #707075; */
-  background-color: #6c9bcf;
+  background-color: #5956f3 !important;
   cursor: pointer;
   color: #ffffff;
 }
@@ -202,7 +141,7 @@ code {
 }
 
 .dashboard-card {
-  height: 250px;
+  height: 200px;
   cursor: pointer;
   width: 175px;
   border-radius: 8px;
@@ -221,20 +160,71 @@ code {
 }
 
 .dashboard-link {
-  font-family: cursive;
   text-decoration: none;
   color: black;
   font-size: 22px;
   font-weight: 600;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+.rbt-input-main .form-control .rbt-input {
+  padding: 0px !important;
+  margin: 0px !important;
+  outline: "none " !important;
+  border: "none" !important;
+  font-size: 12px !important;
 }
 
-.table-space{
-  white-space: nowrap;
-  }
+.rbt-input:focus {
+  padding: 0px !important;
+  margin: 0px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0px !important;
+  border-bottom: 1px solid black !important;
+  font-size: 12px !important;
+}
 
+.rbt-input {
+  padding: 0px !important;
+  margin: 0px !important;
+  margin-top: 0px !important;
+  border-radius: 0px !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-bottom: 1px solid black !important;
+  font-size: 12px !important;
+}
+
+.rbt-input::placeholder {
+  padding: 0px !important;
+  margin: 0px !important;
+  margin-top: 0px !important;
+  font-size: 12px !important;
+}
+
+.in-fields {
+  height: 35px;
+  margin-top: 10px;
+  border-radius: 6px;
+  text-indent: 5px;
+}
+
+.dropdown-field {
+  height: 35px;
+  margin-top: 10px;
+  border-radius: 6px !important;
+  text-indent: 5px;
+}
+
+.form-bg {
+  background-color: #555353;
+  padding: 6px 1px 2px 15px;
+}
+
+/* typeahed dropdown fontsize */
+
+.dropdown-item {
+  font-size: 12px !important;
+}

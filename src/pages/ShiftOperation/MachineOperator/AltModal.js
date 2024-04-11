@@ -18,13 +18,13 @@ export default function AltModal({
     <div>
       <Modal show={show} onHide={onClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{data.title}</Modal.Title> 
+          <Modal.Title style={{fontSize:'14px'}}>{data.title}</Modal.Title> 
         </Modal.Header>
-        <Modal.Body>{data.content}</Modal.Body> 
+        <Modal.Body style={{fontSize:'12px'}}>{data.content}</Modal.Body> 
         <Modal.Footer>
-          <Button variant="primary" onClick={handleYesClick}>
+          <button className='button-style group-button' onClick={handleYesClick}>
             Ok
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

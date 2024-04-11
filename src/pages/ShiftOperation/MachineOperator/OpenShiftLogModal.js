@@ -14,7 +14,7 @@ export default function OpenShiftModal({
   selectshifttable,
   Shift,
   date,
-  requiredProgram
+  requiredProgram,
 }) {
   const data = {
     selectedMachine: selectedMachine,
@@ -23,8 +23,7 @@ export default function OpenShiftModal({
     Shift: Shift,
     date: date,
   };
-  const {setShiftLogDetails,shiftLogDetails}=useGlobalContext();
-
+  const { setShiftLogDetails, shiftLogDetails } = useGlobalContext();
 
   const navigate = useNavigate();
   // console.log("requiredProgram",requiredProgram);
@@ -35,102 +34,98 @@ export default function OpenShiftModal({
       // console.log("excuted NaN query")
       navigate("OpenShiftLog", { state: { data } });
       axios
-          .post(baseURL + "/ShiftOperator/onClickYesStoppage", {
-              requiredProgram,
-              selectshifttable,
-          })
-          .then((response) => {
-              // handle response if needed
-          })
-          .catch((error) => {
-              // handle error if needed
-          });
-          }
-             else {
-              // console.log("excuted No Query")
-              navigate("OpenShiftLog", { state: { data } });
-        axios
-            .post(baseURL + "/ShiftOperator/onClickYes", {
-                requiredProgram,
-                selectshifttable,
-            })
-            .then((response) => {
-                // handle response if needed
-            })
-            .catch((error) => {
-                // handle error if needed
-            });
+        .post(baseURL + "/ShiftOperator/onClickYesStoppage", {
+          requiredProgram,
+          selectshifttable,
+        })
+        .then((response) => {
+          // handle response if needed
+        })
+        .catch((error) => {
+          // handle error if needed
+        });
+    } else {
+      // console.log("excuted No Query")
+      navigate("OpenShiftLog", { state: { data } });
+      axios
+        .post(baseURL + "/ShiftOperator/onClickYes", {
+          requiredProgram,
+          selectshifttable,
+        })
+        .then((response) => {
+          // handle response if needed
+        })
+        .catch((error) => {
+          // handle error if needed
+        });
     }
-};
+  };
 
+  const handleClose = () => {
+    // console.log(requiredProgram[0].NCProgarmNo,selectshifttable)
+    if (isNaN(requiredProgram[0].NCProgarmNo)) {
+      navigate("OpenShiftLog", { state: { data } });
+      axios
+        .post(baseURL + "/ShiftOperator/onClickNoStoppage", {
+          requiredProgram,
+          selectshifttable,
+        })
+        .then((response) => {});
+      setOpenmodal(false);
+    } else {
+      navigate("OpenShiftLog", { state: { data } });
+      axios
+        .post(baseURL + "/ShiftOperator/onClickNo", {
+          requiredProgram,
+          selectshifttable,
+        })
+        .then((response) => {});
+      setOpenmodal(false);
+    }
+  };
 
-const handleClose = () => {
-  // console.log(requiredProgram[0].NCProgarmNo,selectshifttable)
-  if (isNaN(requiredProgram[0].NCProgarmNo)) {
-    navigate("OpenShiftLog", { state: { data } });
+  const getShiftLogData = () => {
     axios
-      .post(baseURL + "/ShiftOperator/onClickNoStoppage", {
-        requiredProgram,
-        selectshifttable,
+      .post(baseURL + "/ShiftOperator/getShiftLog", {
+        selectshifttable: selectshifttable,
       })
-      .then((response) => {});
-    setOpenmodal(false);
-  }
-  else
-  {
-    navigate("OpenShiftLog", { state: { data } });
-    axios
-      .post(baseURL + "/ShiftOperator/onClickNo", {
-        requiredProgram,
-        selectshifttable,
+      .then((response) => {
+        const updatedData = response.data.map((item) => {
+          let dateSplit = item.FromTime.split(" ");
+          let date = dateSplit[0].split("-");
+          let year = date[0];
+          let month = date[1];
+          let day = date[2];
+          let finalDay = `${day}/${month}/${year} ${dateSplit[1]}`;
+          item.FromTime = finalDay;
+
+          let dateSplit1 = item.ToTime.split(" ");
+          let date1 = dateSplit1[0].split("-");
+          let year1 = date1[0];
+          let month1 = date1[1];
+          let day1 = date1[2];
+          let finalDay1 = `${day1}/${month1}/${year1} ${dateSplit1[1]}`;
+          item.ToTime = finalDay1;
+
+          if (item.Locked === 1) {
+            item.rowColor = "#87CEEB";
+          } else {
+            // console.log(null);
+          }
+          return item;
+        });
+
+        // Update the state with the modified data
+        setShiftLogDetails(updatedData);
       })
-      .then((response) => {});
-    setOpenmodal(false);
-  }
-};
-
-  const getShiftLogData=()=>{
-    axios
-    .post(baseURL + "/ShiftOperator/getShiftLog", {
-      selectshifttable: selectshifttable,
-    })
-    .then((response) => {
-      const updatedData = response.data.map((item) => {
-        let dateSplit = item.FromTime.split(" ");
-        let date = dateSplit[0].split("-");
-        let year = date[0];
-        let month = date[1];
-        let day = date[2];
-        let finalDay = `${day}/${month}/${year} ${dateSplit[1]}`;
-        item.FromTime = finalDay;
-
-        let dateSplit1 = item.ToTime.split(" ");
-        let date1 = dateSplit1[0].split("-");
-        let year1 = date1[0];
-        let month1 = date1[1];
-        let day1 = date1[2];
-        let finalDay1 = `${day1}/${month1}/${year1} ${dateSplit1[1]}`;
-        item.ToTime = finalDay1;
-
-        if (item.Locked === 1) {
-          item.rowColor = "#87CEEB";
-        } else {
-          // console.log(null);
-        }
-        return item;
+      .catch((error) => {
+        console.error("Error occurred:", error);
       });
+  };
 
-      // Update the state with the modified data
-      setShiftLogDetails(updatedData);
-    })
-    .catch((error) => {
-      console.error("Error occurred:", error);
-    });
-  }
-
-  useEffect(()=>{
+  useEffect(() => {
     getShiftLogData();
-  },[])
+  }, []);
 
   const countUserDefinedProperties = (obj) => {
     let count = 0;
@@ -144,12 +139,9 @@ const handleClose = () => {
 
   const numberOfProperties = countUserDefinedProperties(selectshifttable);
 
- 
   const handleCloseOk = () => {
     setOpenmodal(false);
   };
-
-
 
   // console.log(requiredProgram[0]?.NCProgarmNo)
 
@@ -157,37 +149,37 @@ const handleClose = () => {
     <div>
       <Modal show={openmodal} onHide={handleCloseOk}>
         <Modal.Header closeButton>
-          <Modal.Title>Magod Machine</Modal.Title>
+          <Modal.Title style={{fontSize:'14px'}}>Magod Machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
-        {numberOfProperties === 0
-            ? "No present shift assigned for this machine."
-            : (
-              <>
-                {"Is "} {"Program"} {" "}
-                  <strong>{requiredProgram[0]?.NCProgarmNo}</strong>
-                {" running from the beginning of this shift?"}
-              </>
-            )}
+        <Modal.Body style={{fontSize:'12px'}}>
+          {numberOfProperties === 0 ? (
+            "No present shift assigned for this machine."
+          ) : (
+            <>
+              {"Is "} {"Program"}{" "}
+              <strong>{requiredProgram[0]?.NCProgarmNo}</strong>
+              {" running from the beginning of this shift?"}
+            </>
+          )}
         </Modal.Body>
 
         <Modal.Footer>
           {numberOfProperties === 0 ? (
-            <Button variant="primary" onClick={handleCloseOk}>
+            <button className="button-style group-button" onClick={handleCloseOk}>
               OK
-            </Button>
+            </button>
           ) : (
             <>
-              <Button
-                style={{ backgroundColor: "#2b3a55", border: "#2b3a55" }}
+              <button
+                className="button-style group-button"
                 onClick={openShiftPage}
               >
                 Yes
-              </Button>
-              <Button variant="secondary" onClick={handleClose}>
+              </button>
+              <button className="button-style group-button" onClick={handleClose}>
                 No
-              </Button>
+              </button>
             </>
           )}
         </Modal.Footer>

@@ -115,7 +115,7 @@ export default function ErrorReportForm({
 
       <Modal show={errorForm} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>magod_machine</Modal.Title>
+          <Modal.Title style={{fontSize:'14px'}}>magod_machine</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>

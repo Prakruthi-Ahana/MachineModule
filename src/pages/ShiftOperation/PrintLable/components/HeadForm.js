@@ -6,9 +6,7 @@ import GlobalModal from "../../MachineOperator/GlobalModal";
 import PrintAllModal from "../PrintPDF/PrintAll/PrintAllModal";
 import { useNavigate } from "react-router-dom";
 import PrintAllPdf from "../PrintPDF/PrintAll/PrintAllPdf";
-import { PDFDownloadLink, Document, Page, Text } from '@react-pdf/renderer';
-
-
+import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 
 export default function HeadForm({
   setNcprogramNo,
@@ -77,8 +75,7 @@ export default function HeadForm({
     setOnclickofYes(currentObject);
     askPrintAllModal();
   };
-  
-  
+
   const currentObject = printLabelData[currentIndex];
 
   const handleClosepdf = () => {
@@ -104,53 +101,48 @@ export default function HeadForm({
   // console.log("printLabelData",printLabelData);
 
   return (
-    <div>
-      <div className="col-md-12">
-        <div className="">
-          <h4 className="title">Program Parts List</h4>
-        </div>
+    <>
+      <div className="row">
+        <h4 className="title">Program Parts List</h4>
       </div>
 
-      <div className="row  col-md-12">
-        <div className="col-md-2 mb-1">
-          <label className="form-label">Enter NC Program No</label>
-          <input type="text" onChange={handleChangeNcProgram} />
+      <div className="row">
+        <div className="d-flex col-md-4 mt-1" style={{ gap: "10px" }}>
+          <label className="form-label" style={{ whiteSpace: "nowrap" }}>
+            Enter NC Program No
+          </label>
+          <input
+            className="in-field mt-1"
+            type="text"
+            onChange={handleChangeNcProgram}
+          />
         </div>
 
-        <div className="col-md-2">
-          <button
-            className="button-style mt-4 group-button ms-2"
-            style={{ width: "150px" }}
-            onClick={LoadProgram}
-          >
+        <div className="col-md-6">
+          <button className="button-style group-button" onClick={LoadProgram}>
             Load Program
           </button>
-        </div>
 
-        <div className="col-md-2" style={{ marginLeft: "-10px" }}>
           <button
-            className="button-style mt-4 group-button"
-            style={{ width: "150px" }}
+            className="button-style group-button"
             onClick={askPrintAllModal}
           >
             Print All
           </button>
-        </div>
 
-        <div className="col-md-2" style={{ marginLeft: "-10px" }}>
           <button
-            className="button-style mt-4 group-button"
-            style={{ width: "150px" }}
+            className="button-style  group-button"
             onClick={askPrintSelectedModal}
           >
             Print Selected
           </button>
         </div>
-        <div className="col-md-2" style={{ marginLeft: "-20px" }}>
+
+        <div className="col-md-2">
           <button
-            className="button-style mt-4 group-button"
-            style={{ width: "150px" }}
+            className="button-style  group-button"
             onClick={onClickofClose}
+            style={{float:'right'}}
           >
             Close
           </button>
@@ -188,6 +180,6 @@ export default function HeadForm({
         onNoClick={() => hadleclose()}
         onClose={() => hadleclose()}
       />
-    </div>
+    </>
   );
 }
