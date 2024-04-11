@@ -27,7 +27,9 @@ export default function Form1({
     hasBOM,
     machineTaskService,
     pgmNo,
-    setPgmNo,timeDiffInMinutes, setTimeDiffInMinutes
+    setPgmNo,
+    timeDiffInMinutes,
+    setTimeDiffInMinutes,
   } = useGlobalContext();
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
@@ -46,18 +48,17 @@ export default function Form1({
   }, []);
 
   //update Machine Time
-  const updateMachineTime=()=>{
-    axios.post(baseURL + "/ShiftOperator/updateMachineTime",
-    {Machine:selectshifttable?.Machine})
-    .then((response) => {
-    });
-  }
+  const updateMachineTime = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/updateMachineTime", {
+        Machine: selectshifttable?.Machine,
+      })
+      .then((response) => {});
+  };
 
-  
   useEffect(() => {
     updateMachineTime();
   }, [selectshifttable]);
-
 
   //selecting table
   const [selectedMtrlTable, setSelectedMtrlTable] = useState([]);
@@ -75,7 +76,6 @@ export default function Form1({
       setSelectedMtrlTable([...selectedMtrlTable, selectedRowData]);
     }
   };
-
 
   let ProgramNo = formdata?.NCProgramNo;
   const loadProgramSubmit = () => {
@@ -134,96 +134,67 @@ export default function Form1({
 
   // console.log("timeDiffInMinutes in Form is ",timeDiffInMinutes);
 
-  
-const[MachineTime,setMachineTime]=useState('');
-const updateMachineTime1 = () => {
-  if (formdata?.ActualTime === null || isNaN(formdata?.ActualTime) || isNaN(timeDiffInMinutes)) {
-    setMachineTime(null); // Set MachineTime to null if data is unavailable
-    return;
-  }
+  const [MachineTime, setMachineTime] = useState("");
+  const updateMachineTime1 = () => {
+    if (
+      formdata?.ActualTime === null ||
+      isNaN(formdata?.ActualTime) ||
+      isNaN(timeDiffInMinutes)
+    ) {
+      setMachineTime(null); // Set MachineTime to null if data is unavailable
+      return;
+    }
 
-  const hoursActualTime = Math.floor(formdata?.ActualTime / 60); // Calculate hours from ActualTime
-  const minsActualTime = formdata?.ActualTime % 60; // Calculate remaining minutes from ActualTime
-  const hoursTimeDiff = Math.floor(timeDiffInMinutes / 60); // Calculate hours from timeDiffInMinutes
-  const minsTimeDiff = timeDiffInMinutes % 60; // Calculate remaining minutes from timeDiffInMinutes
+    const hoursActualTime = Math.floor(formdata?.ActualTime / 60); // Calculate hours from ActualTime
+    const minsActualTime = formdata?.ActualTime % 60; // Calculate remaining minutes from ActualTime
+    const hoursTimeDiff = Math.floor(timeDiffInMinutes / 60); // Calculate hours from timeDiffInMinutes
+    const minsTimeDiff = timeDiffInMinutes % 60; // Calculate remaining minutes from timeDiffInMinutes
 
-  // Calculate total hours and minutes for MachineTime
-  const totalHours = hoursActualTime + hoursTimeDiff;
-  const totalMins = minsActualTime + minsTimeDiff;
+    // Calculate total hours and minutes for MachineTime
+    const totalHours = hoursActualTime + hoursTimeDiff;
+    const totalMins = minsActualTime + minsTimeDiff;
 
-  // Adjust the total if minutes exceed 60
-  const adjustedHours = totalHours + Math.floor(totalMins / 60);
-  const adjustedMins = totalMins % 60;
+    // Adjust the total if minutes exceed 60
+    const adjustedHours = totalHours + Math.floor(totalMins / 60);
+    const adjustedMins = totalMins % 60;
 
-  // Update MachineTime
-  const newMachineTime = `${adjustedHours} Hours ${adjustedMins} Min`;
-  setMachineTime(newMachineTime);
-};
+    // Update MachineTime
+    const newMachineTime = `${adjustedHours} Hours ${adjustedMins} Min`;
+    setMachineTime(newMachineTime);
+  };
 
-
-useEffect(() => {
-  updateMachineTime1();
-}, [formdata?.ActualTime, timeDiffInMinutes]);
-
-
+  useEffect(() => {
+    updateMachineTime1();
+  }, [formdata?.ActualTime, timeDiffInMinutes]);
 
   // console.log("MachineTime is",MachineTime);
-  
+
   return (
     <>
       <div>
         <div className="col-md-12 col-sm-12">
           <div className="ip-box form-bg">
             <div className="col-md-8  ms-4" style={{ textAlign: "center" }}>
-              <label className="form-label ms-5" style={{ fontSize: "12px" }}>
+              <label className="form-label ms-5">
                 NC Program sheet Details
               </label>
             </div>
-            <div className="row ms-3">
-              <div className="col-md-6">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
-                  Program no
-                </label>
-                <input
-                  className="in-field"
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                  // value={formdata?.NCProgramNo || ""}
-                  value={
-                    formdata?.NCProgramNo !== undefined
-                      ? formdata?.NCProgramNo
-                      : ""
-                  }
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
+            <div className="row">
+              <div className="d-flex col-md-6" style={{ gap: "30px" }}>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                   To Process
                 </label>
                 <input
-                  className="in-field "
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  className="input-field "
                   // value={formdata?.Qty || ""}
                   value={formdata?.Qty !== undefined ? formdata?.Qty : ""}
                 />
               </div>
 
-              <div className="col-md-6">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
-                  Allotted
-                </label>
+              <div className="d-flex col-md-6" style={{ gap: "45px" }}>
+                <label className="form-label">Allotted</label>
                 <input
-                  className="in-field"
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  className="input-field"
                   value={
                     formdata?.QtyAllotted !== undefined
                       ? formdata?.QtyAllotted
@@ -232,31 +203,19 @@ useEffect(() => {
                 />
               </div>
 
-              <div className="col-md-6">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
-                  Processed
-                </label>
+              <div className="d-flex col-md-6" style={{ gap: "34px" }}>
+                <label className="form-label">Processed</label>
                 <input
-                  className="in-field"
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  className="input-field"
                   // value={formdata?.QtyCut}
                   value={formdata?.QtyCut !== undefined ? formdata?.QtyCut : ""}
                 />
               </div>
 
-              <div className="col-md-6 ">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
-                  Drawings
-                </label>
+              <div className="d-flex col-md-6" style={{ gap: "37px" }}>
+                <label className="form-label">Drawings</label>
                 <input
-                  className="in-field"
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  className="input-field"
                   // value={formdata?.NoOfDwgs || ""}
                   value={
                     formdata?.NoOfDwgs !== undefined ? formdata?.NoOfDwgs : ""
@@ -264,16 +223,12 @@ useEffect(() => {
                 />
               </div>
 
-              <div className="col-md-6">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
+              <div className="d-flex col-md-6" style={{ gap: "30px" }}>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                   Total parts
                 </label>
                 <input
-                  className="in-field"
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  className="input-field"
                   // value={formdata?.TotalParts || ""}
                   value={
                     formdata?.TotalParts !== undefined
@@ -283,16 +238,12 @@ useEffect(() => {
                 />
               </div>
 
-              <div className="col-md-6">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
+              <div className="d-flex col-md-6" style={{ gap: "10px" }}>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                   Program Time
                 </label>
                 <input
-                  className="in-field"
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  className="input-field"
                   value={
                     formdata?.EstimatedTime !== null
                       ? convertMinutesToTime(formdata?.EstimatedTime)
@@ -301,47 +252,30 @@ useEffect(() => {
                 />
               </div>
 
-              <div className="col-md-6">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
+              <div className="d-flex col-md-6" style={{ gap: "10px" }}>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                   Machine Time
                 </label>
-                <input
-                  className="in-field"
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
-                    value={MachineTime ?? ''}
-                />
+                <input className="input-field" value={MachineTime ?? ""} />
               </div>
 
-              <div className="col-md-6 mb-3">
-                <label
-                  className="form-label"
-                  style={{ fontSize: "12px", marginLeft: "-15px" }}
-                >
-                  Remarks
-                </label>
+              <div className="d-flex col-md-6 ">
+                {!hasBOM ? (
+                  <button
+                    className="button-style group-button"
+                    onClick={loadProgramSubmit}
+                  >
+                    Load Program Material
+                  </button>
+                ) : null}
+              </div>
 
+              <div className="d-flex col-md-12 mb-1" style={{ gap: "40px" }}>
+                <label className="form-label">Remarks</label>
                 <input
-                  className="in-field"
-                  style={{ marginTop: "-2px", marginLeft: "-15px" }}
+                  className="input-field"
                   value={formdata?.Remarks || ""}
                 />
-              </div>
-
-              <div style={{ textAlign: "center" }} className="col-md-4">
-                <div>
-                  {!hasBOM ? (
-                    <button
-                      className="button-style mt-3 group-button mt-4 mb-2"
-                      style={{ width: "140px", fontSize: "13px" }}
-                      onClick={loadProgramSubmit}
-                    >
-                      Load Program Material
-                    </button>
-                  ) : null}
-                </div>
               </div>
             </div>
           </div>
@@ -373,10 +307,12 @@ useEffect(() => {
       <GlobalModal
         show={loadProgram}
         title="magod_machine"
-        content=<div>
-          Do You wish to Load Material ID:{" "}
-          <strong>{selectedMtrlTable[0]?.ShapeMtrlID}</strong> ?
-        </div>
+        content={
+          <div>
+            Do You wish to Load Material ID:{" "}
+            <strong>{selectedMtrlTable[0]?.ShapeMtrlID}</strong> ?
+          </div>
+        }
         onYesClick={() => onclickofYes()}
         onNoClick={() => setLoadProgram(false)}
         onClose={handleClose}
@@ -385,7 +321,7 @@ useEffect(() => {
       <GlobalModal
         show={mismatchModal}
         title="magod_machine"
-        content=<div>Parts Quantity Mismatch</div>
+        content={<div>Parts Quantity Mismatch</div>}
         onYesClick={() => setmismatchModal(false)}
         onNoClick={() => setmismatchModal(false)}
         onClose={handleClose}

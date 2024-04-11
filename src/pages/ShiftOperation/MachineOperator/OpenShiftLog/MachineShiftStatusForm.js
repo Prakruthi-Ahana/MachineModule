@@ -112,17 +112,17 @@ export default function MachineShiftStatusForm({
   const updateSheettime = () => {
     if (machineShiftStatus && machineShiftStatus.length > 0) {
       const SheetStartTime = new Date(machineShiftStatus[0]?.SheetStartTime);
-  
+
       if (!isNaN(SheetStartTime.getTime())) {
         const currentTime = new Date();
         const diffInMilliseconds = currentTime - SheetStartTime;
-  
+
         if (diffInMilliseconds >= 0) {
           const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
           const minutes = Math.floor(
             (diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
           );
-  
+
           setSheetRuntime(`${hours} hours ${minutes} mins`);
         } else {
           setSheetRuntime("0");
@@ -134,7 +134,7 @@ export default function MachineShiftStatusForm({
       setSheetRuntime("0");
     }
   };
-  
+
   useEffect(() => {
     if (machineShiftStatus[0]?.MtrlID === "") {
       setSheetRuntime(runningTime);
@@ -142,11 +142,10 @@ export default function MachineShiftStatusForm({
       updateSheettime();
     }
   }, [machineShiftStatus, runningTime]);
-  
+
   useEffect(() => {
     localStorage.setItem("runningTime", sheetrunTime);
   }, [sheetrunTime]);
-  
 
   useEffect(() => {
     getMachineShiftStatusForm();
@@ -172,10 +171,14 @@ export default function MachineShiftStatusForm({
           <div className="d-flex ms-4">
             <div style={{ width: "auto", textAlign: "left" }}>
               <div style={{ marginLeft: "5px" }}>
-                <b>Operator : {selectshifttable.Operator} </b>
+                <label className="form-label">
+                  Operator : {selectshifttable.Operator}{" "}
+                </label>
               </div>
               <div style={{ marginLeft: "5px" }}>
-                <b>Current : {machineShiftStatus[0]?.Operator} </b>
+                <label className="form-label">
+                  Current : {machineShiftStatus[0]?.Operator}{" "}
+                </label>
               </div>
             </div>
           </div>
@@ -184,8 +187,8 @@ export default function MachineShiftStatusForm({
 
           <div className="d-flex">
             <button
-              className="button-style mt-2 group-button mt-2 mb-2"
-              style={{ width: "80px", fontSize: "14px", marginLeft: "20px" }}
+              className="button-style group-button mb-2"
+              style={{ width: "80px", marginLeft: "20px" }}
               onClick={toggleInput}
             >
               Select{" "}
@@ -198,10 +201,7 @@ export default function MachineShiftStatusForm({
                     width: "140px",
                   }}
                 >
-                  <select
-                    className="ip-select"
-                    onChange={handleShiftIncharge}
-                  >
+                  <select className="ip-select" onChange={handleShiftIncharge}>
                     <option selected>Select Shift Incharge</option>
                     {operatorsList.map((operatorsList) => (
                       <option value={operatorsList}>{operatorsList}</option>
@@ -216,7 +216,7 @@ export default function MachineShiftStatusForm({
         </div>
       </div>
 
-      <div className=" mt-2 ">
+      <div className="mt-2">
         <div
           style={{
             textAlign: "",
@@ -228,33 +228,33 @@ export default function MachineShiftStatusForm({
           <p style={{ textAlign: "center" }}>
             <b>Process Task Status </b>
           </p>
-          <div className="d-flex">
+          <div className="d-flex" style={{marginTop:'-10px'}}>
             <div style={{ width: "auto", textAlign: "left" }}>
               <div style={{ marginLeft: "15px" }}>
                 {" "}
-                <b>Task No : {machineShiftStatus[0]?.TaskNo} </b>
+                <label className="form-label">Task No : {machineShiftStatus[0]?.TaskNo} </label>
               </div>
 
               <div style={{ marginLeft: "15px" }}>
-                <b>Operation : {machineShiftStatus[0]?.Operation} </b>
+                <label className="form-label">Operation : {machineShiftStatus[0]?.Operation} </label>
               </div>
               <div style={{ color: "", marginLeft: "15px" }}>
                 {" "}
-                <b>Material : {machineShiftStatus[0]?.Mtrl_Code} </b>
+                <label className="form-label">Material : {machineShiftStatus[0]?.Mtrl_Code} </label>
               </div>
 
               <div style={{ marginLeft: "15px" }}>
-                <b>Program no : {machineShiftStatus[0]?.NCProgarmNo}</b>
+                <label className="form-label">Program no : {machineShiftStatus[0]?.NCProgarmNo}</label>
               </div>
               <div style={{ marginLeft: "15px" }}>
-                <b>
+                <label className="form-label">
                   Start Time :
                   {formatDateTime(machineShiftStatus[0]?.ProgramStartTime)}
-                </b>
+                </label>
               </div>
 
               <div className="mb-3" style={{ color: "", marginLeft: "15px" }}>
-                <b>Running For :{runningTime}</b>
+                <label className="form-label">Running For :{runningTime}</label>
               </div>
             </div>
           </div>
@@ -276,19 +276,19 @@ export default function MachineShiftStatusForm({
             <p style={{ textAlign: "center" }}>
               <b>Material Machine Time</b>
             </p>
-            <div className="d-flex mx-2">
+            <div className="d-flex mx-2" style={{marginTop:'-10px'}}>
               <div style={{ width: "auto", textAlign: "left" }}>
                 <div style={{ marginLeft: "10px" }}>
-                  <b>Sheet Id :{machineShiftStatus[0]?.MtrlID} </b>
+                  <label  className="form-label">Sheet Id :{machineShiftStatus[0]?.MtrlID} </label>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
-                  <b>
+                  <label className="form-label">
                     Start Time :
                     {formatDateTime(machineShiftStatus[0]?.SheetStartTime)}
-                  </b>
+                  </label>
                 </div>
                 <div style={{ marginLeft: "10px" }}>
-                  <b>Running For :{sheetrunTime}</b>
+                  <label className="form-label">Running For :{sheetrunTime}</label>
                 </div>
               </div>
             </div>

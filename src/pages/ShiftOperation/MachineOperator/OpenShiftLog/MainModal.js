@@ -11,20 +11,20 @@ export default function MainModal({setOpenModal,openModal}) {
     <div>
       <Modal show={openModal} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>magod_machine</Modal.Title>
+          <Modal.Title style={{fontSize:'14px'}}>magod_machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>Is Program 415706 running from the begining of this shift? 
+        <Modal.Body style={{fontSize:'12px'}}>Is Program 415706 running from the begining of this shift? 
          </Modal.Body> 
 
         <Modal.Footer>
-          <Button variant="primary" 
+          <button className='button-style group-button'
         >
             Yes
-          </Button>
-          <Button variant="secondary" onClick={handleClose}>
+          </button>
+          <button className='button-style group-button' onClick={handleClose}>
             No
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>

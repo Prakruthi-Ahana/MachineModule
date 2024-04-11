@@ -9,7 +9,11 @@ import MaterialUsageService from "./MaterialUsageTab/MaterialUsageService";
 export default function MaterialAndPartsTabs({
   selectProductionReport,
   openTable,
-  selectshifttable,rpTopData,setRptTopData,setMachinetaskdata,setComplete
+  selectshifttable,
+  rpTopData,
+  setRptTopData,
+  setMachinetaskdata,
+  setComplete,
 }) {
   const { hasBOM } = useGlobalContext();
   const [key, setKey] = useState("mu");
@@ -21,20 +25,20 @@ export default function MaterialAndPartsTabs({
           id="controlled-tab-example"
           activeKey={key}
           onSelect={(k) => setKey(k)}
-          className="mb-1 mt-2  "
-          style={{ fontSize: "12px" }}
+          className="mb-1 nav-tabs tab_font"
+          
         >
           <Tab eventKey="mu" title="Material Usage">
             {hasBOM === true ? (
               <MaterialUsageService
-              openTable={openTable}
-              selectProductionReport={selectProductionReport}
-              rpTopData={rpTopData}
-              selectshifttable={selectshifttable}
-              setRptTopData={setRptTopData}
-              setMachinetaskdata={setMachinetaskdata}
-              setComplete={setComplete}
-               />
+                openTable={openTable}
+                selectProductionReport={selectProductionReport}
+                rpTopData={rpTopData}
+                selectshifttable={selectshifttable}
+                setRptTopData={setRptTopData}
+                setMachinetaskdata={setMachinetaskdata}
+                setComplete={setComplete}
+              />
             ) : (
               <LaserCutForm
                 selectProductionReport={selectProductionReport}
@@ -49,9 +53,9 @@ export default function MaterialAndPartsTabs({
 
           <Tab eventKey="pd" title="Parts Details">
             <ShowDfxForm
-            openTable={openTable}
-            selectProductionReport={selectProductionReport}
-             />
+              openTable={openTable}
+              selectProductionReport={selectProductionReport}
+            />
           </Tab>
         </Tabs>
       </div>

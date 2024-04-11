@@ -21,8 +21,7 @@ export default function TabsTwo({
           id="controlled-tab-example"
           activeKey={key}
           onSelect={(k) => setKey(k)}
-          className="mb-3 mt-3  "
-          style={{ fontSize: "12px" }}
+          className="nav-tabs tab_font mb-1"
         >
           <Tab eventKey="pm" title="Program Material">
             <Form1

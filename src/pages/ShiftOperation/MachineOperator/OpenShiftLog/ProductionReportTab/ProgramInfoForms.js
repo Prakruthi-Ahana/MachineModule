@@ -203,7 +203,7 @@ export default function ProgramInfoForms({
         style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
       >
         <Table striped className="table-data border table-space">
-          <thead className="tableHeaderBGColor" style={{ fontSize: "13px" }}>
+          <thead className="tableHeaderBGColor">
             <tr>
               <th onClick={() => requestSort("NCProgramNo")}>Program No</th>
               <th onClick={() => requestSort("TaskNo")}>Task No</th>
@@ -252,39 +252,39 @@ export default function ProgramInfoForms({
             </p>
 
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 {" "}
                 Program No : <b>{selectProductionReport?.NCProgramNo}</b>
-              </p>
+              </label>
             </div>
 
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Process : <b>{selectProductionReport?.MProcess} </b>
-              </p>
+              </label>
             </div>
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Operation : <b> {selectProductionReport?.Operation} </b>
-              </p>
+              </label>
             </div>
 
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 {" "}
                 To Process : <b> {selectProductionReport?.Qty} </b>
-              </p>
+              </label>
             </div>
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Allotted :<b> {selectProductionReport?.QtyAllotted}</b>
-              </p>
+              </label>
             </div>
 
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Processed : <b> {selectProductionReport?.QtyCut}</b>
-              </p>
+              </label>
             </div>
           </div>
         </div>
@@ -304,38 +304,38 @@ export default function ProgramInfoForms({
             </p>
 
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 {" "}
                 Customer :<b> {selectProductionReport?.cust_name} </b>
-              </p>
+              </label>
             </div>
 
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Material :<b> {selectProductionReport?.Mtrl_Code}</b>
-              </p>
+              </label>
             </div>
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Drawings :<b> {selectProductionReport?.NoOfDwgs} </b>
-              </p>
+              </label>
             </div>
 
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Total Parts :<b>{selectProductionReport?.TotalParts}</b>
-              </p>
+              </label>
             </div>
             <div style={{ marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Planned Time :<b>{selectProductionReport?.EstimatedTime} </b>
-              </p>
+              </label>
             </div>
 
             <div style={{ color: "", marginLeft: "10px" }}>
-              <p>
+              <label className="form-label">
                 Actual Time :<b>{selectProductionReport?.ActualTime} </b>
-              </p>
+              </label>
             </div>
           </div>
         </div>
@@ -345,8 +345,7 @@ export default function ProgramInfoForms({
         <div style={{ textAlign: "", marginLeft: "0px" }} className="col-md-6">
           <div>
             <button
-              className="button-style mt-2 group-button mt-2 mb-2"
-              style={{ width: "150px", fontSize: "14px" }}
+              className="button-style mt-2 group-button mb-2"
               onClick={handleButtonClick}
             >
               Load Program Info
@@ -358,7 +357,7 @@ export default function ProgramInfoForms({
           <div>
             <button
               className="button-style mt-2 group-button mt-2 mb-2"
-              style={{ width: "150px", fontSize: "14px", marginLeft: "-70px" }}
+              style={{ marginLeft: "-70px" }}
               onClick={programCompleteSubmit}
             >
               Program complete
@@ -370,7 +369,7 @@ export default function ProgramInfoForms({
           <div>
             <button
               className="button-style mt-2 group-button mt-2 mb-2"
-              style={{ width: "130px", fontSize: "14px", marginLeft: "-60px" }}
+              style={{ marginLeft: "-60px" }}
               onClick={handleRefresh}
             >
               Refresh

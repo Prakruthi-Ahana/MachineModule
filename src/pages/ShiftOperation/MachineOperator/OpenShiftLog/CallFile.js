@@ -27,7 +27,9 @@ export default function CallFile() {
     setFormData,
     setNcProgramId,
     setAfterloadService,
-    setServiceTopData,showTable, setShowTable
+    setServiceTopData,
+    showTable,
+    setShowTable,
   } = useGlobalContext();
 
   const [afterloadProgram, setAfterloadProgram] = useState([]);
@@ -88,38 +90,19 @@ export default function CallFile() {
       })
       .then((response) => {
         for (let i = 0; i < response.data.length; i++) {
-          if (
-            response.data[i].Qty ===0
-          ) {
+          if (response.data[i].Qty === 0) {
             response.data[i].rowColor = "#DC143C";
-          } 
-          else if (
-            response.data[i].QtyAllotted ===0
-          ) {
+          } else if (response.data[i].QtyAllotted === 0) {
             response.data[i].rowColor = "#E0FFFF";
-          } 
-          else if (
-            response.data[i].QtyCut===0
-          ) {
+          } else if (response.data[i].QtyCut === 0) {
             response.data[i].rowColor = "#778899";
-          } 
-          else if (
-            response.data[i].QtyCut ===
-            response.data[i].Qty
-          ) {
+          } else if (response.data[i].QtyCut === response.data[i].Qty) {
             response.data[i].rowColor = "#008000";
-          } 
-          else if (
-            response.data[i].QtyCut ===
-            response.data[i].QtyAllotted
-          ) {
+          } else if (response.data[i].QtyCut === response.data[i].QtyAllotted) {
             response.data[i].rowColor = "#ADFF2F";
-          } 
-          else if (
-            response.data[i].Remarks!==null
-          ) {
+          } else if (response.data[i].Remarks !== null) {
             response.data[i].rowColor = "#DC143C";
-          } 
+          }
         }
         setMachinetaskdata(response.data);
       })
@@ -137,10 +120,10 @@ export default function CallFile() {
       })
       .then((response) => {
         setAfterRefreshData(response?.data?.complexData1);
-        setShowTable(true)
+        setShowTable(true);
         if (!response.data.complexData1) {
-          setAfterRefreshData([]);  
-          setShowTable(false)
+          setAfterRefreshData([]);
+          setShowTable(false);
         }
         setFormData(response?.data?.complexData2[0]);
         if (!response?.data?.complexData2[0]) {
@@ -158,8 +141,8 @@ export default function CallFile() {
         NcId,
       })
       .then((response) => {
-        setAfterloadService(response?.data);      
-          // setShowTable(true)
+        setAfterloadService(response?.data);
+        // setShowTable(true)
         if (!response.data) {
           setAfterloadService([]);
           // setShowTable(false)
@@ -203,7 +186,7 @@ export default function CallFile() {
         />
       </div>
 
-      <div className="row col-md-12">
+      <div className="row">
         <div className="col-md-3">
           <MachineShiftStatusForm
             selectshifttable={selectshifttable}
