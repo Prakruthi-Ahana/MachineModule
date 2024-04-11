@@ -8,8 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function ProgramPartsForm() {
-  const { NcId,programPartsData, setProgramPartsData,formdata} = useGlobalContext();
-
+  const { NcId, programPartsData, setProgramPartsData, formdata } =
+    useGlobalContext();
 
   const getProgramParts = () => {
     axios
@@ -78,32 +78,32 @@ export default function ProgramPartsForm() {
       });
   };
 
-   //sorting
-   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
-   const requestSort = (key) => {
-     let direction = "asc";
-     if (sortConfig.key === key && sortConfig.direction === "asc") {
-       direction = "desc";
-     }
-     setSortConfig({ key, direction });
-   };
- 
-   const sortedData = () => {
-     const dataCopy = [...programPartsData];
-     if (sortConfig.key) {
-       dataCopy.sort((a, b) => {
-         if (a[sortConfig.key] < b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? -1 : 1;
-         }
-         if (a[sortConfig.key] > b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? 1 : -1;
-         }
-         return 0;
-       });
-     }
-     return dataCopy;
-   };
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = () => {
+    const dataCopy = [...programPartsData];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
 
   return (
     <div>
@@ -111,14 +111,15 @@ export default function ProgramPartsForm() {
         <div className="col-md-12 col-sm-12">
           <div className="ip-box form-bg ">
             <div>
-              <h6>NC Program Parts Production Details</h6>
+              <label className="form-label">
+                NC Program Parts Production Details
+              </label>
             </div>
             <div className="row">
               <div style={{ textAlign: "center" }} className="col-md-6">
                 <div>
                   <button
-                    className="button-style mt-2 group-button mt-4 mb-2"
-                    style={{ width: "80px", fontSize: "14px" }}
+                    className="button-style mt-2 group-button mb-2"
                     onClick={SaveProgramParts}
                   >
                     Save
@@ -128,10 +129,7 @@ export default function ProgramPartsForm() {
 
               <div style={{ textAlign: "center" }} className="col-md-6">
                 <div>
-                  <button
-                    className="button-style mt-2 group-button mt-4 mb-2"
-                    style={{ width: "80px", fontSize: "14px" }}
-                  >
+                  <button className="button-style mt-2 group-button mb-2">
                     Show Dxf
                   </button>
                 </div>
@@ -146,7 +144,7 @@ export default function ProgramPartsForm() {
         style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
       >
         <Table striped className="table-data border table-space">
-          <thead className="tableHeaderBGColor" style={{ fontSize: "12px" }}>
+          <thead className="tableHeaderBGColor">
             <tr>
               <th onClick={() => requestSort("DwgName")}>Part Name </th>
               <th onClick={() => requestSort("TotQtyNested")}>Total Nested</th>
@@ -194,9 +192,11 @@ export default function ProgramPartsForm() {
                     <td>
                       <input
                         className="table-cell-editor"
-                        defaultValue={value.Remarks==='null' ? '' : value.Remarks}
-                          onChange={(e) =>
-                            onChnageReject(key, "Remarks", e.target.value)
+                        defaultValue={
+                          value.Remarks === "null" ? "" : value.Remarks
+                        }
+                        onChange={(e) =>
+                          onChnageReject(key, "Remarks", e.target.value)
                         }
                       />
                     </td>

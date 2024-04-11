@@ -13,7 +13,12 @@ export default function FormAndTable({
   selectshifttable,
   setShowTable,
 }) {
-  const { setShiftLogDetails, shiftLogDetails,timeDiffInMinutes, setTimeDiffInMinutes } = useGlobalContext();
+  const {
+    setShiftLogDetails,
+    shiftLogDetails,
+    timeDiffInMinutes,
+    setTimeDiffInMinutes,
+  } = useGlobalContext();
   const [open, setOpen] = useState(false);
 
   // console.log("shiftLogDetails",shiftLogDetails);
@@ -217,42 +222,43 @@ export default function FormAndTable({
     getShiftLogDetails();
   }, []);
 
-   //sorting
-   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
-   const requestSort = (key) => {
-     let direction = "asc";
-     if (sortConfig.key === key && sortConfig.direction === "asc") {
-       direction = "desc";
-     }
-     setSortConfig({ key, direction });
-   };
- 
-   const sortedData = () => {
-     const dataCopy = [...shiftLogDetails];
-     if (sortConfig.key) {
-       dataCopy.sort((a, b) => {
-         if (a[sortConfig.key] < b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? -1 : 1;
-         }
-         if (a[sortConfig.key] > b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? 1 : -1;
-         }
-         return 0;
-       });
-     }
-     return dataCopy;
-   };
-   
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
 
-   //
-    // Function to calculate time difference based on provided fromTime and toTime
+  const sortedData = () => {
+    const dataCopy = [...shiftLogDetails];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
+
+  //
+  // Function to calculate time difference based on provided fromTime and toTime
   const calculateTimeDiffInMinutes = (fromTime, toTime) => {
     const fromTimeMoment = moment(fromTime, "DD/MM/YYYY HH:mm:ss", true);
     const toTimeMoment = moment(toTime, "DD/MM/YYYY HH:mm:ss", true);
 
     if (fromTimeMoment.isValid() && toTimeMoment.isValid()) {
-      const timeDiffInMinutes = Math.floor(toTimeMoment.diff(fromTimeMoment, "minutes"));
+      const timeDiffInMinutes = Math.floor(
+        toTimeMoment.diff(fromTimeMoment, "minutes")
+      );
       return timeDiffInMinutes;
     } else {
       return 0; // Return 0 if invalid date format
@@ -262,23 +268,24 @@ export default function FormAndTable({
     const formattedTime = getCurrentTime();
     setCurrentTime(formattedTime);
   };
-  
+
   useEffect(() => {
     // Update the current time every minute
     const intervalId = setInterval(updateTime, 60000); // 60000 milliseconds = 1 minute
-  
+
     // Clean up the interval when the component unmounts
     return () => clearInterval(intervalId);
   }, []);
-  
+
   const updateTimeDiffState = () => {
-    const lastShiftFromTime = shiftLogDetails[shiftLogDetails.length - 1].FromTime;
+    const lastShiftFromTime =
+      shiftLogDetails[shiftLogDetails.length - 1].FromTime;
     const toTime = `${currentDate} ${currentTime}`;
     const diffInMinutes = calculateTimeDiffInMinutes(lastShiftFromTime, toTime);
     // console.log("toTime is",toTime);
     setTimeDiffInMinutes(diffInMinutes);
   };
-  
+
   useEffect(() => {
     // Update time difference state when component mounts
     if (shiftLogDetails.length > 0) {
@@ -306,15 +313,11 @@ export default function FormAndTable({
         onClose={handleClose}
       />
       <div style={{ marginTop: "10px" }} className="col-md-6 col-sm-12">
-        <h5 className="mt-2 ms-2"> Shift Log Book </h5>
+        <h6 className="mt-2 ms-2"> Shift Log Book </h6>
       </div>
       <div className="row mb-2">
         <div className="col-md-3 col-sm-12">
-          <button
-            className="button-style  group-button"
-            style={{ width: "80px", marginTop: "10px", fontSize: "14px" }}
-            onClick={saveShiftLog}
-          >
+          <button className="button-style  group-button" onClick={saveShiftLog}>
             Save
           </button>
         </div>
@@ -322,7 +325,6 @@ export default function FormAndTable({
         <div className="col-md-3 col-sm-12">
           <button
             className="button-style  group-button"
-            style={{ width: "80px", marginTop: "10px", fontSize: "14px" }}
             onClick={openCloseModal}
           >
             Close Shift
@@ -331,18 +333,13 @@ export default function FormAndTable({
         <div className="col-md-3 col-sm-12">
           <button
             className="button-style  group-button"
-            style={{ width: "80px", marginTop: "10px", fontSize: "14px" }}
             onClick={onClickPrepareShift}
           >
             Prepare
           </button>
         </div>
         <div className="col-md-3 col-sm-12">
-          <button
-            className="button-style  group-button"
-            style={{ width: "80px", marginTop: "10px", fontSize: "14px" }}
-            onClick={upDate}
-          >
+          <button className="button-style  group-button" onClick={upDate}>
             UpDate
           </button>
         </div>
@@ -357,10 +354,10 @@ export default function FormAndTable({
             <tr>
               <th onClick={() => requestSort("Srl")}>Srl</th>
               <th onClick={() => requestSort("Program")}>Program </th>
-              <th >From Time</th>
-              <th >To Time</th>
+              <th>From Time</th>
+              <th>To Time</th>
               <th onClick={() => requestSort("Remarks")}>Remarks</th>
-              <th >Srl Time</th>
+              <th>Srl Time</th>
               <th onClick={() => requestSort("Locked")}>Locked</th>
               <th onClick={() => requestSort("QtyProcessed")}>Process</th>
             </tr>
@@ -392,7 +389,7 @@ export default function FormAndTable({
 
               return (
                 <tr style={rowStyle} key={key}>
-                  <td>{key+1}</td>
+                  <td>{key + 1}</td>
                   <td>{item.Program}</td>
                   <td>
                     <input

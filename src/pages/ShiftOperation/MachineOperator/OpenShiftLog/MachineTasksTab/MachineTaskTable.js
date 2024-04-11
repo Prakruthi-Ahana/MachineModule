@@ -55,18 +55,17 @@ export default function MachineTaskTable({
   };
 
   //update Machine Time
-  const updateMachineTime=()=>{
-    axios.post(baseURL + "/ShiftOperator/updateMachineTime",
-    {Machine:selectshifttable?.Machine})
-    .then((response) => {
-    });
-  }
+  const updateMachineTime = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/updateMachineTime", {
+        Machine: selectshifttable?.Machine,
+      })
+      .then((response) => {});
+  };
 
-  
   useEffect(() => {
     updateMachineTime();
   }, [selectshifttable]);
-
 
   //Submit Load
   const handleSubmit = () => {
@@ -225,38 +224,35 @@ export default function MachineTaskTable({
 
   // console.log(selectedProgram);
 
-   //sorting
-   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
-   const requestSort = (key) => {
-     let direction = "asc";
-     if (sortConfig.key === key && sortConfig.direction === "asc") {
-       direction = "desc";
-     }
-     setSortConfig({ key, direction });
-   };
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
 
- 
-   const sortedData = () => {
-     const dataCopy = [...getMachinetaskdata];
-     if (sortConfig.key) {
-       dataCopy.sort((a, b) => {
-         if (a[sortConfig.key] < b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? -1 : 1;
-         }
-         if (a[sortConfig.key] > b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? 1 : -1;
-         }
-         return 0;
-       });
-     }
-     return dataCopy;
-   };
+  const sortedData = () => {
+    const dataCopy = [...getMachinetaskdata];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
 
-
-
-   //Format Time
-   const convertMinutesToTime = (minutes) => {
+  //Format Time
+  const convertMinutesToTime = (minutes) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
 
@@ -269,7 +265,7 @@ export default function MachineTaskTable({
 
     return `${hoursString} ${minsString}`.trim();
   };
- 
+
   return (
     <>
       <GlobalModal
@@ -291,10 +287,7 @@ export default function MachineTaskTable({
           style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
         >
           <Table striped className="table-data border">
-            <thead
-              className="tableHeaderBGColor table-space"
-              style={{ fontSize: "12px" }}
-            >
+            <thead className="tableHeaderBGColor table-space">
               <tr>
                 <th onClick={() => requestSort("NCProgramNo")}>Program No</th>
                 <th onClick={() => requestSort("TaskNo")}>Task No</th>
@@ -343,7 +336,7 @@ export default function MachineTaskTable({
               textAlign: "",
               backgroundColor: "#d3d3d3",
               fontSize: "14px",
-              height: "280px",
+              height: "300px",
             }}
           >
             <p style={{ color: "", textAlign: "center" }}>
@@ -352,12 +345,7 @@ export default function MachineTaskTable({
 
             <div style={{ textAlign: "center" }}>
               <button
-                className="button-style  group-button mt-2 mb-2"
-                style={{
-                  width: "100px",
-                  fontSize: "14px",
-                  textAlign: "center",
-                }}
+                className="button-style  group-button"
                 onClick={openModal}
               >
                 Load Program
@@ -367,35 +355,35 @@ export default function MachineTaskTable({
             <div className="d-flex mt-3">
               <div style={{ textAlign: "left", fontSize: "12px" }}>
                 <div className="" style={{ marginLeft: "10px" }}>
-                  <p style={{ margin: 5 }}>
+                  <label className="form-label" style={{ margin: 5 }}>
                     Program No :<b> {selectedProgram?.NCProgramNo} </b>
-                  </p>
+                  </label>
                 </div>
 
                 <div className="" style={{ marginLeft: "10px" }}>
-                  <p style={{ margin: 5 }}>
-                    Process :<b>{selectedProgram?.MProcess}</b>
-                  </p>
+                  <label className="form-label" style={{ margin: 5 }}>
+                    Process : <b>{selectedProgram?.MProcess}</b>
+                  </label>
                 </div>
 
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  <p style={{ margin: 5 }}>
+                  <label className="form-label" style={{ margin: 5 }}>
                     Operation :<b> {selectedProgram?.Operation} </b>
-                  </p>
+                  </label>
                 </div>
 
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   {" "}
-                  <p style={{ margin: 5 }}>
+                  <label className="form-label" style={{ margin: 5 }}>
                     To Process :<b> {selectedProgram?.Qty} </b>
-                  </p>
+                  </label>
                 </div>
 
                 <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
                   {" "}
-                  <p style={{ margin: 5 }}>
+                  <label className="form-label" style={{ margin: 5 }}>
                     Processed : <b> {selectedProgram?.QtyCut} </b>
-                  </p>
+                  </label>
                 </div>
               </div>
             </div>
@@ -408,7 +396,7 @@ export default function MachineTaskTable({
               textAlign: "",
               backgroundColor: "#d3d3d3",
               fontSize: "14px",
-              height: "280px",
+              height: "300px",
             }}
           >
             <p style={{ color: "", textAlign: "center" }}>
@@ -416,98 +404,99 @@ export default function MachineTaskTable({
             </p>
 
             <div
-              style={{ width: "auto", fontSize: "12px", marginLeft: "10px" }}
+              style={{ width: "auto", fontSize: "12px", marginLeft: "10px", marginTop:'-18px' }}
             >
               <div style={{ color: "" }}>
                 {" "}
-                <p style={{ margin: 5 }}>
+                <label className="form-label" style={{ margin: 5 }}>
                   Customer:
                   <b style={{ textAlign: "right" }}>
                     {" "}
                     {selectedProgram?.cust_name}{" "}
                   </b>{" "}
-                </p>
+                </label>
               </div>
 
               <div style={{ color: "" }}>
-                <p style={{ margin: 5 }}>
+                <label className="form-label" style={{ margin: 5 }}>
                   Code :
                   <b style={{ textAlign: "right" }}>
                     {" "}
                     {selectedProgram?.Cust_Code}
                   </b>
-                </p>
+                </label>
               </div>
 
               <div style={{ color: "" }}>
                 {" "}
-                <p style={{ margin: 5 }}>
+                <label className="form-label" style={{ margin: 5 }}>
                   Source :
                   <b style={{ textAlign: "right" }}>
                     {" "}
                     {selectedProgram?.CustMtrl}
                   </b>
-                </p>
+                </label>
               </div>
 
               <div style={{ color: "" }}>
-                <p style={{ margin: 5 }}>
+                <label className="form-label" style={{ margin: 5 }}>
                   Length :{" "}
                   <b style={{ textAlign: "right" }}>
                     {" "}
                     {selectedProgram?.Para1}
                   </b>
-                </p>
+                </label>
               </div>
 
               <div style={{ color: "" }}>
                 {" "}
-                <p style={{ margin: 5 }}>
+                <label className="form-label" style={{ margin: 5 }}>
                   Width :
                   <b style={{ textAlign: "right" }}>
                     {" "}
                     {selectedProgram?.Para2}
                   </b>
-                </p>
+                </label>
               </div>
 
               <div style={{ color: "" }}>
-                <p style={{ margin: 5 }}>
+                <label className="form-label" style={{ margin: 5 }}>
                   Remarks :
                   <b style={{ textAlign: "right" }}>
                     {" "}
                     {selectedProgram?.Remarks}
                   </b>
-                </p>
+                </label>
               </div>
 
               <div style={{ color: "" }}>
-                <p style={{ margin: 5 }}>
+                <label className="form-label" style={{ margin: 5 }}>
                   Drawings :
                   <b style={{ textAlign: "right" }}>
                     {" "}
                     {selectedProgram?.NoOfDwgs}
                   </b>
-                </p>
+                </label>
               </div>
 
               <div style={{ color: "" }}>
                 {" "}
-                <p style={{ margin: 5 }}>
+                <label className="form-label" style={{ margin: 5 }}>
                   Total Parts :
                   <b style={{ textAlign: "right" }}>
                     {" "}
                     {selectedProgram?.TotalParts}
                   </b>
-                </p>
+                </label>
               </div>
 
               <div style={{ color: "" }}>
-                <p style={{ margin: 5 }}>
-                  Machine Time: <b style={{ textAlign: "right" }}>
-                  {convertMinutesToTime(selectedProgram?.ActualTime)}
+                <label className="form-label" style={{ margin: 5 }}>
+                  Machine Time:{" "}
+                  <b style={{ textAlign: "right" }}>
+                    {convertMinutesToTime(selectedProgram?.ActualTime)}
                   </b>
-                </p>
+                </label>
               </div>
             </div>
           </div>

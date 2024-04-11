@@ -349,8 +349,8 @@ const handleSelectAll = () => {
                 >
                   <div>
                     <button
-                      className="button-style mt-2 group-button mt-4 mb-2"
-                      style={{ width: "110px", fontSize: "13px" }}
+                      className="button-style mt-2 group-button mb-2"
+                      style={{ width: "100px"}}
                       onClick={handlemarkasUsed}
                     >
                       Mark as Used
@@ -361,8 +361,8 @@ const handleSelectAll = () => {
                 <div style={{ textAlign: "center" }} className="col-md-4">
                   <div>
                     <button
-                      className="button-style mt-2 group-button mt-4 mb-2"
-                      style={{ width: "110px", fontSize: "13px" }}
+                      className="button-style mt-2 group-button mb-2"
+                      style={{ width: "110px" }}
                       onClick={handleRejectModal}
                     >
                       Mark as Rejected
@@ -370,7 +370,7 @@ const handleSelectAll = () => {
                   </div>
                 </div>
 
-                <div className="col-md-3 row mt-3">
+                <div className="col-md-3 row">
                   <input
                     type="checkbox"
                     className="col-md-2"

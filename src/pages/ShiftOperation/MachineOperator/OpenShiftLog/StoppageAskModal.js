@@ -19,7 +19,8 @@ export default function StoppageAskModal({
   setInputVisible,
   isInputVisible,
   getMachineShiftStatusForm,
-  disableTaskNo,getmiddleTbaleData
+  disableTaskNo,
+  getmiddleTbaleData,
 }) {
   const { selectedProgram, setShiftLogDetails, shiftLogDetails, setFormData } =
     useGlobalContext();
@@ -49,41 +50,40 @@ export default function StoppageAskModal({
   // console.log(firstTaskNo, secondTaskNo, thirdTaskNo);
 
   const concatenatedString =
-    firstTaskNo + " " + secondTaskNo + " " + thirdTaskNo || '';
+    firstTaskNo + " " + secondTaskNo + " " + thirdTaskNo || "";
 
-  
   const [isButtonClicked, setIsButtonClicked] = useState(false);
 
-  const getShiftLog=()=>{
+  const getShiftLog = () => {
     axios
-    .post(baseURL + "/ShiftOperator/getShiftLog", {
-      selectshifttable: selectshifttable,
-    })
-    .then((response) => {
-      for (let i = 0; i < response.data.length; i++) {
-        // FOR TgtDelDate
-        let dateSplit = response.data[i].FromTime.split(" ");
-        let date = dateSplit[0].split("-");
-        let year = date[0];
-        let month = date[1];
-        let day = date[2];
-        let finalDay = day + "/" + month + "/" + year + " " + dateSplit[1];
-        response.data[i].FromTime = finalDay;
-      }
-      for (let i = 0; i < response.data.length; i++) {
-        // Delivery_date
-        let dateSplit1 = response.data[i].ToTime.split(" ");
-        let date1 = dateSplit1[0].split("-");
-        let year1 = date1[0];
-        let month1 = date1[1];
-        let day1 = date1[2];
-        let finalDay1 =
-          day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
-        response.data[i].ToTime = finalDay1;
-      }
-      setShiftLogDetails(response.data);
-    });
-  }
+      .post(baseURL + "/ShiftOperator/getShiftLog", {
+        selectshifttable: selectshifttable,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          // FOR TgtDelDate
+          let dateSplit = response.data[i].FromTime.split(" ");
+          let date = dateSplit[0].split("-");
+          let year = date[0];
+          let month = date[1];
+          let day = date[2];
+          let finalDay = day + "/" + month + "/" + year + " " + dateSplit[1];
+          response.data[i].FromTime = finalDay;
+        }
+        for (let i = 0; i < response.data.length; i++) {
+          // Delivery_date
+          let dateSplit1 = response.data[i].ToTime.split(" ");
+          let date1 = dateSplit1[0].split("-");
+          let year1 = date1[0];
+          let month1 = date1[1];
+          let day1 = date1[2];
+          let finalDay1 =
+            day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
+          response.data[i].ToTime = finalDay1;
+        }
+        setShiftLogDetails(response.data);
+      });
+  };
 
   const onClickYes = () => {
     if (concatenatedString.trim()) {
@@ -127,10 +127,11 @@ export default function StoppageAskModal({
       }
     }
 
-    axios.post(baseURL + "/ShiftOperator/updateMachineTime",
-    {Machine:selectshifttable?.Machine})
-    .then((response) => {
-    });
+    axios
+      .post(baseURL + "/ShiftOperator/updateMachineTime", {
+        Machine: selectshifttable?.Machine,
+      })
+      .then((response) => {});
     setAlreadyLoad(false);
     setShowTable(false);
     setInputVisible(!isInputVisible);
@@ -138,39 +139,39 @@ export default function StoppageAskModal({
     getMachineShiftStatusForm();
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getShiftLog();
     getmiddleTbaleData();
-  },[])
+  }, []);
 
   return (
     <div>
       <div>
         <Modal show={alreadyLoad} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>magod_machine</Modal.Title>
+            <Modal.Title style={{fontSize:'14px'}}>magod_machine</Modal.Title>
           </Modal.Header>
 
-          <Modal.Body>
+          <Modal.Body style={{fontSize:'12px'}}>
             Do you wish to stop the cutting for <b>{selectedStoppage}</b> ?
             <div className="d-flex  col-md-12 mt-2">
               <label className="form-label col-md-3">Task No</label>
               <input
-                style={{ marginLeft: "-40px", marginTop: "-10px" }}
+                style={{ marginLeft: "-40px" }}
                 className="in-field col-md-3"
                 onChange={firstInputField}
                 disabled={disableTaskNo}
               />
 
               <input
-                style={{ marginLeft: "-60px", marginTop: "-10px" }}
+                style={{ marginLeft: "-60px" }}
                 className="in-field ms-2 col-md-1"
                 onChange={secondInputField}
                 disabled={disableTaskNo}
               />
 
               <input
-                style={{ marginLeft: "-60px", marginTop: "-10px" }}
+                style={{ marginLeft: "-60px" }}
                 className="in-field ms-2 col-md-1"
                 onChange={thirdInputField}
                 disabled={disableTaskNo}
@@ -179,16 +180,16 @@ export default function StoppageAskModal({
           </Modal.Body>
 
           <Modal.Footer>
-            <Button
-              variant="primary"
+            <button
+              className="group-button button-style"
               onClick={onClickYes}
               disabled={isButtonClicked}
             >
               Yes
-            </Button>
-            <Button variant="secondary" onClick={handleClose}>
+            </button>
+            <button className="group-button button-style" onClick={handleClose}>
               No
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
       </div>

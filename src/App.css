@@ -651,3 +651,8 @@ li.nav-item {
 .table-space {
   white-space: nowrap;
 }
+
+.table-cell-editor{
+  background-color: transparent;
+  border: none;
+}

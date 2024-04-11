@@ -14,18 +14,18 @@ export default function ErrorModal({ ErrorshowModal, setErrorshowModal }) {
     <div>
       <Modal show={ErrorshowModal} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>magod_machine</Modal.Title>
+          <Modal.Title style={{fontSize:'14px'}}>magod_machine</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
+        <Modal.Body style={{fontSize:'12px'}}>
           Cannot Load Program once alloted material is used or rejected : No
           Material to Process
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="primary" onClick={handleOkClick}>
+          <button className="group-button button-style" onClick={handleOkClick}>
             Ok
-          </Button>
+          </button>
           {/* <Button variant="secondary" onClick={handleClose}>
         No
       </Button> */}

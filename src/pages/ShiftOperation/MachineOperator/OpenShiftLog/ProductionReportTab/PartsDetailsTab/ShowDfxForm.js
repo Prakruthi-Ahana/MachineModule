@@ -7,9 +7,8 @@ import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
-export default function ShowDfxForm({ openTable,selectProductionReport }) {
-  const { NcId,partDetailsData, setPartDetailsData} = useGlobalContext();
-
+export default function ShowDfxForm({ openTable, selectProductionReport }) {
+  const { NcId, partDetailsData, setPartDetailsData } = useGlobalContext();
 
   const getPartDetails = () => {
     // console.log("selectProductionReport",selectProductionReport);
@@ -60,7 +59,6 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
     setPartDetailsData(updatedpartDetailsData);
   };
 
-
   const savePartDetails = () => {
     // console.log("partDetailsData",partDetailsData);
     axios
@@ -74,33 +72,32 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
       });
   };
 
-   //sorting
-   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  //sorting
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
-   const requestSort = (key) => {
-     let direction = "asc";
-     if (sortConfig.key === key && sortConfig.direction === "asc") {
-       direction = "desc";
-     }
-     setSortConfig({ key, direction });
-   };
- 
-   const sortedData = () => {
-     const dataCopy = [...partDetailsData];
-     if (sortConfig.key) {
-       dataCopy.sort((a, b) => {
-         if (a[sortConfig.key] < b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? -1 : 1;
-         }
-         if (a[sortConfig.key] > b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? 1 : -1;
-         }
-         return 0;
-       });
-     }
-     return dataCopy;
-   };
+  const requestSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
 
+  const sortedData = () => {
+    const dataCopy = [...partDetailsData];
+    if (sortConfig.key) {
+      dataCopy.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === "asc" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return dataCopy;
+  };
 
   return (
     <div>
@@ -115,7 +112,6 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
           >
             <button
               className="button-style group-button"
-              style={{ fontSize: "13px", width: "80px", marginTop: "10px" }}
               onClick={savePartDetails}
             >
               Save
@@ -123,12 +119,7 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
           </div>
 
           <div style={{ textAlign: "center" }} className="col-md-6">
-            <button
-              className="button-style group-button"
-              style={{ fontSize: "13px", width: "80px", marginTop: "10px" }}
-            >
-              Show Dfx
-            </button>
+            <button className="button-style group-button">Show Dfx</button>
           </div>
         </div>
       </div>
@@ -143,7 +134,9 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
               <tr>
                 <th></th>
                 <th onClick={() => requestSort("DwgName")}>Dwg Name</th>
-                <th onClick={() => requestSort("TotQtyNested")}>Total Nested</th>
+                <th onClick={() => requestSort("TotQtyNested")}>
+                  Total Nested
+                </th>
                 <th onClick={() => requestSort("QtyCut")}>Produced</th>
                 <th onClick={() => requestSort("QtyRejected")}>Rejected</th>
                 <th onClick={() => requestSort("Remarks")}>Remarks</th>
@@ -178,7 +171,7 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
                     <td>
                       <input
                         className="table-cell-editor"
-                        Value={value?.QtyRejected}                         
+                        Value={value?.QtyRejected}
                         onChange={(e) =>
                           onChnageReject(key, "QtyRejected", e.target.value)
                         }
@@ -187,7 +180,7 @@ export default function ShowDfxForm({ openTable,selectProductionReport }) {
                     <td>
                       <input
                         className="table-cell-editor"
-                        Value={ value?.Remarks==='null' ? '' : value?.Remarks}
+                        Value={value?.Remarks === "null" ? "" : value?.Remarks}
                         onChange={(e) =>
                           onChnageReject(key, "Remarks", e.target.value)
                         }

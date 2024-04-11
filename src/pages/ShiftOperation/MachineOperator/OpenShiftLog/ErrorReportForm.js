@@ -2,51 +2,50 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { baseURL } from "../../../../api/baseUrl";
 import axios from "axios";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import ValidationAlertModal from "./ValidationAlertModal";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { useGlobalContext } from "../../../../Context/Context";
-
 
 export default function ErrorReportForm({
   setErrorForm,
   errorForm,
   selectedMachine,
-  selectshifttable,setShowTable
+  selectshifttable,
+  setShowTable,
 }) {
+  const { setShiftLogDetails, setFormData } = useGlobalContext();
 
-  const {setShiftLogDetails,setFormData} =useGlobalContext();
-
-  const getShiftLog=()=>{
+  const getShiftLog = () => {
     axios
-    .post(baseURL + "/ShiftOperator/getShiftLog", {
-      selectshifttable: selectshifttable,
-    })
-    .then((response) => {
-      for (let i = 0; i < response.data.length; i++) {
-        // FOR TgtDelDate
-        let dateSplit = response.data[i].FromTime.split(" ");
-        let date = dateSplit[0].split("-");
-        let year = date[0];
-        let month = date[1];
-        let day = date[2];
-        let finalDay = day + "/" + month + "/" + year + " " + dateSplit[1];
-        response.data[i].FromTime = finalDay;
-      }
-      for (let i = 0; i < response.data.length; i++) {
-        // Delivery_date
-        let dateSplit1 = response.data[i].ToTime.split(" ");
-        let date1 = dateSplit1[0].split("-");
-        let year1 = date1[0];
-        let month1 = date1[1];
-        let day1 = date1[2];
-        let finalDay1 =
-          day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
-        response.data[i].ToTime = finalDay1;
-      }
-      setShiftLogDetails(response.data);
-    });
-  }
+      .post(baseURL + "/ShiftOperator/getShiftLog", {
+        selectshifttable: selectshifttable,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          // FOR TgtDelDate
+          let dateSplit = response.data[i].FromTime.split(" ");
+          let date = dateSplit[0].split("-");
+          let year = date[0];
+          let month = date[1];
+          let day = date[2];
+          let finalDay = day + "/" + month + "/" + year + " " + dateSplit[1];
+          response.data[i].FromTime = finalDay;
+        }
+        for (let i = 0; i < response.data.length; i++) {
+          // Delivery_date
+          let dateSplit1 = response.data[i].ToTime.split(" ");
+          let date1 = dateSplit1[0].split("-");
+          let year1 = date1[0];
+          let month1 = date1[1];
+          let day1 = date1[2];
+          let finalDay1 =
+            day1 + "/" + month1 + "/" + year1 + " " + dateSplit1[1];
+          response.data[i].ToTime = finalDay1;
+        }
+        setShiftLogDetails(response.data);
+      });
+  };
 
   const handleClose = () => {
     setErrorForm(false);
@@ -74,7 +73,7 @@ export default function ErrorReportForm({
     });
   };
 
-  const[openalert,setOpenAlert]=useState('');
+  const [openalert, setOpenAlert] = useState("");
   const handleSubmit = () => {
     const { errorNo, errorDescription, actionTaken } = formValues;
     // Validate required fields
@@ -82,11 +81,14 @@ export default function ErrorReportForm({
       toast.error("ErrorNo,Error Description are mandatory", {
         position: toast.POSITION.TOP_CENTER,
       });
-    // setOpenAlert(true);
+      // setOpenAlert(true);
       return;
     }
     axios
-      .post(baseURL + "/ShiftOperator/errorForm", { formValues,selectshifttable})
+      .post(baseURL + "/ShiftOperator/errorForm", {
+        formValues,
+        selectshifttable,
+      })
       .then((response) => {
         getShiftLog();
       });
@@ -99,30 +101,26 @@ export default function ErrorReportForm({
     onClickReset();
   };
 
-
-  useEffect(()=>{
+  useEffect(() => {
     getShiftLog();
-  },[]);
-  
+  }, []);
 
   // console.log(formValues);
 
   return (
     <div>
-      <ValidationAlertModal
-      openalert={openalert}
-      setOpenAlert={setOpenAlert}/>
+      <ValidationAlertModal openalert={openalert} setOpenAlert={setOpenAlert} />
 
       <Modal show={errorForm} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title style={{fontSize:'14px'}}>magod_machine</Modal.Title>
+          <Modal.Title style={{ fontSize: "14px" }}>magod_machine</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           <div>
             <div className="col-md-12">
               <div className="row">
-                <h5>Operator Error Report Form</h5>
+                <h6>Operator Error Report Form</h6>
               </div>
             </div>
             <div className="ip-box form-bg">
@@ -159,7 +157,7 @@ export default function ErrorReportForm({
               <div className="col-md-6 mt-3 d-flex ms-3 ">
                 <label className="form-label col-md-8">Error Description</label>
                 <textarea
-                  className="col-md-4"
+                  className="in-field col-md-4"
                   maxLength={100}
                   style={{
                     height: "80px",
@@ -175,7 +173,7 @@ export default function ErrorReportForm({
               <div className="col-md-6 mt-3 d-flex ms-3">
                 <label className="form-label col-md-8">Action Taken</label>
                 <textarea
-                  className="col-md-4"
+                  className="in-field col-md-4"
                   maxLength={100}
                   style={{
                     height: "80px",
@@ -194,7 +192,6 @@ export default function ErrorReportForm({
                 <div className="col-md-2 col-sm-12">
                   <button
                     className="button-style  group-button"
-                    style={{ width: "60px" }}
                     onClick={onClickReset}
                   >
                     Reset
@@ -204,7 +201,6 @@ export default function ErrorReportForm({
                 <div className="col-md-1 col-sm-12">
                   <button
                     className="button-style  group-button"
-                    style={{ width: "70px" }}
                     onClick={handleSubmit}
                   >
                     Submit
