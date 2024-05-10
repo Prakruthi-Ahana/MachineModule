@@ -15,10 +15,11 @@ import { useGlobalContext } from "../../../../../../Context/Context";
 export default function LaserCutForm({
   selectProductionReport,
   openTable,
-  selectshifttable,setMachinetaskdata,setComplete
+  selectshifttable,
+  setMachinetaskdata,
+  setComplete,
 }) {
-
-  const { NcId,partDetailsData, setPartDetailsData} = useGlobalContext();
+  const { NcId, partDetailsData, setPartDetailsData } = useGlobalContext();
 
   //  const[showModal,setShowModal]=useState(false);
   const [markasUsed, setMarkasUsed] = useState(false);
@@ -27,54 +28,35 @@ export default function LaserCutForm({
   const [openModal, setOpenModal] = useState(false);
 
   let Machine = selectshifttable?.Machine;
-  const getMachineTaskAfterMU=()=>{
+  const getMachineTaskAfterMU = () => {
     axios
-    .post(baseURL + "/ShiftOperator/MachineTasksData", {
-      MachineName: Machine,
-    })
-    .then((response) => {
-      for (let i = 0; i < response.data.length; i++) {
-        if (
-          response.data[i].Qty ===0
-        ) {
-          response.data[i].rowColor = "#DC143C";
-        } 
-        else if (
-          response.data[i].QtyAllotted ===0
-        ) {
-          response.data[i].rowColor = "#E0FFFF";
-        } 
-        else if (
-          response.data[i].QtyCut===0
-        ) {
-          response.data[i].rowColor = "#778899";
-        } 
-        else if (
-          response.data[i].QtyCut ===
-          response.data[i].Qty
-        ) {
-          response.data[i].rowColor = "#008000";
-        } 
-        else if (
-          response.data[i].QtyCut ===
-          response.data[i].QtyAllotted
-        ) {
-          response.data[i].rowColor = "#ADFF2F";
-        } 
-        else if (
-          response.data[i].Remarks!==''
-        ) {
-          response.data[i].rowColor = "#DC143C";
-        } 
-      }
-      setMachinetaskdata(response.data);
-      // console.log("response after mark as used",response.data);
-    })
-  }
+      .post(baseURL + "/ShiftOperator/MachineTasksData", {
+        MachineName: Machine,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].Qty === 0) {
+            response.data[i].rowColor = "#DC143C";
+          } else if (response.data[i].QtyAllotted === 0) {
+            response.data[i].rowColor = "#E0FFFF";
+          } else if (response.data[i].QtyCut === 0) {
+            response.data[i].rowColor = "#778899";
+          } else if (response.data[i].QtyCut === response.data[i].Qty) {
+            response.data[i].rowColor = "#008000";
+          } else if (response.data[i].QtyCut === response.data[i].QtyAllotted) {
+            response.data[i].rowColor = "#ADFF2F";
+          } else if (response.data[i].Remarks !== "") {
+            response.data[i].rowColor = "#DC143C";
+          }
+        }
+        setMachinetaskdata(response.data);
+        // console.log("response after mark as used",response.data);
+      });
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     getMachineTaskAfterMU();
-  },[]);
+  }, []);
 
   // Multiple Row Select Function for Table
   const [selectdefaultRow, setSelectdefaultRow] = useState([]);
@@ -95,8 +77,8 @@ export default function LaserCutForm({
   const handleRejectModal = () => {
     const isAnyUsedOrRejected = selectdefaultRow.some(
       (item) => item.Used === 1 || item.Rejected === 1
-    );   
-     if (isAnyUsedOrRejected) {
+    );
+    if (isAnyUsedOrRejected) {
       toast.error("Once material used or Rejected Cannot be used again", {
         position: toast.POSITION.TOP_CENTER,
       });
@@ -149,57 +131,53 @@ export default function LaserCutForm({
     }
   };
 
-
-  
   const MaterialUsage = () => {
-    axios.post(baseURL + "/ShiftOperator/MachineTasksProfile", {
-      NCId: selectProductionReportData,
-    })
-    .then((response) => {
-      setProductionReportData(response.data);
-      const data = response.data;
-      let count = 0;
-  
-      // Iterate through each object in the response data
-      data.forEach((item) => {
-        // Check if Used or Rejected is zero
-        if (item.Used === 1 || item.Rejected === 1) {
-          count++;
-        }
-      });
-  
-      // Output the count
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
+        NCId: selectProductionReportData,
+      })
+      .then((response) => {
+        setProductionReportData(response.data);
+        const data = response.data;
+        let count = 0;
 
-      // console.log("Number of objects with Used or Rejected as zero:", count);
-      // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
-  
-      // If count equals selectProductionReport.Qty, setComplete(true)
-      if (count === selectProductionReport.Qty) {
-        // console.log("conditon 1")
-        setComplete(true);
-      }else{
-        // console.log("conditon 2")
-        setComplete(false);
-      }
-  
-      // If count is greater than 0, another row is incremented
-      if (count > 0) {
-        // Increment another row
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
-    });
+        // Iterate through each object in the response data
+        data.forEach((item) => {
+          // Check if Used or Rejected is zero
+          if (item.Used === 1 || item.Rejected === 1) {
+            count++;
+          }
+        });
+
+        // Output the count
+
+        // console.log("Number of objects with Used or Rejected as zero:", count);
+        // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
+
+        // If count equals selectProductionReport.Qty, setComplete(true)
+        if (count === selectProductionReport.Qty) {
+          // console.log("conditon 1")
+          setComplete(true);
+        } else {
+          // console.log("conditon 2")
+          setComplete(false);
+        }
+
+        // If count is greater than 0, another row is incremented
+        if (count > 0) {
+          // Increment another row
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
-  
+
   useEffect(() => {
     MaterialUsage();
   }, [selectProductionReport]);
 
-
-
   // console.log("selectdefaultRow",selectdefaultRow)
-
 
   //Mark as Used Button
   const handleMarkasUsed = () => {
@@ -210,15 +188,15 @@ export default function LaserCutForm({
       })
       .then((response) => {
         axios
-        .post(baseURL + "/ShiftOperator/getpartDetails", {
-          selectProductionReport,
-        })
-        .then((response) => {
-          // console.log("excuted data refresh func");
-          setPartDetailsData(response.data);
-        });
+          .post(baseURL + "/ShiftOperator/getpartDetails", {
+            selectProductionReport,
+          })
+          .then((response) => {
+            // console.log("excuted data refresh func");
+            setPartDetailsData(response.data);
+          });
         getMachineTaskAfterMU();
-          axios
+        axios
           .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
             NCId: selectProductionReportData,
           })
@@ -226,7 +204,7 @@ export default function LaserCutForm({
             setProductionReportData(response.data);
             const data = response.data;
             let count = 0;
-        
+
             // Iterate through each object in the response data
             data.forEach((item) => {
               // Check if Used or Rejected is zero
@@ -234,21 +212,21 @@ export default function LaserCutForm({
                 count++;
               }
             });
-        
+
             // Output the count
-      
+
             // console.log("Number of objects with Used or Rejected as zero:", count);
             // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
-        
+
             // If count equals selectProductionReport.Qty, setComplete(true)
             if (count === selectProductionReport.Qty) {
               // console.log("conditon 1")
               setComplete(true);
-            }else{
+            } else {
               // console.log("conditon 2")
               setComplete(false);
             }
-        
+
             // If count is greater than 0, another row is incremented
             if (count > 0) {
               // Increment another row
@@ -299,7 +277,6 @@ export default function LaserCutForm({
       });
   };
 
-
   //sorting
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
@@ -327,14 +304,14 @@ export default function LaserCutForm({
     return dataCopy;
   };
 
-    // Add a state variable to track whether all rows are selected
-const [selectAll, setSelectAll] = useState(false);
+  // Add a state variable to track whether all rows are selected
+  const [selectAll, setSelectAll] = useState(false);
 
-const handleSelectAll = () => {
-  const allRowsSelected = selectdefaultRow.length === ProductionReportData.length;
-  setSelectdefaultRow(allRowsSelected ? [] : ProductionReportData);
-}
-
+  const handleSelectAll = () => {
+    const allRowsSelected =
+      selectdefaultRow.length === ProductionReportData.length;
+    setSelectdefaultRow(allRowsSelected ? [] : ProductionReportData);
+  };
 
   return (
     <div>
@@ -350,7 +327,7 @@ const handleSelectAll = () => {
                   <div>
                     <button
                       className="button-style mt-2 group-button mb-2"
-                      style={{ width: "100px"}}
+                      style={{ width: "100px" }}
                       onClick={handlemarkasUsed}
                     >
                       Mark as Used
@@ -404,13 +381,19 @@ const handleSelectAll = () => {
                 style={{ fontSize: "12px" }}
               >
                 <tr>
-                <th onClick={handleSelectAll}></th>
-                  <th  onClick={() => requestSort("ShapeMtrlID")} >Material Id</th>
-                  <th  onClick={() => requestSort("Para2")}>width</th>
-                  <th  onClick={() => requestSort("Para1")}>Length</th>
-                  <th  onClick={() => requestSort("Used")}>Used</th>
-                  <th  onClick={() => requestSort("ShapeRejectedtrlID")}>Rejected</th>
-                  <th  onClick={() => requestSort("RejectionReason")}>Rejection Reason</th>
+                  <th onClick={handleSelectAll}></th>
+                  <th onClick={() => requestSort("ShapeMtrlID")}>
+                    Material Id
+                  </th>
+                  <th onClick={() => requestSort("Para2")}>width</th>
+                  <th onClick={() => requestSort("Para1")}>Length</th>
+                  <th onClick={() => requestSort("Used")}>Used</th>
+                  <th onClick={() => requestSort("ShapeRejectedtrlID")}>
+                    Rejected
+                  </th>
+                  <th onClick={() => requestSort("RejectionReason")}>
+                    Rejection Reason
+                  </th>
                 </tr>
               </thead>
               <tbody className="tablebody table-space">

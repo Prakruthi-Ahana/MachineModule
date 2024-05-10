@@ -17,9 +17,7 @@ export default function MachineOperator() {
     setShiftSelected,
     setServiceTopData,
     setNcProgramId,
-    setShowTable,
-    programPartsData,
-    setProgramPartsData,
+    setShowTable,setSelectedProgram
   } = useGlobalContext();
 
   //get Machine List
@@ -163,52 +161,39 @@ export default function MachineOperator() {
 
   //openShiftLog Button
   const openShiftLogModal = () => {
-    setShiftSelected(selectshifttable);
-    serviceMiddleTableData();
-    getmiddleTbaleData();
     // getProgramParts();
-    axios
-      .post(baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh", {
-        selectshifttable,
-      })
-      .then((response) => {
-        setServiceTopData(response.data);
-      });
     axios
       .post(baseURL + "/ShiftOperator/getRowCounts", {
         selectshifttable,
       })
       .then((response) => {
-        if (response.data === true) {
-          axios
-            .post(baseURL + "/ShiftOperator/getProgram", {
-              MachineName: selectedMachine,
-            })
-            .then((response) => {
-              // console.log("required program", response.data);
-              setRequiredProgram(response.data);
-            });
-          //ProcessTaskStatus
-          axios
-            .post(baseURL + "/ShiftOperator/ProcessTaskStatus", {
-              ShiftDate: date,
-            })
-            .then((response) => {
-              // console.log(response.data);
-            });
+        console.log("reposne updated is",response.data);
+        setRequiredProgram(response.data);
+        if (response.data.length!==0) {
+          // //ProcessTaskStatus
+          // axios
+          //   .post(baseURL + "/ShiftOperator/ProcessTaskStatus", {
+          //     ShiftDate: date,
+          //   })
+          //   .then((response) => {
+          //     // console.log(response.data);
+          //   });
           setOpenmodal(true);
+          setShiftSelected(selectshifttable);
+          serviceMiddleTableData();
+          getmiddleTbaleData();
+          axios
+          .post(baseURL + "/ShiftOperator/getTableTopDeatailsAfterPageRefresh", {
+            selectshifttable,
+          })
+          .then((response) => {
+            setServiceTopData(response.data);
+          });
         } else {
           navigate("OpenShiftLog", { state: { data } });
-          // //update operator
-          // axios
-          // .post(baseURL + "/ShiftOperator/updateOpertaorafterChange", {
-          //   selectshifttable
-          // })
-          // .then((response) => {
-          //   // console.log(response.data);
-          // });
         }
       });
+      setSelectedProgram({});
   };
 
   const onClickofClose = () => {

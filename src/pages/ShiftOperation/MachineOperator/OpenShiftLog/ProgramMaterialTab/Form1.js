@@ -179,6 +179,26 @@ export default function Form1({
                 NC Program sheet Details
               </label>
             </div>
+            
+            
+            <div className="row">
+              <div className="d-flex col-md-6" style={{ gap: "20px" }}>
+                <label className="form-label" style={{ whiteSpace: "nowrap" }}>
+                Program no
+                </label>
+                <input
+                  className="input-field "
+                  style={{width:"60px"}}
+                  // value={formdata?.Qty || ""}
+                  value={
+                    formdata?.NCProgramNo !== undefined
+                      ? formdata?.NCProgramNo
+                      : ""
+                  }/>
+              </div>
+              </div>
+
+
             <div className="row">
               <div className="d-flex col-md-6" style={{ gap: "30px" }}>
                 <label className="form-label" style={{ whiteSpace: "nowrap" }}>

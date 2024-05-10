@@ -23,6 +23,8 @@ export default function ProgrmMatrlTableService({
     setProgramPartsData,
   } = useGlobalContext();
 
+  // console.log("formdata in service table",formdata?.Ncid);
+
   const [rowSelectService, setRowSelectService] = useState({});
   const rowSelectPMService = (item, index) => {
     let list = { ...item, index: index };
@@ -92,7 +94,7 @@ export default function ProgrmMatrlTableService({
   const markAsUsed = () => {
     axios
       .post(baseURL + "/ShiftOperator/getNcProgramId", {
-        NcId: NcId,
+        NcId: formdata?.Ncid,
       })
       .then((response) => {
         // Explicitly set NC_Pgme_Part_ID to response data
@@ -128,6 +130,8 @@ export default function ProgrmMatrlTableService({
               (data) => data.Cust_BOM_ListId === item.CustBOM_Id
             );
 
+            // console.log("afterloadService is",afterloadService);
+
             if (match) {
               const qtyToDistribute = issuesets * match.Quantity;
               useNow = issuesets * match.Quantity;
@@ -157,7 +161,7 @@ export default function ProgrmMatrlTableService({
                   ...updatedItem,
                   NC_Pgme_Part_ID: ncPgmePartId,
                   issuesets: issuesets,
-                  NcId: NcId,
+                  NcId: formdata?.Ncid,
                 };
               } else {
                 sendobject.push({
@@ -182,9 +186,9 @@ export default function ProgrmMatrlTableService({
                 position: toast.POSITION.TOP_CENTER,
               });
             } else {
-              toast.error("Parts Quantity mismatch", {
-                position: toast.POSITION.TOP_CENTER,
-              });
+              // toast.error("Parts Quantity mismatch", {
+              //   position: toast.POSITION.TOP_CENTER,
+              // });
             }
             return;
           }
@@ -214,7 +218,7 @@ export default function ProgrmMatrlTableService({
         axios
           .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
             selectshifttable,
-            NcId,
+            NcId:formdata?.Ncid,
           })
           .then((response) => {
             // console.log("required result", response.data);

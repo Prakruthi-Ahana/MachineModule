@@ -29,12 +29,11 @@ export default function CallFile() {
     setAfterloadService,
     setServiceTopData,
     showTable,
-    setShowTable,
+    setShowTable,getMachinetaskdata, setMachinetaskdata
   } = useGlobalContext();
 
   const [afterloadProgram, setAfterloadProgram] = useState([]);
 
-  const [getMachinetaskdata, setMachinetaskdata] = useState([]);
 
   const afterLoadProgram = () => {
     axios

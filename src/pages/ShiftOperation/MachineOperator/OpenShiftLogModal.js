@@ -23,15 +23,53 @@ export default function OpenShiftModal({
     Shift: Shift,
     date: date,
   };
-  const { setShiftLogDetails, shiftLogDetails } = useGlobalContext();
+  const { setShiftLogDetails, setMachinetaskdata } = useGlobalContext();
+
+
+  ///////////////////////////////////////
+  //Machine Task Table
+  let Machine = selectshifttable?.Machine;
+  const getMachineTaskDataFunc = () => {
+    // console.log("func called");
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", {
+        MachineName: Machine,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].Qty === 0) {
+            response.data[i].rowColor = "#DC143C";
+          } else if (response.data[i].QtyAllotted === 0) {
+            response.data[i].rowColor = "#E0FFFF";
+          } else if (response.data[i].QtyCut === 0) {
+            response.data[i].rowColor = "#778899";
+          } else if (response.data[i].QtyCut === response.data[i].Qty) {
+            response.data[i].rowColor = "#008000";
+          } else if (response.data[i].QtyCut === response.data[i].QtyAllotted) {
+            response.data[i].rowColor = "#ADFF2F";
+          } else if (response.data[i].Remarks !== null) {
+            response.data[i].rowColor = "#DC143C";
+          }
+        }
+        console.log("response after click openshift")
+        setMachinetaskdata(response.data);
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+      });
+  };
+
+  useEffect(()=>{
+    getMachineTaskDataFunc();
+  },[])
+
+  ///////////////////////////////////////////////////////////////////
 
   const navigate = useNavigate();
   // console.log("requiredProgram",requiredProgram);
 
   const openShiftPage = () => {
-    // console.log(requiredProgram[0].NCProgarmNo);
     if (isNaN(requiredProgram[0].NCProgarmNo)) {
-      // console.log("excuted NaN query")
       navigate("OpenShiftLog", { state: { data } });
       axios
         .post(baseURL + "/ShiftOperator/onClickYesStoppage", {
@@ -59,6 +97,7 @@ export default function OpenShiftModal({
           // handle error if needed
         });
     }
+    getMachineTaskDataFunc();
   };
 
   const handleClose = () => {

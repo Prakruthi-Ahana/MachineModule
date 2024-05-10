@@ -34,7 +34,7 @@ const MyDoc = ({ selectRow }) => (
 );
 
 const PrintSelectedPdf = ({ selectRow }) => (
-  <PDFViewer width="400" height="600" filename="somename.pdf">
+  <PDFViewer width="1200" height="600" filename="somename.pdf">
     <MyDoc selectRow={selectRow} />
   </PDFViewer>
 );

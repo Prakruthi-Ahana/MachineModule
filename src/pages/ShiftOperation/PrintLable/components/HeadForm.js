@@ -7,6 +7,8 @@ import PrintAllModal from "../PrintPDF/PrintAll/PrintAllModal";
 import { useNavigate } from "react-router-dom";
 import PrintAllPdf from "../PrintPDF/PrintAll/PrintAllPdf";
 import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
+import html2pdf from 'html2pdf.js';
+
 
 export default function HeadForm({
   setNcprogramNo,
@@ -43,12 +45,10 @@ export default function HeadForm({
   const handleClosepdf1 = () => {
     setOnclickofYesPS(false);
     if (currentIndex1 + 1 < selectedRows.length) {
-      console.log("if condition");
       setCurrentIndex1(currentIndex1 + 1);
       askPrintSelectedModal();
     } else {
       if (!loopedBack1) {
-        console.log("else condition");
         setLoopedBack1(true);
         setAskPrintSelected(false);
       }
@@ -99,6 +99,34 @@ export default function HeadForm({
 
   // console.log("selectedRows",selectedRows);
   // console.log("printLabelData",printLabelData);
+
+  // ///
+  const generateAndDownloadPDF = () => {
+    console.log("Attempting to generate and download PDF...");
+    const currentObject = printLabelData[currentIndex]; // Retrieve the current object
+    const textContent = `
+      <p 
+        style="
+          font-weight: bold; 
+          display: flex; 
+          justify-content: center; 
+          align-items: center; 
+        "
+      >
+        ${currentObject.DwgName}
+      </p>`; // Apply CSS properties using inline CSS
+    const element = document.createElement('div'); // Create a new <div> element
+    element.innerHTML = textContent; // Set the inner HTML of the element
+    const opt = {
+      margin: 1,
+      filename: 'document.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } // Set unit to 'mm' and adjust format and orientation as needed
+    };
+    html2pdf().from(element).set(opt).save();
+  };
+  
 
   return (
     <>
@@ -176,7 +204,7 @@ export default function HeadForm({
         show={askPrintAll}
         title="magod_machine"
         content={<div>Print '{currentObject?.DwgName}' Labels?</div>}
-        onYesClick={() => onClickofyes()}
+        onYesClick={() => generateAndDownloadPDF()}
         onNoClick={() => hadleclose()}
         onClose={() => hadleclose()}
       />

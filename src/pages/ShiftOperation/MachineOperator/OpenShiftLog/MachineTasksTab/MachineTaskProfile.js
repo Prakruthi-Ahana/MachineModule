@@ -39,7 +39,6 @@ export default function MachineTaskProfile({
     return dataCopy;
   };
 
-  // console.log("Machine Task Profile data is",machineTaskData);
 
   return (
     <div

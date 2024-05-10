@@ -35,7 +35,7 @@ export default function ProgramInfoForms({
     setOpenTable(false);
   };
 
-  console.log("complete",complete);
+  // console.log("complete",complete);
 
   //Load Program
   const [rpTopData, setRptTopData] = useState([]);
@@ -196,6 +196,21 @@ export default function ProgramInfoForms({
     return dataCopy;
   };
 
+  //Time Conversion
+  const convertMinutesToTime = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    if (hours === 0 && mins === 0) {
+      return "0 Hours 0 Min";
+    }
+
+    const hoursString = hours > 0 ? `${hours} Hours` : "";
+    const minsString = mins > 0 ? `${mins} Min` : "";
+
+    return `${hoursString} ${minsString}`.trim();
+  };
+
   return (
     <div>
       <div
@@ -328,13 +343,13 @@ export default function ProgramInfoForms({
             </div>
             <div style={{ marginLeft: "10px" }}>
               <label className="form-label">
-                Planned Time :<b>{selectProductionReport?.EstimatedTime} </b>
+                Planned Time :<b>{convertMinutesToTime(selectProductionReport?.EstimatedTime)} </b>
               </label>
             </div>
 
             <div style={{ color: "", marginLeft: "10px" }}>
               <label className="form-label">
-                Actual Time :<b>{selectProductionReport?.ActualTime} </b>
+                Actual Time :<b>{convertMinutesToTime(selectProductionReport?.ActualTime)} </b>
               </label>
             </div>
           </div>

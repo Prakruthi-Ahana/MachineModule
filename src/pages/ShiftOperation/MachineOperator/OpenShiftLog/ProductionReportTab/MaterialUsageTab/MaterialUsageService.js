@@ -59,7 +59,7 @@ export default function MaterialUsageService({
         NCId: selectProductionReport.Ncid,
       })
       .then((response) => {
-        // console.log(response);
+        console.log(response.data);
         setService(response.data);
         const data = response.data;
         let count = 0;
@@ -140,7 +140,7 @@ export default function MaterialUsageService({
   const markAsUsed = () => {
     axios
       .post(baseURL + "/ShiftOperator/getNcProgramId", {
-        NcId: NcId,
+        NcId: selectProductionReport.Ncid,
       })
       .then((response) => {
         const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
@@ -173,7 +173,9 @@ export default function MaterialUsageService({
 
               // Check if the quantity to be used exceeds the available quantity
               const remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
+              // console.log("QtyIssued is",item.QtyIssued,"QtyUsed is",item.QtyUsed,"issuesets is",issuesets,"remainingQty is",remainingQty);
               if (remainingQty < 0 || qtyToDistribute !== useNow) {
+                // console.log("remainingQty is",remainingQty,"qtyToDistribute is",qtyToDistribute,"useNow is",useNow)
                 hasValidationError = true;
                 return item; // Do not update state if validation fails
               }
@@ -295,7 +297,7 @@ export default function MaterialUsageService({
   const markasReturned = () => {
     axios
       .post(baseURL + "/ShiftOperator/getNcProgramId", {
-        NcId: NcId,
+        NcId: selectProductionReport.Ncid,
       })
       .then((response) => {
         const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
