@@ -173,22 +173,22 @@ export default function Form1({
     <>
       <div>
         <div className="col-md-12 col-sm-12">
-          <div className="ip-box form-bg">
-            <div className="col-md-8  ms-4" style={{ textAlign: "center" }}>
+          <div className="form-bg">
+            <div className="col-md-8  ms-4" style={{ textAlign: "center", marginTop: "-11px" }}>
               <label className="form-label ms-5">
                 NC Program sheet Details
               </label>
             </div>
             
             
-            <div className="row">
-              <div className="d-flex col-md-6" style={{ gap: "20px" }}>
+            <div className="d-flex">
+              <div className="d-flex col-md-6" style={{ gap: "24px", marginTop: "-7px" }}>
                 <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                 Program no
                 </label>
                 <input
                   className="input-field "
-                  style={{width:"60px"}}
+                  style={{width:"65px"}}
                   // value={formdata?.Qty || ""}
                   value={
                     formdata?.NCProgramNo !== undefined
@@ -200,7 +200,7 @@ export default function Form1({
 
 
             <div className="row">
-              <div className="d-flex col-md-6" style={{ gap: "30px" }}>
+              <div className="d-flex col-md-6" style={{ gap: "32px", marginTop: "-5px", marginLeft:'-12px' }}>
                 <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                   To Process
                 </label>
@@ -211,7 +211,7 @@ export default function Form1({
                 />
               </div>
 
-              <div className="d-flex col-md-6" style={{ gap: "45px" }}>
+              <div className="d-flex col-md-6" style={{ gap: "45px", marginTop: "-5px", marginLeft:'-12px' }}>
                 <label className="form-label">Allotted</label>
                 <input
                   className="input-field"
@@ -223,7 +223,7 @@ export default function Form1({
                 />
               </div>
 
-              <div className="d-flex col-md-6" style={{ gap: "34px" }}>
+              <div className="d-flex col-md-6" style={{ gap: "34px", marginTop: "-5px", marginLeft:'-12px' }}>
                 <label className="form-label">Processed</label>
                 <input
                   className="input-field"
@@ -232,7 +232,7 @@ export default function Form1({
                 />
               </div>
 
-              <div className="d-flex col-md-6" style={{ gap: "37px" }}>
+              <div className="d-flex col-md-6" style={{ gap: "37px", marginTop: "-5px", marginLeft:'-12px' }}>
                 <label className="form-label">Drawings</label>
                 <input
                   className="input-field"
@@ -243,7 +243,7 @@ export default function Form1({
                 />
               </div>
 
-              <div className="d-flex col-md-6" style={{ gap: "30px" }}>
+              <div className="d-flex col-md-6" style={{ gap: "30px", marginTop: "-5px", marginLeft:'-12px' }}>
                 <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                   Total parts
                 </label>
@@ -258,7 +258,7 @@ export default function Form1({
                 />
               </div>
 
-              <div className="d-flex col-md-6" style={{ gap: "10px" }}>
+              <div className="d-flex col-md-6" style={{ gap: "10px", marginTop: "-5px", marginLeft:'-12px' }}>
                 <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                   Program Time
                 </label>
@@ -272,14 +272,14 @@ export default function Form1({
                 />
               </div>
 
-              <div className="d-flex col-md-6" style={{ gap: "10px" }}>
+              <div className="d-flex col-md-6" style={{ gap: "10px", marginTop: "-5px", marginLeft:'-12px' }}>
                 <label className="form-label" style={{ whiteSpace: "nowrap" }}>
                   Machine Time
                 </label>
                 <input className="input-field" value={MachineTime ?? ""} />
               </div>
 
-              <div className="d-flex col-md-6 ">
+              <div className="d-flex col-md-6" style={{marginTop: "-5px"}}>
                 {!hasBOM ? (
                   <button
                     className="button-style group-button"
@@ -290,7 +290,7 @@ export default function Form1({
                 ) : null}
               </div>
 
-              <div className="d-flex col-md-12 mb-1" style={{ gap: "40px" }}>
+              <div className="d-flex col-md-12 mb-1" style={{ gap: "40px", marginTop: "-5px", marginLeft:'-12px' }}>
                 <label className="form-label">Remarks</label>
                 <input
                   className="input-field"

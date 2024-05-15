@@ -656,3 +656,7 @@ li.nav-item {
   background-color: transparent;
   border: none;
 }
+
+.disabled {
+  background-color: grey !important;
+}

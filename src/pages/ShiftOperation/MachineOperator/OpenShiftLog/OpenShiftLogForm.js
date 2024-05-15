@@ -196,19 +196,37 @@ export default function OpenShiftLogForm({
       </div>
 
       <div className="row">
-        <div className="col-md-6">
-          <h5 className="mt-2">Magod Laser Machining Pvt Ltd</h5>
-          <h6 className="mt-2">
-            Machine Operator information and Working Form
-          </h6>
+        <div className="col-md-5" style={{marginTop:'-10px'}}>
+          <div>
+            <label className="form-label">
+              Machine Operator information and Working Form
+            </label>
+          </div>
+          <div className="d-flex" style={{ gap: "20px", marginTop:'-10px' }}>
+            <div>
+              <label className="form-label">{selectedMachine}</label>
+            </div>
+            <div>
+              <label className="form-label">
+                {currentDate} {currentTime}
+              </label>
+            </div>
+            <div>
+              <label className="form-label">Status</label>
+            </div>
+
+            <div>
+              <label className="form-label">OFF</label>
+            </div>
+          </div>
         </div>
-        <div className="col-md-6 mt-2">
+        <div className="col-md-7">
           <div className="row">
             {isInputVisible && (
               <div className="col-md-3">
                 <div>
                   <select
-                    className="ip-select mt-2"
+                    className="ip-select"
                     onChange={handleChangeStoppageList}
                   >
                     <option>Choose an option</option>
@@ -271,7 +289,7 @@ export default function OpenShiftLogForm({
         </div>
       </div>
 
-      <div className="row mb-1">
+      {/* <div className="row mb-1">
         <div className="col-md-12">
           <div className="row">
             <div className="col-md-1 col-sm-12">
@@ -293,8 +311,8 @@ export default function OpenShiftLogForm({
             </div>
           </div>
         </div>
-      </div>
-     
+      </div> */}
+
       <ErrorReportForm
         errorForm={errorForm}
         setErrorForm={setErrorForm}
