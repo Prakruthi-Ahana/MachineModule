@@ -107,10 +107,10 @@ export default function ProgramPartsForm() {
 
   return (
     <div>
-      <div className="mt-2">
+      <div className="">
         <div className="col-md-12 col-sm-12">
-          <div className="ip-box form-bg ">
-            <div>
+          <div className="form-bg ">
+            <div style={{marginTop: "-10px"}}>
               <label className="form-label">
                 NC Program Parts Production Details
               </label>
@@ -119,7 +119,7 @@ export default function ProgramPartsForm() {
               <div style={{ textAlign: "center" }} className="col-md-6">
                 <div>
                   <button
-                    className="button-style mt-2 group-button mb-2"
+                    className="button-style mt-2 group-button mb-1"
                     onClick={SaveProgramParts}
                   >
                     Save
@@ -129,7 +129,7 @@ export default function ProgramPartsForm() {
 
               <div style={{ textAlign: "center" }} className="col-md-6">
                 <div>
-                  <button className="button-style mt-2 group-button mb-2">
+                  <button className="button-style mt-2 group-button mb-1">
                     Show Dxf
                   </button>
                 </div>

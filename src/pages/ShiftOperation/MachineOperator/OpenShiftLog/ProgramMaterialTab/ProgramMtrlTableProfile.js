@@ -292,9 +292,9 @@ const handleSelectAll = () => {
   return (
     <div>
       {showTable ? (
-        <div className="mt-2">
+        <div className="" style={{marginTop:'-10px'}}>
           <div className="col-md-12 col-sm-12">
-            <div className="ip-box form-bg">
+            <div className="form-bg">
               <div className="row">
                 <div
                   style={{ textAlign: "center" }}
@@ -342,7 +342,7 @@ const handleSelectAll = () => {
       ) : null}
       {showTable ? (
         <div
-          className="mt-2 col-md-12 col-sm-12"
+          className="mt-1 col-md-12 col-sm-12"
           style={{ overflow: "scroll", height: "230px" }}
         >
           <Table striped className="table-data border">

@@ -42,8 +42,8 @@ export default function MachineTaskProfile({
 
   return (
     <div
-      className="col-md-12 mt-2"
-      style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
+      className="col-md-12 mt-1"
+      style={{ overflowY: "scroll", overflowX: "scroll", height: "200px" }}
     >
       <Table striped className="table-data border">
         <thead className="tableHeaderBGColor" style={{ fontSize: "12px" }}>

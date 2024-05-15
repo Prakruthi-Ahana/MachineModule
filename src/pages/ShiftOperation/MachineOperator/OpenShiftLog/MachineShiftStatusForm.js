@@ -156,39 +156,38 @@ export default function MachineShiftStatusForm({
       <div className="">
         <div
           style={{
-            textAlign: "",
             backgroundColor: "#d3d3d3",
-            marginTop: "2px",
+            // marginTop: "2px",
             marginLeft: "-12px",
             fontSize: "14px",
+            width:'210px'
           }}
         >
-          <p style={{ textAlign: "center" }}>
-            {" "}
-            <b>Machine Shift Status </b>
-          </p>
+          <div style={{ textAlign: "center" }}>
+            <label className="form-label">Machine Shift Status</label>
+          </div>
 
           <div className="d-flex ms-4">
             <div style={{ width: "auto", textAlign: "left" }}>
               <div style={{ marginLeft: "5px" }}>
-                <label className="form-label">
-                  Operator : {selectshifttable.Operator}{" "}
-                </label>
-              </div>
-              <div style={{ marginLeft: "5px" }}>
-                <label className="form-label">
-                  Current : {machineShiftStatus[0]?.Operator}{" "}
-                </label>
+                <div style={{ marginTop: "-8px" }}>
+                  <label className="form-label">
+                    Operator : {selectshifttable.Operator}{" "}
+                  </label>
+                </div>
+                <div style={{ marginTop: "-8px" }}>
+                  <label className="form-label">
+                    Current : {machineShiftStatus[0]?.Operator}{" "}
+                  </label>
+                </div>
               </div>
             </div>
           </div>
 
-          <br></br>
-
           <div className="d-flex">
             <button
               className="button-style group-button mb-2"
-              style={{ width: "80px", marginLeft: "20px" }}
+              style={{ width: "80px", marginLeft: "17px" }}
               onClick={toggleInput}
             >
               Select{" "}
@@ -216,44 +215,53 @@ export default function MachineShiftStatusForm({
         </div>
       </div>
 
-      <div className="mt-2">
+      <div className="mt-1">
         <div
           style={{
-            textAlign: "",
             backgroundColor: "#d3d3d3",
             marginLeft: "-12px",
             fontSize: "14px",
+            width:'210px'
           }}
         >
-          <p style={{ textAlign: "center" }}>
-            <b>Process Task Status </b>
-          </p>
-          <div className="d-flex" style={{marginTop:'-10px'}}>
+          <div style={{ textAlign: "center" }}>
+            <label className="form-label">Process Task Status</label>
+          </div>
+          <div className="d-flex" style={{ marginTop: "-9px" }}>
             <div style={{ width: "auto", textAlign: "left" }}>
               <div style={{ marginLeft: "15px" }}>
-                {" "}
-                <label className="form-label">Task No : {machineShiftStatus[0]?.TaskNo} </label>
+                <label className="form-label">
+                  Task No : {machineShiftStatus[0]?.TaskNo}{" "}
+                </label>
               </div>
 
-              <div style={{ marginLeft: "15px" }}>
-                <label className="form-label">Operation : {machineShiftStatus[0]?.Operation} </label>
+              <div style={{ marginLeft: "15px", marginTop: "-8px" }}>
+                <label className="form-label">
+                  Operation : {machineShiftStatus[0]?.Operation}{" "}
+                </label>
               </div>
-              <div style={{ color: "", marginLeft: "15px" }}>
-                {" "}
-                <label className="form-label">Material : {machineShiftStatus[0]?.Mtrl_Code} </label>
+              <div style={{ color: "", marginLeft: "15px", marginTop: "-8px" }}>
+                <label className="form-label">
+                  Material : {machineShiftStatus[0]?.Mtrl_Code}{" "}
+                </label>
               </div>
 
-              <div style={{ marginLeft: "15px" }}>
-                <label className="form-label">Program no : {machineShiftStatus[0]?.NCProgarmNo}</label>
+              <div style={{ marginLeft: "15px", marginTop: "-8px" }}>
+                <label className="form-label">
+                  Program no : {machineShiftStatus[0]?.NCProgarmNo}
+                </label>
               </div>
-              <div style={{ marginLeft: "15px" }}>
+              <div style={{ marginLeft: "15px", marginTop: "-8px" }}>
                 <label className="form-label">
                   Start Time :
                   {formatDateTime(machineShiftStatus[0]?.ProgramStartTime)}
                 </label>
               </div>
 
-              <div className="mb-3" style={{ color: "", marginLeft: "15px" }}>
+              <div
+                className="mb-1"
+                style={{ color: "", marginLeft: "15px", marginTop: "-8px" }}
+              >
                 <label className="form-label">Running For :{runningTime}</label>
               </div>
             </div>
@@ -261,34 +269,38 @@ export default function MachineShiftStatusForm({
         </div>
       </div>
 
-      <div className="mt-2">
+      <div className="mt-1">
         <div
           className=""
           style={{
             backgroundColor: "#d3d3d3",
             marginLeft: "-12px",
             fontSize: "14px",
-            marginBottom: "20px",
-            height: "115px",
+            height: "100px",
+            width:'210px'
           }}
         >
           <div>
-            <p style={{ textAlign: "center" }}>
-              <b>Material Machine Time</b>
-            </p>
-            <div className="d-flex mx-2" style={{marginTop:'-10px'}}>
+            <div style={{ textAlign: "center" }}>
+              <label className="form-label">Material Machine Time</label>
+            </div>
+            <div className="d-flex mx-2" style={{ marginTop: "-4px" }}>
               <div style={{ width: "auto", textAlign: "left" }}>
-                <div style={{ marginLeft: "10px" }}>
-                  <label  className="form-label">Sheet Id :{machineShiftStatus[0]?.MtrlID} </label>
+                <div style={{ marginLeft: "10px", marginTop: "-6px" }}>
+                  <label className="form-label">
+                    Sheet Id :{machineShiftStatus[0]?.MtrlID}{" "}
+                  </label>
                 </div>
-                <div style={{ marginLeft: "10px" }}>
+                <div style={{ marginLeft: "10px", marginTop: "-8px" }}>
                   <label className="form-label">
                     Start Time :
                     {formatDateTime(machineShiftStatus[0]?.SheetStartTime)}
                   </label>
                 </div>
-                <div style={{ marginLeft: "10px" }}>
-                  <label className="form-label">Running For :{sheetrunTime}</label>
+                <div style={{ marginLeft: "10px", marginTop: "-8px" }}>
+                  <label className="form-label">
+                    Running For :{sheetrunTime}
+                  </label>
                 </div>
               </div>
             </div>

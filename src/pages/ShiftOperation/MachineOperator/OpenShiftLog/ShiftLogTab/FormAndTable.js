@@ -312,10 +312,10 @@ export default function FormAndTable({
         onNoClick={handleClose}
         onClose={handleClose}
       />
-      <div style={{ marginTop: "10px" }} className="col-md-6 col-sm-12">
-        <h6 className="mt-2 ms-2"> Shift Log Book </h6>
+      <div className="col-md-6 col-sm-12">
+        <label className="form-label ms-2"> Shift Log Book </label>
       </div>
-      <div className="row mb-2">
+      <div className="row mb-1">
         <div className="col-md-3 col-sm-12">
           <button className="button-style  group-button" onClick={saveShiftLog}>
             Save
