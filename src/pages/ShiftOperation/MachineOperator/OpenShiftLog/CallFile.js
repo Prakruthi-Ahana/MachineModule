@@ -186,7 +186,7 @@ export default function CallFile() {
       </div>
 
       <div className="row">
-        <div className="col-md-3">
+        <div className="col-md-2">
           <MachineShiftStatusForm
             selectshifttable={selectshifttable}
             Shift={Shift}
@@ -210,7 +210,7 @@ export default function CallFile() {
           />
         </div>
 
-        <div className="col-md-5">
+        <div className="col-md-6">
           <TabsFour
             selectshifttable={selectshifttable}
             afterLoadProgram={afterLoadProgram}

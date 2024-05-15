@@ -7,8 +7,7 @@ import PrintAllModal from "../PrintPDF/PrintAll/PrintAllModal";
 import { useNavigate } from "react-router-dom";
 import PrintAllPdf from "../PrintPDF/PrintAll/PrintAllPdf";
 import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
-import html2pdf from 'html2pdf.js';
-
+import html2pdf from "html2pdf.js";
 
 export default function HeadForm({
   setNcprogramNo,
@@ -115,18 +114,17 @@ export default function HeadForm({
       >
         ${currentObject.DwgName}
       </p>`; // Apply CSS properties using inline CSS
-    const element = document.createElement('div'); // Create a new <div> element
+    const element = document.createElement("div"); // Create a new <div> element
     element.innerHTML = textContent; // Set the inner HTML of the element
     const opt = {
       margin: 1,
-      filename: 'document.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
+      filename: "document.pdf",
+      image: { type: "jpeg", quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } // Set unit to 'mm' and adjust format and orientation as needed
+      jsPDF: { unit: "mm", format: "a4", orientation: "landscape" }, // Set unit to 'mm' and adjust format and orientation as needed
     };
     html2pdf().from(element).set(opt).save();
   };
-  
 
   return (
     <>
@@ -170,7 +168,7 @@ export default function HeadForm({
           <button
             className="button-style  group-button"
             onClick={onClickofClose}
-            style={{float:'right'}}
+            style={{ float: "right" }}
           >
             Close
           </button>

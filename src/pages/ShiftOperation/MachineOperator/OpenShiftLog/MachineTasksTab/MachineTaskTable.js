@@ -330,56 +330,71 @@ export default function MachineTaskTable({
       </div>
 
       <div className="d-flex ">
-        <div className="mt-2 col-md-5 ">
+        <div className="mt-1 col-md-5 ">
           <div
             style={{
-              textAlign: "",
               backgroundColor: "#d3d3d3",
               fontSize: "14px",
-              height: "300px",
+              height: "auto",
             }}
           >
-            <p style={{ color: "", textAlign: "center" }}>
-              <b>Program Info </b>
-            </p>
+            <div className="d-flex" style={{gap:'50px'}}>
+              <div>
+                <label className="form-label ms-1">Program Info</label>
+              </div>
 
-            <div style={{ textAlign: "center" }}>
-              <button
-                className="button-style  group-button"
-                onClick={openModal}
-              >
-                Load Program
-              </button>
+              <div style={{ textAlign: "center" }}>
+                <button
+                  className="button-style mt-1  group-button"
+                  onClick={openModal}
+                >
+                  Load Program
+                </button>
+              </div>
             </div>
 
             <div className="d-flex mt-3">
               <div style={{ textAlign: "left", fontSize: "12px" }}>
-                <div className="" style={{ marginLeft: "10px" }}>
+                <div
+                  className=""
+                  style={{ marginLeft: "10px", marginTop: "-18px" }}
+                >
                   <label className="form-label" style={{ margin: 5 }}>
                     Program No :<b> {selectedProgram?.NCProgramNo} </b>
                   </label>
                 </div>
 
-                <div className="" style={{ marginLeft: "10px" }}>
+                <div
+                  className=""
+                  style={{ marginLeft: "10px", marginTop: "-8px" }}
+                >
                   <label className="form-label" style={{ margin: 5 }}>
                     Process : <b>{selectedProgram?.MProcess}</b>
                   </label>
                 </div>
 
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
+                <div
+                  className=""
+                  style={{ color: "", marginLeft: "10px", marginTop: "-8px" }}
+                >
                   <label className="form-label" style={{ margin: 5 }}>
                     Operation :<b> {selectedProgram?.Operation} </b>
                   </label>
                 </div>
 
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
-                  {" "}
+                <div
+                  className=""
+                  style={{ color: "", marginLeft: "10px", marginTop: "-8px" }}
+                >
                   <label className="form-label" style={{ margin: 5 }}>
                     To Process :<b> {selectedProgram?.Qty} </b>
                   </label>
                 </div>
 
-                <div className="mt-1" style={{ color: "", marginLeft: "10px" }}>
+                <div
+                  className="mb-1"
+                  style={{ color: "", marginLeft: "10px", marginTop: "-8px" }}
+                >
                   {" "}
                   <label className="form-label" style={{ margin: 5 }}>
                     Processed : <b> {selectedProgram?.QtyCut} </b>
@@ -390,23 +405,27 @@ export default function MachineTaskTable({
           </div>
         </div>
 
-        <div className=" mt-2 col-md-7 ms-1">
+        <div className="mt-1 col-md-7 ms-1">
           <div
             style={{
               textAlign: "",
               backgroundColor: "#d3d3d3",
               fontSize: "14px",
-              height: "300px",
+              height: "auto",
             }}
           >
-            <p style={{ color: "", textAlign: "center" }}>
-              <b>Material Info</b>
-            </p>
+            <div style={{ textAlign: "center" }}>
+              <label className="form-label">Material Info</label>
+            </div>
 
             <div
-              style={{ width: "auto", fontSize: "12px", marginLeft: "10px", marginTop:'-18px' }}
+              style={{
+                width: "auto",
+                fontSize: "12px",
+                marginLeft: "10px",
+              }}
             >
-              <div style={{ color: "" }}>
+              <div style={{ marginTop: "-10px" }}>
                 {" "}
                 <label className="form-label" style={{ margin: 5 }}>
                   Customer:
@@ -417,49 +436,55 @@ export default function MachineTaskTable({
                 </label>
               </div>
 
-              <div style={{ color: "" }}>
-                <label className="form-label" style={{ margin: 5 }}>
-                  Code :
-                  <b style={{ textAlign: "right" }}>
-                    {" "}
-                    {selectedProgram?.Cust_Code}
-                  </b>
-                </label>
+              <div
+                className="d-flex"
+                style={{ gap: "10px", marginTop: "-5px" }}
+              >
+                <div>
+                  <label className="form-label" style={{ margin: 5 }}>
+                    Code :
+                    <b style={{ textAlign: "right" }}>
+                      {" "}
+                      {selectedProgram?.Cust_Code}
+                    </b>
+                  </label>
+                </div>
+                <div>
+                  <label className="form-label" style={{ margin: 5 }}>
+                    Source :
+                    <b style={{ textAlign: "right" }}>
+                      {" "}
+                      {selectedProgram?.CustMtrl}
+                    </b>
+                  </label>
+                </div>
               </div>
 
-              <div style={{ color: "" }}>
-                {" "}
-                <label className="form-label" style={{ margin: 5 }}>
-                  Source :
-                  <b style={{ textAlign: "right" }}>
-                    {" "}
-                    {selectedProgram?.CustMtrl}
-                  </b>
-                </label>
+              <div
+                className="d-flex"
+                style={{ gap: "10px", marginTop: "-5px" }}
+              >
+                <div>
+                  <label className="form-label" style={{ margin: 5 }}>
+                    Length :{" "}
+                    <b style={{ textAlign: "right" }}>
+                      {" "}
+                      {selectedProgram?.Para1}
+                    </b>
+                  </label>
+                </div>
+                <div>
+                  <label className="form-label" style={{ margin: 5 }}>
+                    Width :
+                    <b style={{ textAlign: "right" }}>
+                      {" "}
+                      {selectedProgram?.Para2}
+                    </b>
+                  </label>
+                </div>
               </div>
 
-              <div style={{ color: "" }}>
-                <label className="form-label" style={{ margin: 5 }}>
-                  Length :{" "}
-                  <b style={{ textAlign: "right" }}>
-                    {" "}
-                    {selectedProgram?.Para1}
-                  </b>
-                </label>
-              </div>
-
-              <div style={{ color: "" }}>
-                {" "}
-                <label className="form-label" style={{ margin: 5 }}>
-                  Width :
-                  <b style={{ textAlign: "right" }}>
-                    {" "}
-                    {selectedProgram?.Para2}
-                  </b>
-                </label>
-              </div>
-
-              <div style={{ color: "" }}>
+              {/* <div style={{ marginTop: "-5px" }}>
                 <label className="form-label" style={{ margin: 5 }}>
                   Remarks :
                   <b style={{ textAlign: "right" }}>
@@ -467,31 +492,34 @@ export default function MachineTaskTable({
                     {selectedProgram?.Remarks}
                   </b>
                 </label>
+              </div> */}
+
+              <div
+                className="d-flex"
+                style={{ gap: "10px", marginTop: "-5px" }}
+              >
+                <div>
+                  <label className="form-label" style={{ margin: 5 }}>
+                    Drawings :
+                    <b style={{ textAlign: "right" }}>
+                      {" "}
+                      {selectedProgram?.NoOfDwgs}
+                    </b>
+                  </label>
+                </div>
+                <div>
+                  <label className="form-label" style={{ margin: 5 }}>
+                    Total Parts :
+                    <b style={{ textAlign: "right" }}>
+                      {" "}
+                      {selectedProgram?.TotalParts}
+                    </b>
+                  </label>
+                </div>
               </div>
 
-              <div style={{ color: "" }}>
-                <label className="form-label" style={{ margin: 5 }}>
-                  Drawings :
-                  <b style={{ textAlign: "right" }}>
-                    {" "}
-                    {selectedProgram?.NoOfDwgs}
-                  </b>
-                </label>
-              </div>
-
-              <div style={{ color: "" }}>
-                {" "}
-                <label className="form-label" style={{ margin: 5 }}>
-                  Total Parts :
-                  <b style={{ textAlign: "right" }}>
-                    {" "}
-                    {selectedProgram?.TotalParts}
-                  </b>
-                </label>
-              </div>
-
-              <div style={{ color: "" }}>
-                <label className="form-label" style={{ margin: 5 }}>
+              <div className="" style={{ marginTop: "-5px" }}>
+                <label className="mb-4 form-label" style={{ margin: 5 }}>
                   Machine Time:{" "}
                   <b style={{ textAlign: "right" }}>
                     {convertMinutesToTime(selectedProgram?.ActualTime)}

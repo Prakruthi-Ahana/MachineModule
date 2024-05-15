@@ -66,7 +66,7 @@ export default function MachineTaskService({
 
   return (
     <div>
-      <div className="mt-2">
+      <div className="mt-1">
         <div className="col-md-12 col-sm-12">
           <div className="ip-box form-bg ">
             <div className="row">
@@ -96,7 +96,7 @@ export default function MachineTaskService({
 
       <div
         className="col-md-12"
-        style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
+        style={{ overflowY: "scroll", overflowX: "scroll", height: "200px" }}
       >
         <Table striped className="table-data border">
           <thead

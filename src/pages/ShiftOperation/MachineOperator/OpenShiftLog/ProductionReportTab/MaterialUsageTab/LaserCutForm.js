@@ -315,7 +315,7 @@ export default function LaserCutForm({
 
   return (
     <div>
-      <div className="mt-2">
+      <div className="">
         {openTable ? (
           <div className="col-md-12 col-sm-12">
             <div className="ip-box form-bg ">
@@ -326,7 +326,7 @@ export default function LaserCutForm({
                 >
                   <div>
                     <button
-                      className="button-style mt-2 group-button mb-2"
+                      className="button-style group-button mb-1"
                       style={{ width: "100px" }}
                       onClick={handlemarkasUsed}
                     >
@@ -338,7 +338,7 @@ export default function LaserCutForm({
                 <div style={{ textAlign: "center" }} className="col-md-4">
                   <div>
                     <button
-                      className="button-style mt-2 group-button mb-2"
+                      className="button-style group-button"
                       style={{ width: "110px" }}
                       onClick={handleRejectModal}
                     >
