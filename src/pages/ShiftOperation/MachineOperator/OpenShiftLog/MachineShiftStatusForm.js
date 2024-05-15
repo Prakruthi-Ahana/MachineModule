@@ -160,7 +160,7 @@ export default function MachineShiftStatusForm({
             // marginTop: "2px",
             marginLeft: "-12px",
             fontSize: "14px",
-            width:'210px'
+            width:'114%'
           }}
         >
           <div style={{ textAlign: "center" }}>
@@ -221,7 +221,7 @@ export default function MachineShiftStatusForm({
             backgroundColor: "#d3d3d3",
             marginLeft: "-12px",
             fontSize: "14px",
-            width:'210px'
+            width:'114%'
           }}
         >
           <div style={{ textAlign: "center" }}>
@@ -277,7 +277,7 @@ export default function MachineShiftStatusForm({
             marginLeft: "-12px",
             fontSize: "14px",
             height: "100px",
-            width:'210px'
+            width:'114%'
           }}
         >
           <div>
