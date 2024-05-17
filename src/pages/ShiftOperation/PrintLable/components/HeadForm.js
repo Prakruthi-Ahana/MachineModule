@@ -99,9 +99,8 @@ export default function HeadForm({
   // console.log("selectedRows",selectedRows);
   // console.log("printLabelData",printLabelData);
 
-  // ///
+  // ///Print ALL
   const generateAndDownloadPDF = () => {
-    console.log("Attempting to generate and download PDF...");
     const currentObject = printLabelData[currentIndex]; // Retrieve the current object
     const textContent = `
       <p 
@@ -123,8 +122,70 @@ export default function HeadForm({
       html2canvas: { scale: 2 },
       jsPDF: { unit: "mm", format: "a4", orientation: "landscape" }, // Set unit to 'mm' and adjust format and orientation as needed
     };
-    html2pdf().from(element).set(opt).save();
+
+    // Generate and download the PDF, then execute the additional logic
+    html2pdf().from(element).set(opt).save().then(() => {
+        setOnclickofYes(false);
+        if (currentIndex + 1 < printLabelData.length) {
+            setCurrentIndex(currentIndex + 1);
+            askPrintAllModal();
+        } else {
+            if (!loopedBack) {
+                setLoopedBack(true);
+                setAskPrintAll(false);
+            }
+        }
+    });
+};
+
+//Print Selected
+const PrintSelectedPDF = () => {
+  console.log("Attempting to generate and download PDF for selected item...");
+  const currentObject1 = selectedRows[currentIndex1]; // Retrieve the current object based on currentIndex1
+  console.log("currentObject1.DwgName is",currentObject1.DwgName);
+  const textContent = `
+    <p 
+      style="
+        font-weight: bold; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+      "
+    >
+      ${currentObject1.DwgName}
+    </p>`; // Apply CSS properties using inline CSS
+
+  const element = document.createElement("div"); // Create a new <div> element
+  element.innerHTML = textContent; // Set the inner HTML of the element
+
+  const opt = {
+    margin: 1,
+    filename: "document.pdf",
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "mm", format: "a4", orientation: "landscape" }, // Set unit to 'mm' and adjust format and orientation as needed
   };
+
+  // Generate and download the PDF
+  html2pdf().from(element).set(opt).save().then(() => {
+    console.log("excuting after donwload",selectedRows,currentIndex1,currentObject1);
+    // Code to execute after PDF generation and download
+    // setOnclickofYesPS(false); // Reset the click state for yes button
+    if (currentIndex1 + 1 < selectedRows.length) {
+      setCurrentIndex1(currentIndex1 + 1); // Move to the next selected row
+      askPrintSelectedModal(); // Ask to print the next selected item
+      console.log("excuting after donwload llllllllllllllllllllllll");
+    } else {
+      if (!loopedBack1) {
+        console.log("excuting after donwload ppppppppppppppppppppppppppppppppppppp");
+        setLoopedBack1(true); // Mark as looped back
+        setAskPrintSelected(false); // Close the modal
+      }
+    }
+  });
+};
+
+
 
   return (
     <>
@@ -192,8 +253,8 @@ export default function HeadForm({
       <GlobalModal
         show={askPrintSelected}
         title="magod_machine"
-        content={<div>Print Selected Labels?</div>}
-        onYesClick={() => onClickofyesPS()}
+        content={<div>Print Selected Labels  '{currentObject1?.DwgName}' ?</div>}
+        onYesClick={() => PrintSelectedPDF()}
         onNoClick={() => hadleclose1()}
         onClose={() => hadleclose1()}
       />

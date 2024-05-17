@@ -85,7 +85,7 @@ export default function Form1({
         position: toast.POSITION.TOP_CENTER,
       });
     } else {
-      if (selectedMtrlTable.Used === 1 || selectedMtrlTable.Rejected === 1) {
+      if (selectedMtrlTable[0].Used === 1 || selectedMtrlTable[0].Rejected === 1) {
         toast.error("Cannot Load the Material that is Used or Rejected", {
           position: toast.POSITION.TOP_CENTER,
         });
@@ -119,10 +119,10 @@ export default function Form1({
     const mins = minutes % 60;
 
     if (hours === 0 && mins === 0) {
-      return "0 Hours 0 Min";
+      return "0 Hrs 0 Min";
     }
 
-    const hoursString = hours > 0 ? `${hours} Hours` : "";
+    const hoursString = hours > 0 ? `${hours} Hrs` : "";
     const minsString = mins > 0 ? `${mins} Min` : "";
 
     return `${hoursString} ${minsString}`.trim();
@@ -159,7 +159,7 @@ export default function Form1({
     const adjustedMins = totalMins % 60;
 
     // Update MachineTime
-    const newMachineTime = `${adjustedHours} Hours ${adjustedMins} Min`;
+    const newMachineTime = `${adjustedHours} Hrs ${adjustedMins} Min`;
     setMachineTime(newMachineTime);
   };
 

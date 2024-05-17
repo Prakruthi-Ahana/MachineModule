@@ -15,7 +15,7 @@ export default function ProgramInfoForms({
   getMachineTaskData,
   setMachinetaskdata,
 }) {
-  const { setHasBOM, shiftSelected } = useGlobalContext();
+  const { setHasBOM, shiftSelected,formdata } = useGlobalContext();
   const [loadProgramInfo, setloadProgramInfo] = useState(false);
   const [programComplete, setProgramComplete] = useState(false);
   const [complete, setComplete] = useState(false);
@@ -35,12 +35,10 @@ export default function ProgramInfoForms({
     setOpenTable(false);
   };
 
-  // console.log("complete",complete);
 
   //Load Program
   const [rpTopData, setRptTopData] = useState([]);
   const [openTable, setOpenTable] = useState(false);
-  let newNcid = "";
   const handleButtonClick = () => {
     axios
       .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
@@ -49,17 +47,8 @@ export default function ProgramInfoForms({
       .then((response) => {
         setRptTopData(response.data);
       });
-    axios
-      .post(baseURL + "/ShiftOperator/getNCId", {
-        shiftSelected,
-      })
-      .then((response) => {
-        if (response.data && response.data.length > 0) {
-          newNcid = response.data[0].Ncid;
-
-          // Move the following code inside the if condition
           // console.log(selectProductionReport.Ncid, newNcid);
-          if (selectProductionReport.Ncid === newNcid) {
+          if (selectProductionReport.NCProgramNo === formdata?.NCProgramNo) {
             toast.error(
               "Program Currently Being Processed, Use Current Program Window To Update Values",
               {
@@ -68,12 +57,7 @@ export default function ProgramInfoForms({
             );
           } else {
             setOpenTable(true);
-          }
-        } else {
-          // If response.data is empty, execute setOpenTable(true)
-          setOpenTable(true);
-        }
-      });
+        } 
   };
 
   const handleSubmit = () => {
@@ -195,15 +179,11 @@ export default function ProgramInfoForms({
   const convertMinutesToTime = (minutes) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-
-    if (hours === 0 && mins === 0) {
-      return "0 Hours 0 Min";
-    }
-
-    const hoursString = hours > 0 ? `${hours} Hours` : "";
-    const minsString = mins > 0 ? `${mins} Min` : "";
-
-    return `${hoursString} ${minsString}`.trim();
+  
+    const hoursString = `${hours} Hours`;
+    const minsString = `${mins} Min`;
+  
+    return `${hoursString} ${minsString}`;
   };
 
   return (
