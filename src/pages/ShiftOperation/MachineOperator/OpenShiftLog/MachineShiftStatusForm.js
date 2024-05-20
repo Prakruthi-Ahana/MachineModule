@@ -187,7 +187,7 @@ export default function MachineShiftStatusForm({
           <div className="d-flex">
             <button
               className="button-style group-button mb-2"
-              style={{ width: "80px", marginLeft: "17px" }}
+              style={{ width: "50px", marginLeft: "10px" }}
               onClick={toggleInput}
             >
               Select{" "}
@@ -195,9 +195,9 @@ export default function MachineShiftStatusForm({
                 <div
                   className="col-md-12"
                   style={{
-                    marginLeft: "120px",
-                    marginTop: "-25px",
-                    width: "140px",
+                    marginLeft: "50px",
+                    marginTop: "-20px",
+                    width: "280%",
                   }}
                 >
                   <select className="ip-select" onChange={handleShiftIncharge}>
