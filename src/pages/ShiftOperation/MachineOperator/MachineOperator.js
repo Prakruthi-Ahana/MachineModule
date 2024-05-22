@@ -17,7 +17,7 @@ export default function MachineOperator() {
     setShiftSelected,
     setServiceTopData,
     setNcProgramId,
-    setShowTable,setSelectedProgram
+    setShowTable,setSelectedProgram,setMachinetaskdata,machineShiftStatus, setMachineShiftStatus
   } = useGlobalContext();
 
   //get Machine List
@@ -159,17 +159,29 @@ export default function MachineOperator() {
   //     });
   // };
 
+    ////
+    const countUserDefinedProperties = (obj) => {
+      let count = 0;
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key) && key !== "index") {
+          count++;
+        }
+      }
+      return count;
+    };
+  
+    const numberOfProperties = countUserDefinedProperties(selectshifttable);
+
+
   //openShiftLog Button
   const openShiftLogModal = () => {
-    // getProgramParts();
     axios
       .post(baseURL + "/ShiftOperator/getRowCounts", {
         selectshifttable,
       })
       .then((response) => {
-        console.log("reposne updated is",response.data);
         setRequiredProgram(response.data);
-        if (response.data.length!==0) {
+        if (response.data.length!==0 && numberOfProperties!==0) {
           // //ProcessTaskStatus
           // axios
           //   .post(baseURL + "/ShiftOperator/ProcessTaskStatus", {
@@ -189,11 +201,51 @@ export default function MachineOperator() {
           .then((response) => {
             setServiceTopData(response.data);
           });
-        } else {
+        }
+        else if(response.data.length===0 && numberOfProperties===0){
+          setOpenmodal(true);
+          setShiftSelected(selectshifttable);
+          serviceMiddleTableData();
+          getmiddleTbaleData();
+        }
+         else {
           navigate("OpenShiftLog", { state: { data } });
         }
       });
       setSelectedProgram({});
+      axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", {
+        MachineName: selectshifttable?.Machine,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].Qty === 0) {
+            response.data[i].rowColor = "#DC143C";
+          } else if (response.data[i].QtyAllotted === 0) {
+            response.data[i].rowColor = "#E0FFFF";
+          } else if (response.data[i].QtyCut === 0) {
+            response.data[i].rowColor = "#778899";
+          } else if (response.data[i].QtyCut === response.data[i].Qty) {
+            response.data[i].rowColor = "#008000";
+          } else if (response.data[i].QtyCut === response.data[i].QtyAllotted) {
+            response.data[i].rowColor = "#ADFF2F";
+          } else if (response.data[i].Remarks !== null) {
+            response.data[i].rowColor = "#DC143C";
+          }
+        }
+        setMachinetaskdata(response.data);
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+      });
+      axios
+      .post(baseURL + "/ShiftOperator/getmachineShiftStatus", {
+        selectshifttable,
+      })
+      .then((response) => {
+        // console.log(response.data);
+        setMachineShiftStatus(response.data);
+      });
   };
 
   const onClickofClose = () => {
@@ -203,6 +255,14 @@ export default function MachineOperator() {
   useEffect(() => {
     getmiddleTbaleData();
     serviceMiddleTableData();
+    axios
+    .post(baseURL + "/ShiftOperator/getmachineShiftStatus", {
+      selectshifttable,
+    })
+    .then((response) => {
+      // console.log(response.data);
+      setMachineShiftStatus(response.data);
+    });
   }, []);
 
   //update Machine Time
@@ -218,6 +278,9 @@ export default function MachineOperator() {
     updateMachineTime();
   }, [selectshifttable]);
 
+
+
+
   return (
     <div>
       <OpenShiftModal
@@ -229,6 +292,7 @@ export default function MachineOperator() {
         Shift={Shift}
         date={date}
         requiredProgram={requiredProgram}
+        numberOfProperties={numberOfProperties}
       />
 
       <div className="row">

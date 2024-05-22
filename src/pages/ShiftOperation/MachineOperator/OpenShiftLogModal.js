@@ -14,7 +14,7 @@ export default function OpenShiftModal({
   selectshifttable,
   Shift,
   date,
-  requiredProgram,
+  requiredProgram,numberOfProperties
 }) {
   const data = {
     selectedMachine: selectedMachine,
@@ -166,23 +166,22 @@ export default function OpenShiftModal({
     getShiftLogData();
   }, []);
 
-  const countUserDefinedProperties = (obj) => {
-    let count = 0;
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key) && key !== "index") {
-        count++;
-      }
-    }
-    return count;
-  };
+  // const countUserDefinedProperties = (obj) => {
+  //   let count = 0;
+  //   for (let key in obj) {
+  //     if (obj.hasOwnProperty(key) && key !== "index") {
+  //       count++;
+  //     }
+  //   }
+  //   return count;
+  // };
 
-  const numberOfProperties = countUserDefinedProperties(selectshifttable);
 
   const handleCloseOk = () => {
     setOpenmodal(false);
   };
 
-  // console.log(requiredProgram[0]?.NCProgarmNo)
+  console.log(numberOfProperties)
 
   return (
     <div>

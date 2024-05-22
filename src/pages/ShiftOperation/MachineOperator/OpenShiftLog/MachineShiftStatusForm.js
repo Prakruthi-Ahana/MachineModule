@@ -151,6 +151,8 @@ export default function MachineShiftStatusForm({
     getMachineShiftStatusForm();
   }, []);
 
+  // console.log("Current",machineShiftStatus[0]?.Operator);
+
   return (
     <>
       <div className="">
@@ -172,12 +174,12 @@ export default function MachineShiftStatusForm({
               <div style={{ marginLeft: "5px" }}>
                 <div style={{ marginTop: "-8px" }}>
                   <label className="form-label">
-                    Operator : {selectshifttable.Operator}{" "}
+                    Operator : {selectshifttable?.Operator}
                   </label>
                 </div>
                 <div style={{ marginTop: "-8px" }}>
                   <label className="form-label">
-                    Current : {machineShiftStatus[0]?.Operator}{" "}
+                    Current : {machineShiftStatus[0]?.Operator}
                   </label>
                 </div>
               </div>

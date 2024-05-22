@@ -296,147 +296,160 @@ export default function MaterialUsageService({
   //onclick of mark as returned
   const markasReturned = () => {
     axios
-      .post(baseURL + "/ShiftOperator/getNcProgramId", {
-        NcId: selectProductionReport.Ncid,
-      })
-      .then((response) => {
-        const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
-        setNC_Pgme_Part_ID(ncPgmePartId);
+    .post(baseURL + "/ShiftOperator/getNcProgramId", {
+      NcId: selectProductionReport.Ncid,
+    })
+    .then((response) => {
+      const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
+      console.log("ncPgmePartId is",response.data[0].NC_Pgme_Part_ID);
+      setNC_Pgme_Part_ID(ncPgmePartId);
 
-        if (issuesets < 0) {
-          toast.error("Enter a Positive Number", {
+      if (issuesets < 0) {
+        toast.error("Enter a Positive Number", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        // Check if toCompareData is null or empty
+        if (!toCompareData || toCompareData.length === 0) {
+          toast.error("Parts Quantity  mismatch", {
             position: toast.POSITION.TOP_CENTER,
           });
-        } else {
-          // Check if toCompareData is null or empty
-          if (!toCompareData || toCompareData.length === 0) {
-            toast.error("Parts Quantity is null or mismatch", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-            return;
-          }
-
-          const flattenedToCompareData = toCompareData.flat();
-          let hasValidationError = false;
-
-          const updatedservicedata = servicedata.map((item) => {
-            const match = flattenedToCompareData.find(
-              (data) => data.Cust_BOM_ListId === item.CustBOM_Id
-            );
-
-            if (match) {
-              const qtyToDistribute = issuesets * match.Quantity;
-              const useNow = issuesets * match.Quantity;
-
-              // Check if the quantity to be used exceeds the available quantity
-              const remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
-              if (remainingQty < 0 || qtyToDistribute !== useNow) {
-                hasValidationError = true;
-                return item; // Do not update state if validation fails
-              }
-
-              const updatedItem = {
-                ...item,
-                qtyToDistribute: qtyToDistribute,
-                useNow: useNow,
-                QtyReturned: useNow,
-              };
-
-              const existingSendObjectIndex = sendobject.findIndex(
-                (obj) => obj.CustBOM_Id === item.CustBOM_Id
-              );
-              if (existingSendObjectIndex !== -1) {
-                sendobject[existingSendObjectIndex] = {
-                  ...sendobject[existingSendObjectIndex],
-                  ...updatedItem,
-                  NC_Pgme_Part_ID: ncPgmePartId,
-                  issuesets: issuesets,
-                  NcId: NcId,
-                };
-              } else {
-                sendobject.push({
-                  ...updatedItem,
-                  NC_Pgme_Part_ID: ncPgmePartId,
-                  issuesets: issuesets,
-                  NcId: NcProgramId,
-                });
-              }
-
-              return updatedItem;
-            } else {
-              // console.log(`Row ${item.CustBOM_Id}: No match found`);
-              return item;
-            }
-          });
-
-          // Display a single Toastify error message if there are errors
-          if (hasValidationError) {
-            toast.error("Cannot Use More Parts than issued Quantity", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-            return;
-          }
-          setSendObject(sendobject);
-          axios
-            .post(baseURL + "/ShiftOperator/markasReturned", {
-              sendobject,
-            })
-            .then((response) => {
-              toast.success("Material Parts Returned", {
-                position: toast.POSITION.TOP_CENTER,
-              });
-              // console.log(response.data);
-              axios
-                .post(baseURL + "/ShiftOperator/MachineTasksService", {
-                  NCId: selectProductionReport.Ncid,
-                })
-                .then((response) => {
-                  // console.log("required result", response.data);
-                  setService(response?.data);
-                  const data = response.data;
-                  let count = 0;
-
-                  // Iterate through each object in the response data
-                  data.forEach((item) => {
-                    // Check if Used or Rejected is zero
-                    if (item.Used === 1 || item.Rejected === 1) {
-                      count++;
-                    }
-                  });
-
-                  // Output the count
-
-                  // console.log("Number of objects with Used or Rejected as zero:", count);
-                  // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
-
-                  // If count equals selectProductionReport.Qty, setComplete(true)
-                  if (count === selectProductionReport.Qty) {
-                    console.log("conditon 1");
-                    setComplete(true);
-                  } else {
-                    console.log("conditon 2");
-                    setComplete(false);
-                  }
-
-                  // If count is greater than 0, another row is incremented
-                  if (count > 0) {
-                    // Increment another row
-                  }
-                });
-              axios
-                .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
-                  NCId: selectProductionReport?.Ncid,
-                })
-                .then((response) => {
-                  // console.log(response.data);
-                  setRptTopData(response.data);
-                });
-            });
+          return;
         }
-      })
-      .catch((error) => {
-        console.error("Error in axios request", error);
-      });
+
+        const flattenedToCompareData = toCompareData.flat();
+        let hasValidationError = false;
+
+        const updatedservicedata = servicedata.map((item) => {
+          const match = flattenedToCompareData.find(
+            (data) => data.Cust_BOM_ListId === item.CustBOM_Id
+          );
+
+          if (match) {
+            const qtyToDistribute = issuesets * match.Quantity;
+            const useNow = issuesets * match.Quantity;
+
+            // Check if the quantity to be used exceeds the available quantity
+            const remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
+            // console.log("QtyIssued is",item.QtyIssued,"QtyUsed is",item.QtyUsed,"issuesets is",issuesets,"remainingQty is",remainingQty);
+            if (remainingQty < 0 || qtyToDistribute !== useNow) {
+              console.log("remainingQty is",remainingQty,"qtyToDistribute is",qtyToDistribute,"useNow is",useNow);
+              console.log("selectProductionReport.Ncid is",selectProductionReport.Ncid)
+              hasValidationError = true;
+              return item; // Do not update state if validation fails
+            }
+
+            const updatedItem = {
+              ...item,
+              qtyToDistribute: qtyToDistribute,
+              useNow: useNow,
+              QtyReturned: useNow,
+            };
+
+            const existingSendObjectIndex = sendobject.findIndex(
+              (obj) => obj.CustBOM_Id === item.CustBOM_Id
+            );
+            if (existingSendObjectIndex !== -1) {
+              sendobject[existingSendObjectIndex] = {
+                ...sendobject[existingSendObjectIndex],
+                ...updatedItem,
+                NC_Pgme_Part_ID: ncPgmePartId,
+                issuesets: issuesets,
+                NcId: selectProductionReport.Ncid,
+              };
+            } else {
+              sendobject.push({
+                ...updatedItem,
+                NC_Pgme_Part_ID: ncPgmePartId,
+                issuesets: issuesets,
+                NcId: selectProductionReport.Ncid,
+              });
+            }
+
+            return updatedItem;
+          } else {
+            // console.log(`Row ${item.CustBOM_Id}: No match found`);
+            return item;
+          }
+        });
+
+        // Display a single Toastify error message if there are errors
+        if (hasValidationError) {
+          toast.error("Parts Quantity mismatch", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          return;
+        }
+        setSendObject(sendobject);
+        axios
+          .post(baseURL + "/ShiftOperator/markasReturned", {
+            sendobject,
+          })
+          .then((response) => {
+            toast.success("Material Parts Returned", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+            // console.log(response.data);
+            axios
+              .post(baseURL + "/ShiftOperator/MachineTasksService", {
+                NCId: selectProductionReport.Ncid,
+              })
+              .then((response) => {
+                // console.log("required result", response.data);
+                setService(response?.data);
+                const data = response.data;
+                let count = 0;
+
+                // Iterate through each object in the response data
+                data.forEach((item) => {
+                  // Check if Used or Rejected is zero
+                  if (item.Used === 1 || item.Rejected === 1) {
+                    count++;
+                  }
+                });
+
+                // Output the count
+
+                // console.log("Number of objects with Used or Rejected as zero:", count);
+                // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
+
+                // If count equals selectProductionReport.Qty, setComplete(true)
+                if (count === selectProductionReport.Qty) {
+                  console.log("conditon 1");
+                  setComplete(true);
+                } else {
+                  console.log("conditon 2");
+                  setComplete(false);
+                }
+
+                // If count is greater than 0, another row is incremented
+                if (count > 0) {
+                  // Increment another row
+                }
+              });
+            axios
+              .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
+                NCId: selectProductionReport?.Ncid,
+              })
+              .then((response) => {
+                // console.log(response.data);
+                setRptTopData(response.data);
+                axios
+                  .post(baseURL + "/ShiftOperator/getpartDetails", {
+                    selectProductionReport,
+                  })
+                  .then((response) => {
+                    // console.log("excuted data refresh func");
+                    setPartDetailsData(response.data);
+                  });
+                getMachineTaskAfterMU();
+              });
+          });
+      }
+    })
+    .catch((error) => {
+      console.error("Error in axios request", error);
+    });
   };
 
   // console.log(selectedRowService)

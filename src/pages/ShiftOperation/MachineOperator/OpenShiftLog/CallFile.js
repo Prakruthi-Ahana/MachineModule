@@ -29,7 +29,7 @@ export default function CallFile() {
     setAfterloadService,
     setServiceTopData,
     showTable,
-    setShowTable,getMachinetaskdata, setMachinetaskdata
+    setShowTable,getMachinetaskdata, setMachinetaskdata,machineShiftStatus, setMachineShiftStatus
   } = useGlobalContext();
 
   const [afterloadProgram, setAfterloadProgram] = useState([]);
@@ -62,7 +62,6 @@ export default function CallFile() {
       });
   };
 
-  const [machineShiftStatus, setMachineShiftStatus] = useState([]);
   const getMachineShiftStatusForm = () => {
     // console.log(selectshifttable);
     axios
