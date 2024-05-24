@@ -38,22 +38,26 @@ export default function ProgrmMatrlTableProfile({
 
   const filterUnusedData = () => {
     // Filter the ProductionReportData array to show only rows where Used and Rejected are both 0
-    const filteredData = afterRefreshData.filter((data) => data.Used === 0);
+    const filteredData = afterRefreshData.filter((data) => data.Used === 0 && data.Rejected===0);
     setOriginalData(afterRefreshData); // Save the original data
     setAfterRefreshData(filteredData); // Update the filtered data
     setIsDataFiltered(true); // Set the flag to indicate data is filtered
+    setSelectedMtrlTable([]);
   };
+
   const resetData = () => {
     setAfterRefreshData(originalData); // Restore the original data
     setIsDataFiltered(false); // Clear the data filtered flag
   };
 
   const handleCheckBoxChange = () => {
-    setIsCheckboxchecked(!isCheckboxchecked);
-    if (isCheckboxchecked) {
-      setAllModal(true);
-    } else {
+    const newCheckedState = !isCheckboxchecked;
+    setIsCheckboxchecked(newCheckedState);
+
+    if (newCheckedState) {
       setShowusedModal(true);
+    } else {
+      setAllModal(true);
     }
   };
 
@@ -158,6 +162,7 @@ export default function ProgrmMatrlTableProfile({
             setProgramPartsData(response.data);
           });
         setSelectedMtrlTable([]);
+        // setIsCheckboxchecked(false);              
       })
       .then(() => {
         // Fetch data after marking as used
@@ -166,6 +171,7 @@ export default function ProgrmMatrlTableProfile({
             NCProgramNo: ProgramNo,
           })
           .then((response) => {
+            setIsCheckboxchecked(false);  // Clear the data filtered flag
             // console.log("required result", response.data);
             setAfterRefreshData(response?.data);
             if (!response.data) {
@@ -231,16 +237,17 @@ export default function ProgrmMatrlTableProfile({
           });
           setRejectedReasonState({});
           setSelectedMtrlTable([]);
+          // setIsCheckboxchecked(false);               
           axios
             .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
               NCProgramNo: ProgramNo,
             })
             .then((response) => {
-              // console.log("required result", response.data);
+              setIsCheckboxchecked(false);             
               setAfterRefreshData(response?.data);
               if (!response.data) {
                 setAfterRefreshData([]);
-              }
+                }
             });
             getMachineTaskAfterMU();
         })
@@ -325,6 +332,7 @@ const handleSelectAll = () => {
                   <input
                     type="checkbox"
                     className="col-md-4"
+                    checked={isCheckboxchecked}
                     onChange={handleCheckBoxChange}
                     style={{marginLeft:'-20px'}}
                   />

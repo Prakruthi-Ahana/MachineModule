@@ -24,6 +24,8 @@ export default function LaserCutForm({
   //  const[showModal,setShowModal]=useState(false);
   const [markasUsed, setMarkasUsed] = useState(false);
   const [rowsRejected, setRowsRejected] = useState(false);
+  const [isCheckboxchecked, setIsCheckboxchecked] = useState(false);
+
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -112,22 +114,33 @@ export default function LaserCutForm({
   const [isDataFiltered, setIsDataFiltered] = useState(false);
 
   const filterUnusedData = () => {
-    const filteredData = ProductionReportData.filter((data) => data.Used === 0);
+    const filteredData = ProductionReportData.filter((data) => data.Used === 0 && data.Rejected===0);
     setOriginalData(ProductionReportData); // Save the original data
     setProductionReportData(filteredData); // Update the filtered data
     setIsDataFiltered(true); // Set the flag to indicate data is filtered
+    setSelectdefaultRow([])
   };
+
   const resetData = () => {
     setProductionReportData(originalData); // Restore the original data
     setIsDataFiltered(false); // Clear the data filtered flag
   };
 
   const handleCheckBox = () => {
-    setChecked(!checked);
-    if (checked) {
-      setAllModal(true);
-    } else {
+    // setChecked(!checked);
+    // if (checked) {
+    //   setAllModal(true);
+    // } else {
+    //   setShowUnused(true);
+    // }
+
+    const newCheckedState = !isCheckboxchecked;
+    setIsCheckboxchecked(newCheckedState);
+
+    if (newCheckedState) {
       setShowUnused(true);
+    } else {
+      setAllModal(true);
     }
   };
 
@@ -194,6 +207,7 @@ export default function LaserCutForm({
           .then((response) => {
             // console.log("excuted data refresh func");
             setPartDetailsData(response.data);
+            setIsCheckboxchecked(false);              
           });
         getMachineTaskAfterMU();
         axios
@@ -269,6 +283,7 @@ export default function LaserCutForm({
         });
         MaterialUsage();
         getMachineTaskAfterMU();
+        setIsCheckboxchecked(false);              
       })
       .catch((err) => {
         toast.error("An error occurred while updating reject reason", {
@@ -351,6 +366,7 @@ export default function LaserCutForm({
                   <input
                     type="checkbox"
                     className="col-md-2"
+                    checked={isCheckboxchecked}
                     onChange={handleCheckBox}
                   />
                   <label

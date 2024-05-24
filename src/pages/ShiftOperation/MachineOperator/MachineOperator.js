@@ -278,7 +278,20 @@ export default function MachineOperator() {
     updateMachineTime();
   }, [selectshifttable]);
 
+  //FromTime
+  const FT = selectshifttable?.FromTime?.split(' ') || [];
+  const FromTime = FT[1] !== undefined ? FT[1] : 
+                   Shift === "First" ? "6:00:00" : 
+                   Shift === "Second" ? "14:00:00" : 
+                   Shift === "Third" ? "22:00:00" : "";
 
+   //To Time      
+   const TT = selectshifttable?.ToTime?.split(' ') || [];
+   const ToTime = TT[1] !== undefined ? TT[1] : 
+                    Shift === "First" ? "14:00:00" : 
+                    Shift === "Second" ? "22:00:00" : 
+                    Shift === "Third" ? "6:00:00" : "";    
+                    
 
 
   return (
@@ -432,7 +445,7 @@ export default function MachineOperator() {
             style={{ display: "flex", gap: "40px", marginLeft: "-50px" }}
           >
             <label className="form-label">Shift</label>
-            <label className="form-label">{Shift}</label>
+            <label className="form-label">{selectshifttable.Shift=== undefined ? Shift : selectshifttable.Shift}</label>
           </div>
         </div>
         <div></div>
@@ -446,13 +459,7 @@ export default function MachineOperator() {
             <label className="form-label">{finalDay1}</label>
             <label className="form-label">
               <div>
-                {Shift === "First" ? (
-                  <p>6:00:00</p>
-                ) : Shift === "Second" ? (
-                  <p>14:00:00</p>
-                ) : Shift === "Third" ? (
-                  <p>22:00:00</p>
-                ) : null}
+                {FromTime}
               </div>
             </label>
           </div>
@@ -464,13 +471,7 @@ export default function MachineOperator() {
             <label className="form-label">{finalDay1}</label>
             <label className="form-label">
               <div>
-                {Shift === "First" ? (
-                  <p>14:00:00</p>
-                ) : Shift === "Second" ? (
-                  <p>22:00:00</p>
-                ) : Shift === "Third" ? (
-                  <p>6:00:00</p>
-                ) : null}
+                {ToTime}
               </div>
             </label>
           </div>
