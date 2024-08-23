@@ -79,7 +79,7 @@ export default function Form1({
 
   let ProgramNo = formdata?.NCProgramNo;
   const loadProgramSubmit = () => {
-    // console.log(selectedMtrlTable.length);
+    // console.log(selectedMtrlTable);
     if (selectedMtrlTable.length < 1) {
       toast.error("Please Select a Material", {
         position: toast.POSITION.TOP_CENTER,
@@ -98,7 +98,6 @@ export default function Form1({
   // console.log("selectedMtrlTable is",selectedMtrlTable)
 
   const onclickofYes = () => {
-    // console.log("selectedMtrlTable is",selectedMtrlTable)
     axios
       .post(baseURL + "/ShiftOperator/loadMaterial", {
         selectedMtrlTable,
@@ -111,6 +110,7 @@ export default function Form1({
       });
     setLoadProgram(false);
     getMachineShiftStatusForm();
+    setSelectedMtrlTable([]);
   };
 
   // Utility function to convert minutes to "hh:mm" format
@@ -167,8 +167,12 @@ export default function Form1({
     updateMachineTime1();
   }, [formdata?.ActualTime, timeDiffInMinutes]);
 
-  // console.log("MachineTime is",MachineTime);
+  useEffect(() => {
+    getMachineShiftStatusForm();
+  }, []);
 
+
+  console.log("formdata is",formdata);
   return (
     <>
       <div>

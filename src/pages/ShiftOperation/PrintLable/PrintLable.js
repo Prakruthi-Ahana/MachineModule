@@ -14,6 +14,7 @@ export default function PrintLabel() {
       .post(baseURL + "/printLabel/getTabledata", { NcProgramNo: ncprogramNo })
       .then((response) => {
         setPrintLabelData(response.data);
+        setSelectedRows([]);
       })
       .catch((error) => {
         console.error("Error occurred:", error);

@@ -14,6 +14,8 @@ export default function MachineShiftStatusForm({
 }) {
   const { selectedProgram } = useGlobalContext();
 
+  console.log("machineShiftStatus is",machineShiftStatus);
+
   var count = 0;
   const [isInputVisible, setInputVisible] = useState(false);
 
@@ -152,6 +154,10 @@ export default function MachineShiftStatusForm({
   }, []);
 
   // console.log("Current",machineShiftStatus[0]?.Operator);
+
+  useEffect(() => {
+    getMachineShiftStatusForm();
+  }, []);
 
   return (
     <>

@@ -151,6 +151,7 @@ export default function ProgrmMatrlTableProfile({
       .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
         selectedMtrlTable: selectedMtrlTable,
         selectedMachine: selectedMachine,
+        formdata
       })
       .then(() => {
         axios

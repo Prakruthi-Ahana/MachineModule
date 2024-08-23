@@ -198,6 +198,7 @@ export default function LaserCutForm({
       .post(baseURL + "/ShiftOperator/markAsUsedProductionReport", {
         selectdefaultRow,
         selectedMachine: selectshifttable?.Machine,
+        selectProductionReport
       })
       .then((response) => {
         axios
