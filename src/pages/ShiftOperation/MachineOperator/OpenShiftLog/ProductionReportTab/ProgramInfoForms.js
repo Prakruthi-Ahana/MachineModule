@@ -85,6 +85,7 @@ export default function ProgramInfoForms({
 
   //mark as Completed
   const programCompleteSubmit = async () => {
+    console.log("complete is",complete);
     try {
       const response = await axios.post(baseURL + "/ShiftOperator/getNCId", {
         shiftSelected,

@@ -172,7 +172,6 @@ export default function Form1({
   }, []);
 
 
-  console.log("formdata is",formdata);
   return (
     <>
       <div>

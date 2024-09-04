@@ -14,7 +14,6 @@ export default function MachineShiftStatusForm({
 }) {
   const { selectedProgram } = useGlobalContext();
 
-  console.log("machineShiftStatus is",machineShiftStatus);
 
   var count = 0;
   const [isInputVisible, setInputVisible] = useState(false);

@@ -21,6 +21,8 @@ export default function LaserCutForm({
 }) {
   const { NcId, partDetailsData, setPartDetailsData } = useGlobalContext();
 
+
+
   //  const[showModal,setShowModal]=useState(false);
   const [markasUsed, setMarkasUsed] = useState(false);
   const [rowsRejected, setRowsRejected] = useState(false);
@@ -145,6 +147,7 @@ export default function LaserCutForm({
   };
 
   const MaterialUsage = () => {
+    console.log("this func is called");
     axios
       .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
         NCId: selectProductionReportData,
@@ -157,18 +160,18 @@ export default function LaserCutForm({
         // Iterate through each object in the response data
         data.forEach((item) => {
           // Check if Used or Rejected is zero
-          if (item.Used === 1 || item.Rejected === 1) {
+          if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
             count++;
           }
         });
 
         // Output the count
+// 
+        console.log("Number of objects with Used or Rejected as zero:", count);
+        console.log("selectProductionReport.QtyAllotted",selectProductionReport.QtyAllotted);
+        console.log("selectProductionReport is,",selectProductionReport);
 
-        // console.log("Number of objects with Used or Rejected as zero:", count);
-        // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
-
-        // If count equals selectProductionReport.Qty, setComplete(true)
-        if (count === selectProductionReport.Qty) {
+        if (count === selectProductionReport.QtyAllotted) {
           // console.log("conditon 1")
           setComplete(true);
         } else {
@@ -223,7 +226,7 @@ export default function LaserCutForm({
             // Iterate through each object in the response data
             data.forEach((item) => {
               // Check if Used or Rejected is zero
-              if (item.Used === 1 || item.Rejected === 1) {
+              if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
                 count++;
               }
             });
@@ -231,10 +234,9 @@ export default function LaserCutForm({
             // Output the count
 
             // console.log("Number of objects with Used or Rejected as zero:", count);
-            // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
 
             // If count equals selectProductionReport.Qty, setComplete(true)
-            if (count === selectProductionReport.Qty) {
+            if (count === selectProductionReport.QtyAllotted) {
               // console.log("conditon 1")
               setComplete(true);
             } else {
@@ -254,6 +256,25 @@ export default function LaserCutForm({
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    const data = ProductionReportData;
+    let count = 0;
+     // Iterate through each object in the response data
+     data.forEach((item) => {
+      // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
+       if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
+         count++;
+       }
+     });
+     // If count equals selectProductionReport.Qty, setComplete(true)
+     if (count === selectProductionReport.QtyAllotted) {
+       setComplete(true);
+     } else {
+       setComplete(false);
+     }
+     MaterialUsage();
+  }, []);
 
   //mark as Reject
   const [RejecteReason, setRejectReason] = useState({});

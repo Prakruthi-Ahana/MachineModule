@@ -16,6 +16,8 @@ export default function MaterialUsageService({
 }) {
   const { NcId, NcProgramId, setPartDetailsData } = useGlobalContext();
 
+  console.log("this is the page");
+
   const [servicedata, setService] = useState([]);
   const [selectedRowService, setSelectedRowService] = useState({});
   const [issuesets, setIssueSets] = useState("");
@@ -54,35 +56,30 @@ export default function MaterialUsageService({
   }, []);
 
   const materialUsageService = () => {
+    console.log("function is fucn")
     axios
       .post(baseURL + "/ShiftOperator/MachineTasksService", {
         NCId: selectProductionReport.Ncid,
       })
       .then((response) => {
-        console.log(response.data);
         setService(response.data);
         const data = response.data;
         let count = 0;
 
+
         // Iterate through each object in the response data
         data.forEach((item) => {
-          // Check if Used or Rejected is zero
-          if (item.Used === 1 || item.Rejected === 1) {
+         // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
+          if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
             count++;
           }
         });
-
-        // Output the count
-
-        // console.log("Number of objects with Used or Rejected as zero:", count);
-        // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
+        
 
         // If count equals selectProductionReport.Qty, setComplete(true)
-        if (count === selectProductionReport.Qty) {
-          console.log("conditon 1");
+        if (count === selectProductionReport.QtyAllotted) {
           setComplete(true);
         } else {
-          console.log("conditon 2");
           setComplete(false);
         }
 
@@ -94,8 +91,25 @@ export default function MaterialUsageService({
   };
 
   useEffect(() => {
+    const data = servicedata;
+    let count = 0;
+     // Iterate through each object in the response data
+     data.forEach((item) => {
+      // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
+       if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
+         count++;
+       }
+     });
+     
+
+     // If count equals selectProductionReport.QtyAllotted, setComplete(true)
+     if (count === selectProductionReport.QtyAllotted) {
+       setComplete(true);
+     } else {
+       setComplete(false);
+     }
     materialUsageService();
-  }, [selectProductionReport]);
+  }, []);
 
   const rowSelectServiceRP = (item, index) => {
     let list = { ...item, index: index };
@@ -244,7 +258,7 @@ export default function MaterialUsageService({
                   // Iterate through each object in the response data
                   data.forEach((item) => {
                     // Check if Used or Rejected is zero
-                    if (item.Used === 1 || item.Rejected === 1) {
+                    if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
                       count++;
                     }
                   });
@@ -252,14 +266,11 @@ export default function MaterialUsageService({
                   // Output the count
 
                   // console.log("Number of objects with Used or Rejected as zero:", count);
-                  // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
 
                   // If count equals selectProductionReport.Qty, setComplete(true)
-                  if (count === selectProductionReport.Qty) {
-                    console.log("conditon 1");
+                  if (count === selectProductionReport.QtyAllotted) {
                     setComplete(true);
                   } else {
-                    console.log("conditon 2");
                     setComplete(false);
                   }
 
@@ -301,7 +312,6 @@ export default function MaterialUsageService({
     })
     .then((response) => {
       const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
-      console.log("ncPgmePartId is",response.data[0].NC_Pgme_Part_ID);
       setNC_Pgme_Part_ID(ncPgmePartId);
 
       if (issuesets < 0) {
@@ -333,8 +343,6 @@ export default function MaterialUsageService({
             const remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
             // console.log("QtyIssued is",item.QtyIssued,"QtyUsed is",item.QtyUsed,"issuesets is",issuesets,"remainingQty is",remainingQty);
             if (remainingQty < 0 || qtyToDistribute !== useNow) {
-              console.log("remainingQty is",remainingQty,"qtyToDistribute is",qtyToDistribute,"useNow is",useNow);
-              console.log("selectProductionReport.Ncid is",selectProductionReport.Ncid)
               hasValidationError = true;
               return item; // Do not update state if validation fails
             }
@@ -403,22 +411,16 @@ export default function MaterialUsageService({
                 // Iterate through each object in the response data
                 data.forEach((item) => {
                   // Check if Used or Rejected is zero
-                  if (item.Used === 1 || item.Rejected === 1) {
+                  if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
                     count++;
                   }
                 });
 
-                // Output the count
-
-                // console.log("Number of objects with Used or Rejected as zero:", count);
-                // console.log("selectProductionReport.Qty",selectProductionReport.Qty);
 
                 // If count equals selectProductionReport.Qty, setComplete(true)
-                if (count === selectProductionReport.Qty) {
-                  console.log("conditon 1");
+                if (count === selectProductionReport.QtyAllotted) {
                   setComplete(true);
                 } else {
-                  console.log("conditon 2");
                   setComplete(false);
                 }
 
@@ -452,7 +454,6 @@ export default function MaterialUsageService({
     });
   };
 
-  // console.log(selectedRowService)
 
   //sorting
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
