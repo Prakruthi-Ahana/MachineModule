@@ -21,8 +21,6 @@ export default function LaserCutForm({
 }) {
   const { NcId, partDetailsData, setPartDetailsData } = useGlobalContext();
 
-
-
   //  const[showModal,setShowModal]=useState(false);
   const [markasUsed, setMarkasUsed] = useState(false);
   const [rowsRejected, setRowsRejected] = useState(false);
@@ -147,7 +145,6 @@ export default function LaserCutForm({
   };
 
   const MaterialUsage = () => {
-    console.log("this func is called");
     axios
       .post(baseURL + "/ShiftOperator/MachineTasksProfile", {
         NCId: selectProductionReportData,
@@ -167,9 +164,6 @@ export default function LaserCutForm({
 
         // Output the count
 // 
-        console.log("Number of objects with Used or Rejected as zero:", count);
-        console.log("selectProductionReport.QtyAllotted",selectProductionReport.QtyAllotted);
-        console.log("selectProductionReport is,",selectProductionReport);
 
         if (count === selectProductionReport.QtyAllotted) {
           // console.log("conditon 1")
@@ -197,7 +191,15 @@ export default function LaserCutForm({
 
   //Mark as Used Button
   const handleMarkasUsed = () => {
-    axios
+    const isTubeCutting = selectProductionReport.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
+
+    if(isTubeCutting && ProductionReportData.length !== selectdefaultRow.length){
+      toast.error("Please Select ALL for tube Cutting", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    else{
+      axios
       .post(baseURL + "/ShiftOperator/markAsUsedProductionReport", {
         selectdefaultRow,
         selectedMachine: selectshifttable?.Machine,
@@ -211,7 +213,10 @@ export default function LaserCutForm({
           .then((response) => {
             // console.log("excuted data refresh func");
             setPartDetailsData(response.data);
-            setIsCheckboxchecked(false);              
+            setIsCheckboxchecked(false);    
+             toast.success("success", {
+          position: toast.POSITION.TOP_CENTER,
+        });          
           });
         getMachineTaskAfterMU();
         axios
@@ -255,6 +260,8 @@ export default function LaserCutForm({
       .catch((err) => {
         console.log(err);
       });
+    }
+     
   };
 
   useEffect(() => {

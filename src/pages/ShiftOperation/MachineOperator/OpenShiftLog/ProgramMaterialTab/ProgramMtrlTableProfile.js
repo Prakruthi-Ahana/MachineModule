@@ -30,6 +30,8 @@ export default function ProgrmMatrlTableProfile({
     setProgramPartsData,setFormData
   } = useGlobalContext();
 
+  console.log("formdata is",formdata.Operation);
+
   const [showusedModal, setShowusedModal] = useState(false);
   const [allModal, setAllModal] = useState(false);
   const [isCheckboxchecked, setIsCheckboxchecked] = useState(false);
@@ -147,7 +149,14 @@ export default function ProgrmMatrlTableProfile({
   },[]);
   
   const handleMarkasUsed = () => {
-    axios
+    const isTubeCutting = formdata.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
+    if(isTubeCutting && selectedMtrlTable.length !== afterRefreshData.length){
+      toast.error("Please Select ALL for tube Cutting", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    else{
+      axios
       .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
         selectedMtrlTable: selectedMtrlTable,
         selectedMachine: selectedMachine,
@@ -198,6 +207,7 @@ export default function ProgrmMatrlTableProfile({
       .catch((err) => {
         console.error(err);
       });
+    }
   };
 
  
