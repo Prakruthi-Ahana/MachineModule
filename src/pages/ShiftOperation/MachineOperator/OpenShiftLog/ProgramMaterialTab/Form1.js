@@ -110,7 +110,7 @@ export default function Form1({
       });
     setLoadProgram(false);
     getMachineShiftStatusForm();
-    setSelectedMtrlTable([]);
+    // setSelectedMtrlTable([]);
   };
 
   // Utility function to convert minutes to "hh:mm" format

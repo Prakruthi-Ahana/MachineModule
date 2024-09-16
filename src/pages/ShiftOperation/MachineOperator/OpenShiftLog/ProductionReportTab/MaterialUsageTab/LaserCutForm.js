@@ -191,14 +191,14 @@ export default function LaserCutForm({
 
   //Mark as Used Button
   const handleMarkasUsed = () => {
-    const isTubeCutting = selectProductionReport.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
+    // const isTubeCutting = selectProductionReport.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
 
-    if(isTubeCutting && ProductionReportData.length !== selectdefaultRow.length){
-      toast.error("Please Select ALL for tube Cutting", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
-    else{
+    // if(isTubeCutting && ProductionReportData.length !== selectdefaultRow.length){
+    //   toast.error("Please Select ALL for tube Cutting", {
+    //     position: toast.POSITION.TOP_CENTER,
+    //   });
+    // }
+    // else{
       axios
       .post(baseURL + "/ShiftOperator/markAsUsedProductionReport", {
         selectdefaultRow,
@@ -260,7 +260,7 @@ export default function LaserCutForm({
       .catch((err) => {
         console.log(err);
       });
-    }
+    // }
      
   };
 

@@ -149,13 +149,13 @@ export default function ProgrmMatrlTableProfile({
   },[]);
   
   const handleMarkasUsed = () => {
-    const isTubeCutting = formdata.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
-    if(isTubeCutting && selectedMtrlTable.length !== afterRefreshData.length){
-      toast.error("Please Select ALL for tube Cutting", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    }
-    else{
+    // const isTubeCutting = formdata.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
+    // if(isTubeCutting && selectedMtrlTable.length !== afterRefreshData.length){
+    //   toast.error("Please Select ALL for tube Cutting", {
+    //     position: toast.POSITION.TOP_CENTER,
+    //   });
+    // }
+    // else{
       axios
       .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
         selectedMtrlTable: selectedMtrlTable,
@@ -207,7 +207,7 @@ export default function ProgrmMatrlTableProfile({
       .catch((err) => {
         console.error(err);
       });
-    }
+    // }
   };
 
  
