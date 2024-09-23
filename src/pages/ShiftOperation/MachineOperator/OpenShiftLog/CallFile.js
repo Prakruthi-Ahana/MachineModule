@@ -69,7 +69,6 @@ export default function CallFile() {
         selectshifttable,
       })
       .then((response) => {
-        // console.log(response.data);
         setMachineShiftStatus(response.data);
       });
   };

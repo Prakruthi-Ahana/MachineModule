@@ -32,7 +32,7 @@ const AuthProvider = ({ children }) => {
   const [timeDiffInMinutes, setTimeDiffInMinutes] = useState(0);
   const [getMachinetaskdata, setMachinetaskdata] = useState([]);
   const [machineShiftStatus, setMachineShiftStatus] = useState([]);
-
+  const [tubeCuttingModal,setTubeCuttingModal]=useState(false);
 
   return (
     <AppContext.Provider
@@ -47,7 +47,7 @@ const AuthProvider = ({ children }) => {
         setShiftLogDetails,
         afterRefreshData,setAfterRefreshData,
         formdata,setFormData,
-        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId,pgmNo,setPgmNo,showTable, setShowTable,programPartsData, setProgramPartsData,partDetailsData, setPartDetailsData,timeDiffInMinutes, setTimeDiffInMinutes,getMachinetaskdata, setMachinetaskdata,machineShiftStatus, setMachineShiftStatus
+        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId,pgmNo,setPgmNo,showTable, setShowTable,programPartsData, setProgramPartsData,partDetailsData, setPartDetailsData,timeDiffInMinutes, setTimeDiffInMinutes,getMachinetaskdata, setMachinetaskdata,machineShiftStatus, setMachineShiftStatus,tubeCuttingModal,setTubeCuttingModal
       }}
     >
       {children}

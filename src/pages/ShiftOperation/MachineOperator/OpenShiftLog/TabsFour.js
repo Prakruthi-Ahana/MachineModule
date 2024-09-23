@@ -92,7 +92,7 @@ export default function TabsFour({
           }
           return item;
         });
-
+           console.log("updated data",updatedData);
         // Update the state with the modified data
         setShiftLogDetails(updatedData);
       })
@@ -100,10 +100,12 @@ export default function TabsFour({
         console.error("Error occurred:", error);
       });
   };
+  
 
   useEffect(() => {
     getShiftLogDetails();
   }, []);
+
 
   useEffect(() => {
     getMachineTaskData();

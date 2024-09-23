@@ -227,7 +227,6 @@ export default function MaterialUsageService({
               return item;
             }
           });
-
           // Display a single Toastify error message if there are errors
           if (hasValidationError) {
             toast.error("Parts Quantity mismatch", {
@@ -262,10 +261,6 @@ export default function MaterialUsageService({
                       count++;
                     }
                   });
-
-                  // Output the count
-
-                  // console.log("Number of objects with Used or Rejected as zero:", count);
 
                   // If count equals selectProductionReport.Qty, setComplete(true)
                   if (count === selectProductionReport.QtyAllotted) {
@@ -303,6 +298,8 @@ export default function MaterialUsageService({
         console.error("Error in axios request", error);
       });
   };
+
+
 
   //onclick of mark as returned
   const markasReturned = () => {

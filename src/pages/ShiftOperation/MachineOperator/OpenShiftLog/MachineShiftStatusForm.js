@@ -14,6 +14,8 @@ export default function MachineShiftStatusForm({
 }) {
   const { selectedProgram } = useGlobalContext();
 
+  console.log("machineShiftStatus",machineShiftStatus);
+
 
   var count = 0;
   const [isInputVisible, setInputVisible] = useState(false);
@@ -295,7 +297,7 @@ export default function MachineShiftStatusForm({
               <div style={{ width: "auto", textAlign: "left" }}>
                 <div style={{ marginLeft: "10px", marginTop: "-6px" }}>
                   <label className="form-label">
-                    Sheet Id :{machineShiftStatus[0]?.MtrlID}{" "}
+                    Sheet Id :{machineShiftStatus[0]?.MtrlID}
                   </label>
                 </div>
                 <div style={{ marginLeft: "10px", marginTop: "-8px" }}>

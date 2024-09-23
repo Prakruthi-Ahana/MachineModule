@@ -51,7 +51,6 @@ export default function OpenShiftModal({
             response.data[i].rowColor = "#DC143C";
           }
         }
-        console.log("response after click openshift")
         setMachinetaskdata(response.data);
       })
       .catch((error) => {

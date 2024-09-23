@@ -85,6 +85,8 @@ export default function StoppageAskModal({
       });
   };
 
+
+  //stoppage onclick of yes
   const onClickYes = () => {
     if (concatenatedString.trim()) {
       // console.log("excuting First Condition")
@@ -138,6 +140,8 @@ export default function StoppageAskModal({
     setIsButtonClicked(false);
     getMachineShiftStatusForm();
   };
+
+
 
   useEffect(() => {
     getShiftLog();

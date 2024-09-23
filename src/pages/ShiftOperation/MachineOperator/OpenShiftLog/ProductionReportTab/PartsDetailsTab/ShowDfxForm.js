@@ -11,18 +11,20 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
   const { NcId, partDetailsData, setPartDetailsData } = useGlobalContext();
 
   const getPartDetails = () => {
-    // console.log("selectProductionReport",selectProductionReport);
     axios
       .post(baseURL + "/ShiftOperator/getpartDetails", {
         selectProductionReport,
       })
       .then((response) => {
-        // console.log(response.data);
-        setPartDetailsData(response.data);
+        // Ensure that Remarks is set to an empty string if it is 'null'
+        const dataWithValidRemarks = response.data.map((item) => ({
+          ...item,
+          Remarks: item.Remarks === "null" ? "" : item.Remarks,
+        }));
+        setPartDetailsData(dataWithValidRemarks);
       });
   };
 
-  // console.log(NcId)
   useEffect(() => {
     getPartDetails();
   }, [selectProductionReport]);
@@ -34,14 +36,10 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
   };
 
   useMemo(() => {
-    setPartDetailsRowSelect({ ...partDetailsData[0], index: 0 });
-  }, [partDetailsData[0]]);
-
-  // const onChnageReject = (e, key, valueQtyRejected) => {
-  //   const updatedRow = { ...partDetailsRowSelect };
-  //   updatedRow.QtyRejected = e.target.value;
-  //   setPartDetailsRowSelect(updatedRow);
-  // };
+    if (partDetailsData.length > 0) {
+      setPartDetailsRowSelect({ ...partDetailsData[0], index: 0 });
+    }
+  }, [partDetailsData]);
 
   const remarksChange = (e, key, valueRemarks) => {
     const updatedRow = { ...partDetailsRowSelect };
@@ -51,7 +49,6 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
 
   const onChnageReject = (index, field, value) => {
     const updatedpartDetailsData = [...partDetailsData]; // Create a copy of the array
-    // Update the specific item's field with the new value
     updatedpartDetailsData[index] = {
       ...updatedpartDetailsData[index],
       [field]: value,
@@ -60,16 +57,36 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
   };
 
   const savePartDetails = () => {
-    // console.log("partDetailsData",partDetailsData);
-    axios
-      .post(baseURL + "/ShiftOperator/SaveprogramDetails", {
-        partDetailsData,
-      })
-      .then((response) => {
-        toast.success("Data Saved Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-        });
+    // Check if there are any rows where QtyRejected > 0 and Remarks is null or empty
+    const hasErrors = partDetailsData.some((item) => {
+      const isInvalidRemark =
+        !item.Remarks || item.Remarks.trim() === "" || item.Remarks === "null";
+      if (item.QtyRejected > 0 && isInvalidRemark) {
+        return true; 
+      }
+      return false; 
+    });
+
+    if (hasErrors) {
+      // Show error message and stop the function
+      toast.error("Please provide remarks for rejection", {
+        position: toast.POSITION.TOP_CENTER,
       });
+      return;
+    } else {
+      axios
+        .post(baseURL + "/ShiftOperator/SaveprogramDetails", {
+          partDetailsData,
+        })
+        .then((response) => {
+          toast.success("Data Saved Successfully", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        })
+        .catch((error) => {
+          console.log("Error saving data", error);
+        });
+    }
   };
 
   //sorting
@@ -101,19 +118,10 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
 
   return (
     <div>
-      <div className="form-bg ">
-        <div
-          className="row mb-3"
-          style={{ marginLeft: "-5px", marginTop: "-15px" }}
-        >
-          <div
-            className="col-md-6"
-            style={{ textAlign: "center", marginLeft: "-12px" }}
-          >
-            <button
-              className="button-style group-button"
-              onClick={savePartDetails}
-            >
+      <div className="form-bg">
+        <div className="row mb-3" style={{ marginLeft: "-5px", marginTop: "-15px" }}>
+          <div className="col-md-6" style={{ textAlign: "center", marginLeft: "-12px" }}>
+            <button className="button-style group-button" onClick={savePartDetails}>
               Save
             </button>
           </div>
@@ -125,28 +133,20 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
       </div>
 
       {openTable ? (
-        <div
-          className="col-md-12 "
-          style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}
-        >
+        <div className="col-md-12" style={{ overflowY: "scroll", overflowX: "scroll", height: "250px" }}>
           <Table striped className="table-data border table-space">
             <thead className="tableHeaderBGColor" style={{ fontSize: "13px" }}>
               <tr>
                 <th></th>
                 <th onClick={() => requestSort("DwgName")}>Dwg Name</th>
-                <th onClick={() => requestSort("TotQtyNested")}>
-                  Total Nested
-                </th>
+                <th onClick={() => requestSort("TotQtyNested")}>Total Nested</th>
                 <th onClick={() => requestSort("QtyCut")}>Produced</th>
                 <th onClick={() => requestSort("QtyRejected")}>Rejected</th>
                 <th onClick={() => requestSort("Remarks")}>Remarks</th>
               </tr>
             </thead>
 
-            <tbody
-              className="tablebody table-space"
-              style={{ fontSize: "13px" }}
-            >
+            <tbody className="tablebody table-space" style={{ fontSize: "13px" }}>
               {partDetailsData.length === 0 ? (
                 <tr>
                   <td colSpan="6">No data to show</td>
@@ -158,11 +158,7 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
                     onClick={() => {
                       selectRowPartsDetails(value, key);
                     }}
-                    className={
-                      key === partDetailsRowSelect?.index
-                        ? "selcted-row-clr"
-                        : ""
-                    }
+                    className={key === partDetailsRowSelect?.index ? "selcted-row-clr" : ""}
                   >
                     <td></td>
                     <td>{value?.DwgName}</td>
@@ -171,19 +167,15 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
                     <td>
                       <input
                         className="table-cell-editor"
-                        Value={value?.QtyRejected}
-                        onChange={(e) =>
-                          onChnageReject(key, "QtyRejected", e.target.value)
-                        }
+                        value={value?.QtyRejected}
+                        onChange={(e) => onChnageReject(key, "QtyRejected", e.target.value)}
                       />
                     </td>
                     <td>
                       <input
                         className="table-cell-editor"
-                        Value={value?.Remarks === "null" ? "" : value?.Remarks}
-                        onChange={(e) =>
-                          onChnageReject(key, "Remarks", e.target.value)
-                        }
+                        value={value?.Remarks === "null" ? "" : value?.Remarks}
+                        onChange={(e) => onChnageReject(key, "Remarks", e.target.value)}
                       />
                     </td>
                   </tr>

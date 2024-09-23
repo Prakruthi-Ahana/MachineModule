@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { uncountability } from "i/lib/methods";
 import MarkAsRejected from "./MarkAsRejected";
 import { useGlobalContext } from "../../../../../Context/Context";
+import ProgramPartsTabModal from "./ProgramPartsTabModal";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
@@ -27,10 +28,9 @@ export default function ProgrmMatrlTableProfile({
     setAfterRefreshData,
     NcId,
     formdata,
-    setProgramPartsData,setFormData
+    setProgramPartsData,setFormData,tubeCuttingModal,setTubeCuttingModal
   } = useGlobalContext();
 
-  console.log("formdata is",formdata.Operation);
 
   const [showusedModal, setShowusedModal] = useState(false);
   const [allModal, setAllModal] = useState(false);
@@ -147,9 +147,10 @@ export default function ProgrmMatrlTableProfile({
   useEffect(()=>{
     getMachineTaskAfterMU();
   },[]);
-  
+
+
   const handleMarkasUsed = () => {
-    // const isTubeCutting = formdata.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
+    const isTubeCutting = formdata.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
     // if(isTubeCutting && selectedMtrlTable.length !== afterRefreshData.length){
     //   toast.error("Please Select ALL for tube Cutting", {
     //     position: toast.POSITION.TOP_CENTER,
@@ -207,7 +208,9 @@ export default function ProgrmMatrlTableProfile({
       .catch((err) => {
         console.error(err);
       });
-    // }
+      if(isTubeCutting){
+        setTubeCuttingModal(true);
+      }
   };
 
  
@@ -451,6 +454,10 @@ const handleSelectAll = () => {
           setMarkasReject={setMarkasReject}
           handleMarkasRejected={UpdateRejectReason}
         />
+
+        <ProgramPartsTabModal
+        />
+        
       </div>
     </div>
   );
