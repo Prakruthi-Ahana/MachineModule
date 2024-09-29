@@ -89,125 +89,123 @@ export default function ProgrmMatrlTableService({
   const [sendobject, setSendObject] = useState([]);
   const [modalopen, setModalOpen] = useState("");
   const [NC_Pgme_Part_ID, setNC_Pgme_Part_ID] = useState("");
-  let qtyToDistribute = "";
 
+  //mark as used button 
+  let qtyToDistribute = "";
   const markAsUsed = () => {
     axios
-      .post(baseURL + "/ShiftOperator/getNcProgramId", {
-        NcId: formdata?.Ncid,
-      })
+      .post(baseURL + "/ShiftOperator/getNcProgramId", { NcId: formdata?.Ncid })
       .then((response) => {
-        // Explicitly set NC_Pgme_Part_ID to response data
-        const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
+        const ncPgmePartId = response.data[0]?.NC_Pgme_Part_ID;
+        if (!ncPgmePartId) {
+          toast.error("Failed to retrieve program part ID");
+          return;
+        }
         setNC_Pgme_Part_ID(ncPgmePartId);
-
+  
         if (issuesets < 0) {
           toast.error("Enter a Positive Number", {
             position: toast.POSITION.TOP_CENTER,
           });
-        } else {
-          // Check if toCompareData is null or empty
-          if (!toCompareData || toCompareData.length === 0) {
-            toast.error("Parts Quantity is null or mismatch", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-            return;
-          }
-
-          // Flatten toCompareData array
-          const flattenedToCompareData = toCompareData.flat();
-
-          // Flag to check if any item violates the condition
-          let hasValidationError = false;
-
-          // Declare remainingQty and useNow outside the loop
-          let remainingQty;
-          let useNow;
-
-          // Calculate qtyToDistribute and useNow for each item in afterloadService
-          const updatedAfterloadService = afterloadService.map((item) => {
-            const match = flattenedToCompareData.find(
-              (data) => data.Cust_BOM_ListId === item.CustBOM_Id
-            );
-
-            // console.log("afterloadService is",afterloadService);
-
-            if (match) {
-              const qtyToDistribute = issuesets * match.Quantity;
-              useNow = issuesets * match.Quantity;
-
-              // Check if the quantity to be used exceeds the available quantity
-              remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
-              if (remainingQty < 0 || qtyToDistribute !== useNow) {
-                hasValidationError = true;
-                return item; // Do not update state if validation fails
-              }
-
-              // Update QtyReturned in afterloadService
-              const updatedItem = {
-                ...item,
-                qtyToDistribute: qtyToDistribute,
-                useNow: useNow,
-                QtyReturned1: useNow, // Update QtyReturned
-              };
-
-              // Add the relevant properties to sendobject based on CustBOM_Id
-              const existingSendObjectIndex = sendobject.findIndex(
+          return;
+        }
+  
+        if (!toCompareData || toCompareData.length === 0) {
+          toast.error("Parts Quantity is null or mismatch", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          return;
+        }
+  
+        const flattenedToCompareData = toCompareData.flat();
+        let hasValidationError = false;
+        let qtyToDistribute = "";
+        let useNow = "";
+        let remainingQty = "";
+  
+        const updatedAfterloadService = afterloadService.map((item) => {
+          const match = flattenedToCompareData.find(
+            (data) => data.Cust_BOM_ListId === item.CustBOM_Id
+          );
+          if (match) {
+            qtyToDistribute = issuesets * match.Quantity;
+            useNow = issuesets * match.Quantity;
+  
+            remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
+            if (remainingQty < 0 || qtyToDistribute !== useNow) {
+              hasValidationError = true;
+              return item;
+            }
+  
+            const updatedItem = {
+              ...item,
+              qtyToDistribute: qtyToDistribute,
+              useNow: useNow,
+              QtyReturned1: useNow,
+            };
+  
+            // Update sendobject immutably
+            setSendObject((prevSendObject) => {
+              const existingSendObjectIndex = prevSendObject.findIndex(
                 (obj) => obj.CustBOM_Id === item.CustBOM_Id
               );
               if (existingSendObjectIndex !== -1) {
-                sendobject[existingSendObjectIndex] = {
-                  ...sendobject[existingSendObjectIndex],
+                const updatedSendObject = [...prevSendObject];
+                updatedSendObject[existingSendObjectIndex] = {
+                  ...updatedSendObject[existingSendObjectIndex],
                   ...updatedItem,
                   NC_Pgme_Part_ID: ncPgmePartId,
                   issuesets: issuesets,
                   NcId: formdata?.Ncid,
                 };
+                return updatedSendObject;
               } else {
-                sendobject.push({
-                  ...updatedItem,
-                  NC_Pgme_Part_ID: ncPgmePartId,
-                  issuesets: issuesets,
-                  NcId: NcProgramId,
-                });
+                return [
+                  ...prevSendObject,
+                  {
+                    ...updatedItem,
+                    NC_Pgme_Part_ID: ncPgmePartId,
+                    issuesets: issuesets,
+                    NcId: NcProgramId,
+                  },
+                ];
               }
-
-              return updatedItem;
-            } else {
-              // console.log(`Row ${item.CustBOM_Id}: No match found`);
-              return item;
-            }
-          });
-
-          // Display a single Toastify error message if there are errors
-          if (hasValidationError) {
-            if (remainingQty < 0 || qtyToDistribute !== useNow) {
-              toast.error("Cannot Use More Parts than issued Quantity", {
-                position: toast.POSITION.TOP_CENTER,
-              });
-            } else {
-              // toast.error("Parts Quantity mismatch", {
-              //   position: toast.POSITION.TOP_CENTER,
-              // });
-            }
-            return;
+            });
+  
+            return updatedItem;
+          } else {
+            return item;
           }
-
-          // Update the state after calculating useNow and updating QtyReturned values
-          setAfterloadService(updatedAfterloadService);
-          // Set the updated sendobject state
-          setSendObject(sendobject);
-
-          // Open the modal if no errors
-          setModalOpen(true);
-          getMachineTaskAfterMU();
+        });
+  
+        if (hasValidationError) {
+          if (remainingQty < 0 || qtyToDistribute !== useNow) {
+            toast.error("Cannot Use More Parts than issued Quantity", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          }
+          return;
         }
+  
+        setAfterloadService(updatedAfterloadService);
+        setModalOpen(true);
+        getMachineTaskAfterMU();
+  
+        // console.log("qtyToDistribute is", qtyToDistribute);
+        // console.log("useNow is", useNow);
+        // console.log("remainingQty is", remainingQty);
+        // console.log("sendobject is", sendobject);
       })
       .catch((error) => {
+        toast.error("Error fetching program part ID");
         console.error("Error in axios request", error);
       });
   };
+  
 
+
+
+  //Onclcick of Yes button in mark as used modal
   const onClickofYes = () => {
     axios
       .post(baseURL + "/ShiftOperator/ServicemarkasUsed", {
@@ -253,10 +251,14 @@ export default function ProgrmMatrlTableService({
     setModalOpen(false);
   };
 
+
+//close modal
   const handleClose = () => {
     setModalOpen(false);
   };
 
+
+//date format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
@@ -267,7 +269,7 @@ export default function ProgrmMatrlTableService({
 
   //sorting
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
-
+  
   const requestSort = (key) => {
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -292,9 +294,8 @@ export default function ProgrmMatrlTableService({
     return dataCopy;
   };
 
-  //select ALL
 
-  // Add a state variable to track whether all rows are selected
+  //select ALL
   const [selectAll, setSelectAll] = useState(false);
 
   const handleSelectAll = () => {

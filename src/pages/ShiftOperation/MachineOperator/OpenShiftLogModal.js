@@ -26,7 +26,6 @@ export default function OpenShiftModal({
   const { setShiftLogDetails, setMachinetaskdata } = useGlobalContext();
 
 
-  ///////////////////////////////////////
   //Machine Task Table
   let Machine = selectshifttable?.Machine;
   const getMachineTaskDataFunc = () => {
@@ -62,11 +61,10 @@ export default function OpenShiftModal({
     getMachineTaskDataFunc();
   },[])
 
-  ///////////////////////////////////////////////////////////////////
 
   const navigate = useNavigate();
-  // console.log("requiredProgram",requiredProgram);
 
+  //Onclick of Yes in OpenShiftLog Modal
   const openShiftPage = () => {
     if (isNaN(requiredProgram[0].NCProgarmNo)) {
       navigate("OpenShiftLog", { state: { data } });
@@ -76,10 +74,9 @@ export default function OpenShiftModal({
           selectshifttable,
         })
         .then((response) => {
-          // handle response if needed
         })
         .catch((error) => {
-          // handle error if needed
+          console.log(error)
         });
     } else {
       // console.log("excuted No Query")
@@ -90,17 +87,16 @@ export default function OpenShiftModal({
           selectshifttable,
         })
         .then((response) => {
-          // handle response if needed
         })
         .catch((error) => {
-          // handle error if needed
         });
     }
     getMachineTaskDataFunc();
   };
 
+
+  //Onclcik of No in OpenShiftLog Modal
   const handleClose = () => {
-    // console.log(requiredProgram[0].NCProgarmNo,selectshifttable)
     if (isNaN(requiredProgram[0].NCProgarmNo)) {
       navigate("OpenShiftLog", { state: { data } });
       axios
@@ -122,6 +118,8 @@ export default function OpenShiftModal({
     }
   };
 
+
+  //get ShiftLog Data
   const getShiftLogData = () => {
     axios
       .post(baseURL + "/ShiftOperator/getShiftLog", {
@@ -148,12 +146,10 @@ export default function OpenShiftModal({
           if (item.Locked === 1) {
             item.rowColor = "#87CEEB";
           } else {
-            // console.log(null);
           }
           return item;
         });
 
-        // Update the state with the modified data
         setShiftLogDetails(updatedData);
       })
       .catch((error) => {
@@ -165,22 +161,11 @@ export default function OpenShiftModal({
     getShiftLogData();
   }, []);
 
-  // const countUserDefinedProperties = (obj) => {
-  //   let count = 0;
-  //   for (let key in obj) {
-  //     if (obj.hasOwnProperty(key) && key !== "index") {
-  //       count++;
-  //     }
-  //   }
-  //   return count;
-  // };
-
 
   const handleCloseOk = () => {
     setOpenmodal(false);
   };
 
-  console.log(numberOfProperties)
 
   return (
     <div>

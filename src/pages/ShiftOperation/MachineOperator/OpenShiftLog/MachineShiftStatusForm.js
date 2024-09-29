@@ -14,8 +14,6 @@ export default function MachineShiftStatusForm({
 }) {
   const { selectedProgram } = useGlobalContext();
 
-  console.log("machineShiftStatus",machineShiftStatus);
-
 
   var count = 0;
   const [isInputVisible, setInputVisible] = useState(false);
@@ -90,13 +88,13 @@ export default function MachineShiftStatusForm({
 
             setRunningTime(`${hours} hours ${minutes} mins`);
           } else {
-            setRunningTime("N/A");
+            setRunningTime("0");
           }
         } else {
-          setRunningTime("N/A");
+          setRunningTime("0");
         }
       } else {
-        setRunningTime("N/A");
+        setRunningTime("0");
       }
     };
     updateRunningTime();
@@ -154,7 +152,7 @@ export default function MachineShiftStatusForm({
     getMachineShiftStatusForm();
   }, []);
 
-  // console.log("Current",machineShiftStatus[0]?.Operator);
+  console.log("Current",machineShiftStatus);
 
   useEffect(() => {
     getMachineShiftStatusForm();
@@ -246,7 +244,7 @@ export default function MachineShiftStatusForm({
 
               <div style={{ marginLeft: "15px", marginTop: "-8px" }}>
                 <label className="form-label">
-                  Operation : {machineShiftStatus[0]?.Operation}{" "}
+                  Operation : {machineShiftStatus[0]?.Operation}
                 </label>
               </div>
               <div style={{ color: "", marginLeft: "15px", marginTop: "-8px" }}>

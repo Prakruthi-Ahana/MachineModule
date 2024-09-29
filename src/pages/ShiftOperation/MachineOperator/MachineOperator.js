@@ -33,14 +33,12 @@ export default function MachineOperator() {
     getMachineList();
   }, []);
 
-  //Selected Machine
+
   const moment = require("moment");
   const today = moment();
   let Date = today.format("YYYY-MM-DD HH:mm:ss");
-  //  console.log(Date);
 
   let array = Date.split(" ");
-  //  console.log(array[1]);
   let date = array[0];
 
   // Date Format  Change
@@ -93,7 +91,6 @@ export default function MachineOperator() {
     setSelectshifttable({ ...shiftDetails[0], index: 0 });
   }, [shiftDetails[0]]);
 
-  // console.log(selectshifttable);
 
   const data = {
     selectedMachine: selectedMachine || "",
@@ -103,7 +100,7 @@ export default function MachineOperator() {
     date: date || "",
   };
 
-  //profile
+  //Sheets API after open Program
   const getmiddleTbaleData = () => {
     axios
       .post(baseURL + "/ShiftOperator/ProgramMaterialAfterRefresh", {
@@ -130,21 +127,17 @@ export default function MachineOperator() {
     getmiddleTbaleData();
   }, []);
 
-  //service middletabledata
+  //Parts API after open Program Button
   const serviceMiddleTableData = () => {
-    // console.log("function called")
     axios
       .post(baseURL + "/ShiftOperator/ServiceAfterpageOpen", {
         selectshifttable,
         NcId,
       })
       .then((response) => {
-        // console.log(response?.data);
         setAfterloadService(response?.data);
-        // setShowTable(true);
         if (!response.data) {
           setAfterloadService([]);
-          // setShowTable(false)
         }
       });
   };
@@ -260,7 +253,6 @@ export default function MachineOperator() {
       selectshifttable,
     })
     .then((response) => {
-      // console.log(response.data);
       setMachineShiftStatus(response.data);
     });
   }, []);

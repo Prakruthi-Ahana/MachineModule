@@ -16,7 +16,6 @@ export default function MaterialUsageService({
 }) {
   const { NcId, NcProgramId, setPartDetailsData } = useGlobalContext();
 
-  console.log("this is the page");
 
   const [servicedata, setService] = useState([]);
   const [selectedRowService, setSelectedRowService] = useState({});
@@ -56,7 +55,6 @@ export default function MaterialUsageService({
   }, []);
 
   const materialUsageService = () => {
-    console.log("function is fucn")
     axios
       .post(baseURL + "/ShiftOperator/MachineTasksService", {
         NCId: selectProductionReport.Ncid,
