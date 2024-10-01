@@ -90,117 +90,132 @@ export default function ProgrmMatrlTableService({
   const [modalopen, setModalOpen] = useState("");
   const [NC_Pgme_Part_ID, setNC_Pgme_Part_ID] = useState("");
 
-  //mark as used button 
-  let qtyToDistribute = "";
-  const markAsUsed = () => {
-    axios
-      .post(baseURL + "/ShiftOperator/getNcProgramId", { NcId: formdata?.Ncid })
-      .then((response) => {
-        const ncPgmePartId = response.data[0]?.NC_Pgme_Part_ID;
-        if (!ncPgmePartId) {
-          toast.error("Failed to retrieve program part ID");
-          return;
-        }
-        setNC_Pgme_Part_ID(ncPgmePartId);
-  
-        if (issuesets < 0) {
-          toast.error("Enter a Positive Number", {
-            position: toast.POSITION.TOP_CENTER,
-          });
-          return;
-        }
-  
-        if (!toCompareData || toCompareData.length === 0) {
-          toast.error("Parts Quantity is null or mismatch", {
-            position: toast.POSITION.TOP_CENTER,
-          });
-          return;
-        }
-  
-        const flattenedToCompareData = toCompareData.flat();
-        let hasValidationError = false;
-        let qtyToDistribute = "";
-        let useNow = "";
-        let remainingQty = "";
-  
-        const updatedAfterloadService = afterloadService.map((item) => {
-          const match = flattenedToCompareData.find(
-            (data) => data.Cust_BOM_ListId === item.CustBOM_Id
-          );
-          if (match) {
-            qtyToDistribute = issuesets * match.Quantity;
-            useNow = issuesets * match.Quantity;
-  
-            remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
-            if (remainingQty < 0 || qtyToDistribute !== useNow) {
-              hasValidationError = true;
-              return item;
-            }
-  
-            const updatedItem = {
-              ...item,
-              qtyToDistribute: qtyToDistribute,
-              useNow: useNow,
-              QtyReturned1: useNow,
-            };
-  
-            // Update sendobject immutably
-            setSendObject((prevSendObject) => {
-              const existingSendObjectIndex = prevSendObject.findIndex(
-                (obj) => obj.CustBOM_Id === item.CustBOM_Id
-              );
-              if (existingSendObjectIndex !== -1) {
-                const updatedSendObject = [...prevSendObject];
-                updatedSendObject[existingSendObjectIndex] = {
-                  ...updatedSendObject[existingSendObjectIndex],
-                  ...updatedItem,
-                  NC_Pgme_Part_ID: ncPgmePartId,
-                  issuesets: issuesets,
-                  NcId: formdata?.Ncid,
-                };
-                return updatedSendObject;
-              } else {
-                return [
-                  ...prevSendObject,
-                  {
-                    ...updatedItem,
-                    NC_Pgme_Part_ID: ncPgmePartId,
-                    issuesets: issuesets,
-                    NcId: NcProgramId,
-                  },
-                ];
-              }
-            });
-  
-            return updatedItem;
-          } else {
-            return item;
-          }
-        });
-  
-        if (hasValidationError) {
-          if (remainingQty < 0 || qtyToDistribute !== useNow) {
-            toast.error("Cannot Use More Parts than issued Quantity", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-          }
-          return;
-        }
-  
-        setAfterloadService(updatedAfterloadService);
-        setModalOpen(true);
-        getMachineTaskAfterMU();
-  
-        // console.log("qtyToDistribute is", qtyToDistribute);
-        // console.log("useNow is", useNow);
-        // console.log("remainingQty is", remainingQty);
-        // console.log("sendobject is", sendobject);
-      })
-      .catch((error) => {
-        toast.error("Error fetching program part ID");
-        console.error("Error in axios request", error);
-      });
-  };
+ //mark as used button 
+ let qtyToDistribute = "";
+ const markAsUsed = () => {
+   axios
+     .post(baseURL + "/ShiftOperator/getNcProgramId", {
+       NcId: formdata?.Ncid,
+     })
+     .then((response) => {
+       // Explicitly set NC_Pgme_Part_ID to response data
+       const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
+       setNC_Pgme_Part_ID(ncPgmePartId);
+
+       if (issuesets < 0) {
+         toast.error("Enter a Positive Number", {
+           position: toast.POSITION.TOP_CENTER,
+         });
+       } else {
+         // Check if toCompareData is null or empty
+         if (!toCompareData || toCompareData.length === 0) {
+           toast.error("Parts Quantity is null or mismatch", {
+             position: toast.POSITION.TOP_CENTER,
+           });
+           return;
+         }
+
+         // Flatten toCompareData array
+         const flattenedToCompareData = toCompareData.flat();
+
+         // Flag to check if any item violates the condition
+         let hasValidationError = false;
+
+         // Declare remainingQty and useNow outside the loop
+         let remainingQty;
+         let useNow;
+
+         // Calculate qtyToDistribute and useNow for each item in afterloadService
+         const updatedAfterloadService = afterloadService.map((item) => {
+           const match = flattenedToCompareData.find(
+             (data) => data.Cust_BOM_ListId === item.CustBOM_Id
+           );
+
+           // console.log("afterloadService is",afterloadService);
+
+           if (match) {
+             const qtyToDistribute = issuesets * match.Quantity;
+             useNow = issuesets * match.Quantity;
+
+             console.log("qtyToDistribute is",qtyToDistribute,"issuesets",issuesets,"match.Quantity is",match.Quantity);
+
+             // Check if the quantity to be used exceeds the available quantity
+             remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
+             if (remainingQty < 0 || qtyToDistribute !== useNow) {
+               hasValidationError = true;
+               return item; // Do not update state if validation fails
+             }
+
+             // Update QtyReturned in afterloadService
+             const updatedItem = {
+               ...item,
+               qtyToDistribute: qtyToDistribute,
+               useNow: useNow,
+               QtyReturned1: useNow, 
+             };
+
+             // Add the relevant properties to sendobject based on CustBOM_Id
+             const existingSendObjectIndex = sendobject.findIndex(
+               (obj) => obj.CustBOM_Id === item.CustBOM_Id
+             );
+             if (existingSendObjectIndex !== -1) {
+               sendobject[existingSendObjectIndex] = {
+                 ...sendobject[existingSendObjectIndex],
+                 ...updatedItem,
+                 NC_Pgme_Part_ID: ncPgmePartId,
+                 issuesets: issuesets,
+                 NcId: formdata?.Ncid,
+               };
+             } else {
+               sendobject.push({
+                 ...updatedItem,
+                 NC_Pgme_Part_ID: ncPgmePartId,
+                 issuesets: issuesets,
+                 NcId: NcProgramId,
+               });
+             }
+
+             return updatedItem;
+           } else {
+             // console.log(Row ${item.CustBOM_Id}: No match found);
+             return item;
+           }
+         });
+
+         // Display a single Toastify error message if there are errors
+         console.log("qtyToDistribute is",qtyToDistribute);
+         console.log("useNow is",useNow);
+         console.log("remainingQty is",remainingQty,);
+
+         if (hasValidationError) {
+           if (remainingQty < 0 || qtyToDistribute !== useNow) {
+             toast.error("Cannot Use More Parts than issued Quantity", {
+               position: toast.POSITION.TOP_CENTER,
+             });
+           } else {
+             // toast.error("Parts Quantity mismatch", {
+             //   position: toast.POSITION.TOP_CENTER,
+             // });
+           }
+           return;
+         }
+
+         // Update the state after calculating useNow and updating QtyReturned values
+         setAfterloadService(updatedAfterloadService);
+         // Set the updated sendobject state
+         setSendObject(sendobject);
+
+         console.log("sendobject is",sendobject);
+
+         // Open the modal if no errors
+         setModalOpen(true);
+         getMachineTaskAfterMU();
+       }
+     })
+     .catch((error) => {
+       console.error("Error in axios request", error);
+     });
+ };
   
 
 
@@ -232,6 +247,9 @@ export default function ProgrmMatrlTableService({
           .then((response) => {
             // console.log("excuted data")
             setProgramPartsData(response.data);
+            toast.success("Success", {
+              position: toast.POSITION.TOP_CENTER,
+            });
           });
         axios
           .post(

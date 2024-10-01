@@ -2332,7 +2332,7 @@ Public Class MachineLog
             Dim dxfName As String = BS_ProdParts.Current.Item("DwgName")
             Dim OrderNo As String
             With Machine.getCommand
-                .CommandText = " SELECT o.`Order_No` FROM magodmis.ncprograms n, magodmis.nc_task_list n1, " _
+                .CommandText = "SELECT o.`Order_No` FROM magodmis.ncprograms n, magodmis.nc_task_list n1, " _
                 & "magodmis.orderschedule o WHERE n1.`NcTaskId`=n.`NcTaskId` AND o.`ScheduleId`=n1.`ScheduleID` " _
                 & "AND n.`Ncid`=@Ncid;"
                 .Parameters.Clear()
