@@ -152,7 +152,6 @@ export default function MachineShiftStatusForm({
     getMachineShiftStatusForm();
   }, []);
 
-  console.log("Current",machineShiftStatus);
 
   useEffect(() => {
     getMachineShiftStatusForm();
