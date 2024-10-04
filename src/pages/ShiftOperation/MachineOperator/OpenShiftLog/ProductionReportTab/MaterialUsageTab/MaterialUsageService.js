@@ -61,12 +61,10 @@ export default function MaterialUsageService({
       })
       .then((response) => {
         setService(response.data);
-        console.log("response is", response.data);
         const data = response.data;
         let count = 0;
         let Qty = 0;
 
-        console.log("rpTopData is", rpTopData);
 
         // Iterate through each object in the response data
         rpTopData.forEach((item) => {

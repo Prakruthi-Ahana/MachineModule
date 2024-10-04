@@ -125,11 +125,16 @@ export default function ProgrmMatrlTableService({
          let remainingQty;
          let useNow;
 
+         console.log("afterloadService",afterloadService);
+         console.log("flattenedToCompareData",flattenedToCompareData);
+
          // Calculate qtyToDistribute and useNow for each item in afterloadService
          const updatedAfterloadService = afterloadService.map((item) => {
            const match = flattenedToCompareData.find(
              (data) => data.Cust_BOM_ListId === item.CustBOM_Id
            );
+
+           console.log("match is",match);
 
            // console.log("afterloadService is",afterloadService);
 
