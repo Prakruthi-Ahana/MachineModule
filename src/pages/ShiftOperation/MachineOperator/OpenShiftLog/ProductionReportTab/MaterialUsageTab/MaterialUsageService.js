@@ -15,9 +15,8 @@ export default function MaterialUsageService({
   setComplete,
   hasBOM,
 }) {
-  const { NcId, NcProgramId, setPartDetailsData } = useGlobalContext();
+  const { NcId, NcProgramId, setPartDetailsData,servicedata, setService } = useGlobalContext();
 
-  const [servicedata, setService] = useState([]);
   const [selectedRowService, setSelectedRowService] = useState({});
   const [issuesets, setIssueSets] = useState("");
   const [toCompareData, setToCompareData] = useState([]);

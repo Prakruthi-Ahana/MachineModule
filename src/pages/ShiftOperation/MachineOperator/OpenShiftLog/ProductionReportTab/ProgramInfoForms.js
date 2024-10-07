@@ -15,7 +15,7 @@ export default function ProgramInfoForms({
   getMachineTaskData,
   setMachinetaskdata,
 }) {
-  const { setHasBOM, shiftSelected,formdata } = useGlobalContext();
+  const { setHasBOM, shiftSelected,formdata,servicedata, setService } = useGlobalContext();
   const [loadProgramInfo, setloadProgramInfo] = useState(false);
   const [programComplete, setProgramComplete] = useState(false);
   const [complete, setComplete] = useState(false);
@@ -41,6 +41,13 @@ export default function ProgramInfoForms({
   const [rpTopData, setRptTopData] = useState([]);
   const [openTable, setOpenTable] = useState(false);
   const handleButtonClick = () => {
+    axios
+    .post(baseURL + "/ShiftOperator/MachineTasksService", {
+      NCId: selectProductionReport.Ncid,
+    })
+    .then((response) => {
+      setService(response.data);
+    })
     axios
       .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
         NCId: selectProductionReport?.Ncid,
@@ -140,6 +147,7 @@ export default function ProgramInfoForms({
       selectProductionReportFun(getMachinetaskdata[0], 0); // Select the first row
     }
   }, [getMachinetaskdata, selectProductionReport, selectProductionReportFun]);
+
 
   const handleRefresh = () => {
     setOpenTable(false);
