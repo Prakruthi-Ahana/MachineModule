@@ -128,6 +128,10 @@ export default function MaterialUsageService({
     materialUsageService();
   }, []);
 
+  useEffect(()=>{
+    materialUsageService();
+  },[])
+
   const rowSelectServiceRP = (item, index) => {
     let list = { ...item, index: index };
     setSelectedRowService(list);
