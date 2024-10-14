@@ -277,13 +277,24 @@ export default function MachineOperator() {
                    Shift === "Second" ? "14:00:00" : 
                    Shift === "Third" ? "22:00:00" : "";
 
+  const FD=FT[0]?.split('-') || [];
+  const FD1=FD[2] + "/" + FD[1] + "/" + FD[0];
+  const FromDate=FT[0]===undefined ? finalDay1 :FD1;
+
    //To Time      
    const TT = selectshifttable?.ToTime?.split(' ') || [];
    const ToTime = TT[1] !== undefined ? TT[1] : 
                     Shift === "First" ? "14:00:00" : 
                     Shift === "Second" ? "22:00:00" : 
-                    Shift === "Third" ? "6:00:00" : "";    
+                    Shift === "Third" ? "6:00:00" : "";  
+
+        const DT=TT[0]?.split('-') || [];    
+        const DT1=DT[2] + "/" + DT[1] + "/" + DT[0];
+        const ToDate=TT[0]===undefined ? finalDay1 :DT1;  
+ 
                     
+  
+
 
 
   return (
@@ -440,27 +451,27 @@ export default function MachineOperator() {
             <label className="form-label">{selectshifttable.Shift=== undefined ? Shift : selectshifttable.Shift}</label>
           </div>
         </div>
-        <div></div>
+        <div>
+        </div>
 
         <div
           style={{ display: "flex", gap: "30px", marginTop: "-30px" }}
           className="ms-2"
         >
-          <label className="form-label">{finalDay1}</label>
+          <label className="form-label">{FromDate}</label>
           <div className="col-md-3" style={{ display: "flex", gap: "10px" }}>
-            <label className="form-label">{finalDay1}</label>
             <label className="form-label">
               <div>
                 {FromTime}
               </div>
             </label>
           </div>
-          <span style={{ marginLeft: "-170px" }}>-</span>
+          <span style={{ marginLeft: "-270px" }}>-</span>
           <div
             className="col-md-3"
             style={{ display: "flex", gap: "10px", marginLeft: "-12px" }}
           >
-            <label className="form-label">{finalDay1}</label>
+            <label className="form-label">{ToDate}</label>
             <label className="form-label">
               <div>
                 {ToTime}

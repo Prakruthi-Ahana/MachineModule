@@ -53,7 +53,7 @@ export default function MachineShiftStatusForm({
 
     // Get day and month components
     const day = dateObject.getDate().toString().padStart(2, "0");
-    const month = (dateObject.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, "0"); 
 
     // Get hour and minute components
     const hour = dateObject.getHours().toString().padStart(2, "0");
@@ -157,6 +157,7 @@ export default function MachineShiftStatusForm({
     getMachineShiftStatusForm();
   }, []);
 
+
   return (
     <>
       <div className="">
@@ -169,8 +170,8 @@ export default function MachineShiftStatusForm({
             width:'114%'
           }}
         >
-          <div style={{ textAlign: "center" }}>
-            <label className="form-label">Machine Shift Status</label>
+          <div style={{marginLeft:"20px"}}>
+            <label className="form-label">Machine {selectshifttable?.Shift} Shift Status</label>
           </div>
 
           <div className="d-flex ms-4">

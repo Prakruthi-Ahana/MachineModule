@@ -51,6 +51,10 @@ export default function ProgramPartsForm() {
     // Maximum allowed for processnow: totalQty - (processed + rejected)
     const maxProcessNow = totalQty - (processed + rejected);
 
+    const ToReject=totalQty-row.QtyCut;
+
+   
+
     if (field === "processnow") {
       let processnow = parseInt(value, 10) || 0;
 
@@ -85,6 +89,7 @@ export default function ProgramPartsForm() {
     //   return item.QtyRejected > 0 && item.Remarks==='null' || null ;
     // });
     const hasErrors = programPartsData.some((item) => {
+      console.log("item is",item);
       const isInvalidRemark =
         !item.Remarks || item.Remarks.trim() === "" || item.Remarks === "null";
       if (item.QtyRejected > 0 && isInvalidRemark) {
@@ -113,8 +118,6 @@ export default function ProgramPartsForm() {
     // Set the updated data in state
     setProgramPartsData(updatedProgramPartsData);
 
-    console.log("updatedProgramPartsData is",)
-  
     // Make the API call with the updated data
     axios
       .post(baseURL + "/ShiftOperator/SaveprogramParts", {
@@ -129,6 +132,7 @@ export default function ProgramPartsForm() {
         console.log("error",error);
       });
   };
+
   
   // Sorting logic
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
