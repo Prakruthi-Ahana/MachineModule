@@ -11,6 +11,7 @@ import { uncountability } from "i/lib/methods";
 import MarkAsRejected from "./MarkAsRejected";
 import { useGlobalContext } from "../../../../../Context/Context";
 import ProgramPartsTabModal from "./ProgramPartsTabModal";
+import RejectedReasonModal from "./RejectedReasonModal";
 
 export default function ProgrmMatrlTableProfile({
   afterloadProgram,
@@ -21,16 +22,21 @@ export default function ProgrmMatrlTableProfile({
   setSelectedMtrlTable,
   selectedMachine,
   ProgramNo,
-  getmiddleTbaleData,selectshifttable,setMachinetaskdata
+  getmiddleTbaleData,
+  selectshifttable,
+  setMachinetaskdata,
 }) {
+
   const {
     afterRefreshData,
     setAfterRefreshData,
     NcId,
     formdata,
-    setProgramPartsData,setFormData,tubeCuttingModal,setTubeCuttingModal
+    setProgramPartsData,
+    setFormData,
+    tubeCuttingModal,
+    setTubeCuttingModal,setShiftLogDetails
   } = useGlobalContext();
-
 
   const [showusedModal, setShowusedModal] = useState(false);
   const [allModal, setAllModal] = useState(false);
@@ -38,20 +44,25 @@ export default function ProgrmMatrlTableProfile({
   const [originalData, setOriginalData] = useState([]);
   const [isDataFiltered, setIsDataFiltered] = useState(false);
 
+  //filter unsused data
   const filterUnusedData = () => {
     // Filter the ProductionReportData array to show only rows where Used and Rejected are both 0
-    const filteredData = afterRefreshData.filter((data) => data.Used === 0 && data.Rejected===0);
-    setOriginalData(afterRefreshData); // Save the original data
-    setAfterRefreshData(filteredData); // Update the filtered data
-    setIsDataFiltered(true); // Set the flag to indicate data is filtered
+    const filteredData = afterRefreshData.filter(
+      (data) => data.Used === 0 && data.Rejected === 0
+    );
+    setOriginalData(afterRefreshData); 
+    setAfterRefreshData(filteredData); 
+    setIsDataFiltered(true); 
     setSelectedMtrlTable([]);
   };
 
+  //reset data
   const resetData = () => {
-    setAfterRefreshData(originalData); // Restore the original data
-    setIsDataFiltered(false); // Clear the data filtered flag
+    setAfterRefreshData(originalData); 
+    setIsDataFiltered(false); 
   };
 
+  //checkbox handlechange(unused)
   const handleCheckBoxChange = () => {
     const newCheckedState = !isCheckboxchecked;
     setIsCheckboxchecked(newCheckedState);
@@ -66,102 +77,116 @@ export default function ProgrmMatrlTableProfile({
   const [MarkasUsed, setMarkasUsed] = useState(false);
   const [MarkasReject, setMarkasReject] = useState(false);
 
-
+  //onclick of mark as used button
   const handleMarkasUsedModal = () => {
-    const isAnyUsedOrRejected = selectedMtrlTable.some(
-      (item) => item.Used === 1 || item.Rejected === 1
-    );
-  
-    if (isAnyUsedOrRejected) {
-      toast.error("Once material used or Rejected Cannot be used again", {
+    // Check if no material is selected
+    if (selectedMtrlTable.length === 0) {
+      toast.error("Please select material", {
         position: toast.POSITION.TOP_CENTER,
       });
+      return;
     } else {
-      setMarkasUsed(true);
-    }
-  };
-  
+      // Check if any material is already used or rejected
+      const isAnyUsedOrRejected = selectedMtrlTable.some(
+        (item) => item.Used === 1 || item.Rejected === 1
+      );
 
-  const handleMarkasRejected = () => {
-    const isAnyUsedOrRejected = selectedMtrlTable.some(
-      (item) => item.Used === 1 || item.Rejected === 1
-    );
-
-    if (
-    isAnyUsedOrRejected
-    ) {
-      toast.error("Once material used or Rejected Cannot be used again", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else {
-      setMarkasReject(true);
-    }
-  };
-
-  let Machine = selectshifttable?.Machine;
-  const getMachineTaskAfterMU=()=>{
-    axios
-    .post(baseURL + "/ShiftOperator/MachineTasksData", {
-      MachineName: Machine,
-    })
-    .then((response) => {
-      for (let i = 0; i < response.data.length; i++) {
-        if (
-          response.data[i].Qty ===0
-        ) {
-          response.data[i].rowColor = "#DC143C";
-        } 
-        else if (
-          response.data[i].QtyAllotted ===0
-        ) {
-          response.data[i].rowColor = "#E0FFFF";
-        } 
-        else if (
-          response.data[i].QtyCut===0
-        ) {
-          response.data[i].rowColor = "#778899";
-        } 
-        else if (
-          response.data[i].QtyCut ===
-          response.data[i].Qty
-        ) {
-          response.data[i].rowColor = "#008000";
-        } 
-        else if (
-          response.data[i].QtyCut ===
-          response.data[i].QtyAllotted
-        ) {
-          response.data[i].rowColor = "#ADFF2F";
-        } 
-        else if (
-          response.data[i].Remarks!==''
-        ) {
-          response.data[i].rowColor = "#DC143C";
-        } 
+      if (isAnyUsedOrRejected) {
+        toast.error(
+          "Once material is used or rejected, it cannot be used again",
+          {
+            position: toast.POSITION.TOP_CENTER,
+          }
+        );
+      } else {
+        setMarkasUsed(true);
       }
-      setMachinetaskdata(response.data);
-    })
+    }
+  };
+
+
+  //onclick of mark as Rejected button
+  const[openRejectionReason,setOpenRejectionReason]=useState(false);
+  const handleMarkasRejected = () => {
+     // Check if no material is selected
+     if (selectedMtrlTable.length === 0) {
+      toast.error("Please select material", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+    else{
+      const isAnyUsedOrRejected = selectedMtrlTable.some(
+        (item) => item.Used === 1 || item.Rejected === 1
+      );
+  
+      if (isAnyUsedOrRejected) {
+        toast.error("Once material used or Rejected Cannot be used again", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        setOpenRejectionReason(true);
+      }
+    }
+  };
+
+  //onClick yes in Rejected Reason module
+  const onclickofYes=()=>{
+      const hasEmptyReason = selectedMtrlTable.some(
+        (item, index) => !RejectedReasonState[index] || RejectedReasonState[index].trim() === ""
+      );
+    
+      if (hasEmptyReason) {
+        toast.error("Rejected Reason is empty", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+    }
+    else{
+      setMarkasReject(true);
+      setOpenRejectionReason(false);
+    }
   }
 
+  let Machine = selectshifttable?.Machine;
+  const getMachineTaskAfterMU = () => {
+    axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", {
+        MachineName: Machine,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].Qty === 0) {
+            response.data[i].rowColor = "#DC143C";
+          } else if (response.data[i].QtyAllotted === 0) {
+            response.data[i].rowColor = "#E0FFFF";
+          } else if (response.data[i].QtyCut === 0) {
+            response.data[i].rowColor = "#778899";
+          } else if (response.data[i].QtyCut === response.data[i].Qty) {
+            response.data[i].rowColor = "#008000";
+          } else if (response.data[i].QtyCut === response.data[i].QtyAllotted) {
+            response.data[i].rowColor = "#ADFF2F";
+          } else if (response.data[i].Remarks !== "") {
+            response.data[i].rowColor = "#DC143C";
+          }
+        }
+        setMachinetaskdata(response.data);
+      });
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     getMachineTaskAfterMU();
-  },[]);
+  }, []);
 
 
   const handleMarkasUsed = () => {
-    const isTubeCutting = formdata.Operation.toLowerCase().includes('tube cutting'.toLowerCase());
-    // if(isTubeCutting && selectedMtrlTable.length !== afterRefreshData.length){
-    //   toast.error("Please Select ALL for tube Cutting", {
-    //     position: toast.POSITION.TOP_CENTER,
-    //   });
-    // }
-    // else{
-      axios
+    const isTubeCutting = formdata.Operation.toLowerCase().includes(
+      "tube cutting".toLowerCase()
+    );
+    axios
       .post(baseURL + "/ShiftOperator/markAsUsedProgramMaterial", {
         selectedMtrlTable: selectedMtrlTable,
         selectedMachine: selectedMachine,
-        formdata
+        formdata,
       })
       .then(() => {
         axios
@@ -173,7 +198,6 @@ export default function ProgrmMatrlTableProfile({
             setProgramPartsData(response.data);
           });
         setSelectedMtrlTable([]);
-        // setIsCheckboxchecked(false);              
       })
       .then(() => {
         // Fetch data after marking as used
@@ -182,15 +206,14 @@ export default function ProgrmMatrlTableProfile({
             NCProgramNo: ProgramNo,
           })
           .then((response) => {
-            setIsCheckboxchecked(false);  // Clear the data filtered flag
-            // console.log("required result", response.data);
+            setIsCheckboxchecked(false); 
             setAfterRefreshData(response?.data);
             if (!response.data) {
               setAfterRefreshData([]);
             }
           });
 
-          axios
+        axios
           .post(baseURL + "/ShiftOperator/updateformafterMarkasUsed", {
             NcId: formdata?.Ncid,
           })
@@ -203,42 +226,98 @@ export default function ProgrmMatrlTableProfile({
         toast.success("Success", {
           position: toast.POSITION.TOP_CENTER,
         });
+        axios
+      .post(baseURL + "/ShiftOperator/getShiftLog", {
+        selectshifttable: selectshifttable,
+      })
+      .then((response) => {
+        const updatedData = response.data.map((item) => {
+          let dateSplit = item.FromTime.split(" ");
+          let date = dateSplit[0].split("-");
+          let year = date[0];
+          let month = date[1];
+          let day = date[2];
+          let finalDay = `${day}/${month}/${year} ${dateSplit[1]}`;
+          item.FromTime = finalDay;
+
+          let dateSplit1 = item.ToTime.split(" ");
+          let date1 = dateSplit1[0].split("-");
+          let year1 = date1[0];
+          let month1 = date1[1];
+          let day1 = date1[2];
+          let finalDay1 = `${day1}/${month1}/${year1} ${dateSplit1[1]}`;
+          item.ToTime = finalDay1;
+
+          if (item.Locked === 1) {
+            item.rowColor = "#87CEEB";
+          } else {
+            // console.log(null);
+          }
+          return item;
+        });
+        // Update the state with the modified data
+        setShiftLogDetails(updatedData);
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+      });
+      axios
+      .post(baseURL + "/ShiftOperator/MachineTasksData", {
+        MachineName: Machine,
+      })
+      .then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].Qty === 0) {
+            response.data[i].rowColor = "#DC143C";
+          } else if (response.data[i].QtyAllotted === 0) {
+            response.data[i].rowColor = "#E0FFFF";
+          } else if (response.data[i].QtyCut === 0) {
+            response.data[i].rowColor = "#778899";
+          } else if (response.data[i].QtyCut === response.data[i].Qty) {
+            response.data[i].rowColor = "#008000";
+          } else if (response.data[i].QtyCut === response.data[i].QtyAllotted) {
+            response.data[i].rowColor = "#ADFF2F";
+          } else if (response.data[i].Remarks !== null) {
+            response.data[i].rowColor = "#DC143C";
+          }
+        }
+        setMachinetaskdata(response.data);
+      });
         getMachineTaskAfterMU();
       })
       .catch((err) => {
         console.error(err);
       });
-      if(isTubeCutting){
-        setTubeCuttingModal(true);
-      }
+    if (isTubeCutting) {
+      setTubeCuttingModal(true);
+    }
   };
 
- 
+  const [RejectedReasonState, setRejectedReasonState] = useState('');
 
-  const [RejectedReasonState, setRejectedReasonState] = useState({});
-
-  const onChangeInput = (key, e) => {
+  const onChangeInput = (e) => {
     const { value } = e.target;
-    setRejectedReasonState((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
-  };
+    setRejectedReasonState(value);
+};
+
 
   // Get only the values from RejectedReasonState
   const valuesArray = Object.values(RejectedReasonState);
 
   // Concatenate the values into a single string
-  const newReason = valuesArray.join(" "); // Change the separator as needed
+  const newReason = valuesArray.join(" "); 
 
   const UpdateRejectReason = () => {
-    if (
-      !Object.values(RejectedReasonState).some((reason) => reason.trim() !== "")
-    ) {
+    // Check if RejectedReasonState has a non-empty reason for each item in selectedMtrlTable
+    const hasEmptyReason = selectedMtrlTable.some(
+      (item, index) => !RejectedReasonState[index] || RejectedReasonState[index].trim() === ""
+    );
+  
+    if (hasEmptyReason) {
       toast.error("Rejected Reason is empty", {
         position: toast.POSITION.TOP_CENTER,
       });
-      return; // Prevent further execution if the reason is empty
+      return; 
     } else {
       axios
         .post(baseURL + "/ShiftOperator/markAsRejectedProgramMaterial", {
@@ -251,19 +330,19 @@ export default function ProgrmMatrlTableProfile({
           });
           setRejectedReasonState({});
           setSelectedMtrlTable([]);
-          // setIsCheckboxchecked(false);               
+          // setIsCheckboxchecked(false);
           axios
             .post(baseURL + "/ShiftOperator/getdatafatermarkasUsedorRejected", {
               NCProgramNo: ProgramNo,
             })
             .then((response) => {
-              setIsCheckboxchecked(false);             
+              setIsCheckboxchecked(false);
               setAfterRefreshData(response?.data);
               if (!response.data) {
                 setAfterRefreshData([]);
-                }
+              }
             });
-            getMachineTaskAfterMU();
+          getMachineTaskAfterMU();
         })
         .catch((error) => {
           toast.error("An error occurred while updating reject reason", {
@@ -272,6 +351,9 @@ export default function ProgrmMatrlTableProfile({
         });
     }
   };
+
+  console.log("RejectedReasonState is",RejectedReasonState)
+  
 
   //sorting
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
@@ -301,26 +383,22 @@ export default function ProgrmMatrlTableProfile({
   };
 
   // Add a state variable to track whether all rows are selected
-const [selectAll, setSelectAll] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
 
-const handleSelectAll = () => {
-  const allRowsSelected = selectedMtrlTable.length === afterRefreshData.length;
-  setSelectedMtrlTable(allRowsSelected ? [] : afterRefreshData);
-};
-
-
+  const handleSelectAll = () => {
+    const allRowsSelected =
+      selectedMtrlTable.length === afterRefreshData.length;
+    setSelectedMtrlTable(allRowsSelected ? [] : afterRefreshData);
+  };
 
   return (
     <div>
       {showTable ? (
-        <div className="" style={{marginTop:'-10px'}}>
+        <div className="" style={{ marginTop: "-10px" }}>
           <div className="col-md-12 col-sm-12">
             <div className="form-bg">
               <div className="row">
-                <div
-                  style={{ textAlign: "center" }}
-                  className="col-md-4"
-                >
+                <div style={{ textAlign: "center" }} className="col-md-4">
                   <div>
                     <button
                       className="button-style group-button mb-1"
@@ -348,11 +426,11 @@ const handleSelectAll = () => {
                     className="col-md-4"
                     checked={isCheckboxchecked}
                     onChange={handleCheckBoxChange}
-                    style={{marginLeft:'-20px'}}
+                    style={{ marginLeft: "-20px" }}
                   />
                   <label
                     className="form-label col-md-1 mt-1"
-                    style={{ whiteSpace: "nowrap", marginLeft:'-10px'}}
+                    style={{ whiteSpace: "nowrap", marginLeft: "-10px" }}
                   >
                     Show unused
                   </label>
@@ -373,7 +451,7 @@ const handleSelectAll = () => {
               style={{ fontSize: "13px" }}
             >
               <tr>
-              <th onClick={handleSelectAll}></th>
+                <th onClick={handleSelectAll}></th>
                 <th onClick={() => requestSort("ShapeMtrlID")}>Material ID</th>
                 <th onClick={() => requestSort("Para1")}>Width</th>
                 <th onClick={() => requestSort("Para2")}>Length</th>
@@ -410,19 +488,22 @@ const handleSelectAll = () => {
                   </td>
 
                   <td>
-                    <div key={data.index}>
+                    {data.RejectionReason}
+                    {/* <div key={data.index}>
                       <input
                         className="table-cell-editor"
                         style={{ textAlign: "center", width: "150px" }}
                         value={
                           data.Rejected === 1
-                            ? data.RejectionReason
-                            : RejectedReasonState[data.NcPgmMtrlId] || ""
-                        }
+                              ? data.RejectionReason
+                              : RejectedReasonState[data.NcPgmMtrlId] || selectedMtrlTable.find(
+                                    (row) => row.NcPgmMtrlId === data.NcPgmMtrlId
+                                )?.RejectionReason || ""
+                      }                      
                         readOnly={data.Rejected === 1}
                         onChange={(e) => onChangeInput(data.NcPgmMtrlId, e)}
                       />
-                    </div>
+                    </div> */}
                   </td>
                 </tr>
               ))}
@@ -455,9 +536,14 @@ const handleSelectAll = () => {
           handleMarkasRejected={UpdateRejectReason}
         />
 
-        <ProgramPartsTabModal
+        <ProgramPartsTabModal />
+
+        <RejectedReasonModal
+        openRejectionReason={openRejectionReason}
+        setOpenRejectionReason={setOpenRejectionReason}
+        onChangeInput={onChangeInput}
+        onclickofYes={onclickofYes}
         />
-        
       </div>
     </div>
   );

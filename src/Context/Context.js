@@ -34,6 +34,7 @@ const AuthProvider = ({ children }) => {
   const [machineShiftStatus, setMachineShiftStatus] = useState([]);
   const [tubeCuttingModal,setTubeCuttingModal]=useState(false);
   const [servicedata, setService] = useState([]);
+  const [RejectedReasonState, setRejectedReasonState] = useState({});
 
 
   return (
@@ -49,7 +50,7 @@ const AuthProvider = ({ children }) => {
         setShiftLogDetails,
         afterRefreshData,setAfterRefreshData,
         formdata,setFormData,
-        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId,pgmNo,setPgmNo,showTable, setShowTable,programPartsData, setProgramPartsData,partDetailsData, setPartDetailsData,timeDiffInMinutes, setTimeDiffInMinutes,getMachinetaskdata, setMachinetaskdata,machineShiftStatus, setMachineShiftStatus,tubeCuttingModal,setTubeCuttingModal,servicedata, setService
+        hasBOM,setHasBOM,machineTaskService, setMachineTaskDataService,afterloadService,setAfterloadService,shiftSelected,setShiftSelected,servicetopData,setServiceTopData,NcProgramId,setNcProgramId,pgmNo,setPgmNo,showTable, setShowTable,programPartsData, setProgramPartsData,partDetailsData, setPartDetailsData,timeDiffInMinutes, setTimeDiffInMinutes,getMachinetaskdata, setMachinetaskdata,machineShiftStatus, setMachineShiftStatus,tubeCuttingModal,setTubeCuttingModal,servicedata, setService,RejectedReasonState, setRejectedReasonState
       }}
     >
       {children}
