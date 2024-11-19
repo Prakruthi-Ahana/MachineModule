@@ -36,6 +36,19 @@ export default function ProgramInfoForms({
     setOpenTable(false);
   };
 
+    // UseEffect to update the selectProductionReport when getMachinetaskdata changes
+    useEffect(() => {
+      if (getMachinetaskdata?.length > 0 && selectProductionReport?.Ncid) {
+        // Find the matching item in getMachinetaskdata
+        const updatedItem = getMachinetaskdata.find(item => item.Ncid === selectProductionReport.Ncid);
+        
+        if (updatedItem) {
+          const list = { ...updatedItem, index: getMachinetaskdata.indexOf(updatedItem) };
+          setSelectProductionReport(list); 
+        }
+      }
+    }, [getMachinetaskdata]);
+
 
   //Load Program
   const [rpTopData, setRptTopData] = useState([]);
@@ -54,6 +67,27 @@ export default function ProgramInfoForms({
       })
       .then((response) => {
         setRptTopData(response.data);
+        const data = response.data;
+                  let count = 0;
+                  let Qty = 0;
+
+
+                  // Iterate through each object in the response data
+                  data.forEach((item) => {
+                    // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
+                    if (selectProductionReport.HasBOM === 1) {
+                      count = item.QtyUsed + item.QtyReturned;
+                      Qty = item?.QtyIssued;
+                    }
+                  });
+
+                  // If count equals selectProductionReport.Qty, setComplete(true)
+                  if (count === Qty) {
+                    setComplete(true);
+                  } else {
+                    setComplete(false);
+                  }
+
       });
           // console.log(selectProductionReport.Ncid, newNcid);
           if (selectProductionReport.NCProgramNo === formdata?.NCProgramNo) {
@@ -93,7 +127,6 @@ export default function ProgramInfoForms({
 
   //mark as Completed
   const programCompleteSubmit = async () => {
-    console.log("complete is",complete);
     try {
       const response = await axios.post(baseURL + "/ShiftOperator/getNCId", {
         shiftSelected,

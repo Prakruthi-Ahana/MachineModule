@@ -66,24 +66,13 @@ export default function MaterialUsageService({
 
 
         // Iterate through each object in the response data
-        rpTopData.forEach((item) => {
+        data.forEach((item) => {
           // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
           if (selectProductionReport.HasBOM === 1) {
             count = item.QtyUsed + item.QtyReturned;
             Qty = item?.QtyIssued;
-            console.log(
-              "item.QtyUsed+item.QtyReturned is",
-              item.QtyUsed + item.QtyReturned
-            );
-            console.log(
-              "item.QtyUsed is",
-              item.QtyUsed,
-              "item.QtyReturned is",
-              item.QtyReturned
-            );
-          }
-          console.log("item is", item);
-        });
+    
+          }        });
 
         // If count equals selectProductionReport.Qty, setComplete(true)
         if (count === Qty) {
@@ -105,7 +94,7 @@ export default function MaterialUsageService({
     let Qty = 0;
     // Iterate through each object in the response data
 
-    rpTopData.forEach((item) => {
+    data.forEach((item) => {
       // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
 
       if (selectProductionReport.HasBOM === 1) {
@@ -117,7 +106,6 @@ export default function MaterialUsageService({
         Qty = item?.QtyIssued;
       }
     });
-    console.log("count is", count, "selectProductionReport.QtyIssued is", Qty);
 
     if (count === Qty) {
       setComplete(true);
@@ -172,59 +160,92 @@ export default function MaterialUsageService({
 
   //onclick of mark as used
   const markAsUsed = () => {
-    axios
+    if(!issuesets){
+      toast.error("Please Enter the number", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    else{
+      axios
       .post(baseURL + "/ShiftOperator/getNcProgramId", {
         NcId: selectProductionReport.Ncid,
       })
       .then((response) => {
         const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
         setNC_Pgme_Part_ID(ncPgmePartId);
-
+  
         if (issuesets < 0) {
           toast.error("Enter a Positive Number", {
             position: toast.POSITION.TOP_CENTER,
           });
-        } else {
-          // Check if toCompareData is null or empty
-          if (!toCompareData || toCompareData.length === 0) {
-            toast.error("Parts Quantity  mismatch", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-            return;
+          return;
+        }
+  
+        if (!toCompareData || toCompareData.length === 0) {
+          toast.error("Parts Quantity mismatch", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          return;
+        }
+  
+        const flattenedToCompareData = toCompareData.flat();
+        let hasValidationError = false;
+        const newSendObject = []; // Collect all updated objects here
+  
+        // Group servicedata by PartId
+        const groupedByPartId = servicedata.reduce((acc, item) => {
+          if (!acc[item.PartId]) {
+            acc[item.PartId] = [];
           }
-
-          const flattenedToCompareData = toCompareData.flat();
-          let hasValidationError = false;
-
-          const updatedservicedata = servicedata.map((item) => {
+          acc[item.PartId].push(item);
+          return acc;
+        }, {});
+  
+        // Process each group
+        const updatedservicedata = Object.values(groupedByPartId).flatMap(
+          (group) => {
             const match = flattenedToCompareData.find(
-              (data) => data.Cust_BOM_ListId === item.CustBOM_Id
+              (data) => data.Cust_BOM_ListId === group[0].CustBOM_Id
             );
-
-            if (match) {
-              const qtyToDistribute = issuesets * match.Quantity;
-              const useNow = issuesets * match.Quantity;
-
-              // Check if the quantity to be used exceeds the available quantity
-              const remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
-              console.log("remainingQty is", remainingQty);
-              // console.log("QtyIssued is",item.QtyIssued,"QtyUsed is",item.QtyUsed,"issuesets is",issuesets,"remainingQty is",remainingQty);
-              if (remainingQty < 0 || qtyToDistribute !== useNow) {
-                // console.log("remainingQty is",remainingQty,"qtyToDistribute is",qtyToDistribute,"useNow is",useNow)
-                hasValidationError = true;
-                return item; // Do not update state if validation fails
+  
+            if (!match) {
+              return group; // No match, no update needed
+            }
+  
+            const totalUseNow = issuesets * match.Quantity;
+  
+            // Validate if totalUseNow is null or 0
+            if (totalUseNow === null || totalUseNow === 0) {
+              toast.error("Please enter a valid number greater than 0", {
+                position: toast.POSITION.TOP_CENTER,
+              });
+              hasValidationError = true;
+              return [];
+            }
+  
+            let remainingUseNow = totalUseNow;
+  
+            // Distribute useNow across the group based on QtyIssued
+            const updatedGroup = group.map((item) => {
+              if (remainingUseNow <= 0) {
+                return item;
               }
-
+  
+              const availableQty = item.QtyIssued - item.QtyUsed;
+              const useNowForItem = Math.min(availableQty, remainingUseNow);
+              remainingUseNow -= useNowForItem;
+  
               const updatedItem = {
                 ...item,
-                qtyToDistribute: qtyToDistribute,
-                useNow: useNow,
-                QtyReturned: useNow,
+                useNow: useNowForItem,
+                QtyReturned: useNowForItem,
               };
-
+  
+              // Update the sendobject array
               const existingSendObjectIndex = sendobject.findIndex(
                 (obj) => obj.CustBOM_Id === item.CustBOM_Id
               );
+  
               if (existingSendObjectIndex !== -1) {
                 sendobject[existingSendObjectIndex] = {
                   ...sendobject[existingSendObjectIndex],
@@ -238,266 +259,275 @@ export default function MaterialUsageService({
                   ...updatedItem,
                   NC_Pgme_Part_ID: ncPgmePartId,
                   issuesets: issuesets,
-                  NcId: NcProgramId,
+                  NcId: selectProductionReport.Ncid,
                 });
               }
-
+  
               return updatedItem;
-            } else {
-              // console.log(`Row ${item.CustBOM_Id}: No match found`);
-              return item;
+            });
+  
+            // Validate if totalUseNow exceeds totalQtyIssued
+            const totalQtyIssued = group.reduce((sum, item) => sum + item.QtyIssued, 0);
+            if ((totalUseNow > totalQtyIssued) || (rpTopData[0]?.QtyUsed + totalUseNow + rpTopData[0]?.QtyReturned) > totalQtyIssued) {
+              hasValidationError = true;
             }
+  
+            return updatedGroup;
+          }
+        );
+  
+        // Display an error message if there are validation errors
+        if (hasValidationError) {
+          toast.error("Parts Quantity mismatch", {
+            position: toast.POSITION.TOP_CENTER,
           });
-          // Display a single Toastify error message if there are errors
-          if (hasValidationError) {
-            toast.error("Parts Quantity mismatch", {
+          return;
+        }
+  
+        // Update the state with the new values
+        setSendObject(sendobject);
+  
+        // Proceed with the API call to mark as used
+        axios
+          .post(baseURL + "/ShiftOperator/ServicemarkasUsed", {
+            sendobject,
+          })
+          .then((response) => {
+            toast.success("Material Parts Used", {
               position: toast.POSITION.TOP_CENTER,
             });
-            return;
-          }
-          setSendObject(sendobject);
-          axios
-            .post(baseURL + "/ShiftOperator/ServicemarkasUsed", {
-              sendobject,
-            })
-            .then((response) => {
-              toast.success("Material Parts Used", {
-                position: toast.POSITION.TOP_CENTER,
+  
+            // Call subsequent APIs to refresh data
+            axios
+              .post(baseURL + "/ShiftOperator/MachineTasksService", {
+                NCId: selectProductionReport.Ncid,
+              })
+              .then((response) => {
+                setService(response?.data);
+                const data = response.data;
+                let count = 0;
+                let Qty = 0;
+  
+                data.forEach((item) => {
+                  if (selectProductionReport.HasBOM === 1) {
+                    count = item.QtyUsed + item.QtyReturned;
+                    Qty = item?.QtyIssued;
+                  }
+                });
+  
+                if (count === Qty) {
+                  setComplete(true);
+                } else {
+                  setComplete(false);
+                }
               });
-              // console.log(response.data);
-              axios
-                .post(baseURL + "/ShiftOperator/MachineTasksService", {
-                  NCId: selectProductionReport.Ncid,
-                })
-                .then((response) => {
-                  // console.log("required result", response.data);
-                  setService(response?.data);
-                  const data = response.data;
-                  let count = 0;
-                  let Qty = 0;
-
-                  console.log("rpTopData is", rpTopData);
-
-                  // Iterate through each object in the response data
-                  rpTopData.forEach((item) => {
-                    // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
-                    if (selectProductionReport.HasBOM === 1) {
-                      count = item.QtyUsed + item.QtyReturned;
-                      Qty = item?.QtyIssued;
-                      console.log(
-                        "item.QtyUsed+item.QtyReturned is",
-                        item.QtyUsed + item.QtyReturned
-                      );
-                      console.log(
-                        "item.QtyUsed is",
-                        item.QtyUsed,
-                        "item.QtyReturned is",
-                        item.QtyReturned
-                      );
-                    }
-                    console.log("item is", item);
+              setIssueSets("");
+  
+            // Refresh additional details
+            axios
+              .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
+                NCId: selectProductionReport?.Ncid,
+              })
+              .then((response) => {
+                setRptTopData(response.data);
+                axios
+                  .post(baseURL + "/ShiftOperator/getpartDetails", {
+                    selectProductionReport,
+                  })
+                  .then((response) => {
+                    setPartDetailsData(response.data);
                   });
-
-                  // If count equals selectProductionReport.Qty, setComplete(true)
-                  if (count === Qty) {
-                    setComplete(true);
-                  } else {
-                    setComplete(false);
-                  }
-
-                  // If count is greater than 0, another row is incremented
-                  if (count > 0) {
-                    // Increment another row
-                  }
-                });
-              axios
-                .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
-                  NCId: selectProductionReport?.Ncid,
-                })
-                .then((response) => {
-                  // console.log(response.data);
-                  setRptTopData(response.data);
-                  axios
-                    .post(baseURL + "/ShiftOperator/getpartDetails", {
-                      selectProductionReport,
-                    })
-                    .then((response) => {
-                      // console.log("excuted data refresh func");
-                      setPartDetailsData(response.data);
-                    });
-                  getMachineTaskAfterMU();
-                });
-            });
-        }
+                getMachineTaskAfterMU();
+              });
+          });
       })
       .catch((error) => {
         console.error("Error in axios request", error);
       });
+    }
   };
+  
 
   //onclick of mark as returned
   const markasReturned = () => {
-    axios
+    if(!issuesets){
+      toast.error("Please Enter the number", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    else{
+      axios
       .post(baseURL + "/ShiftOperator/getNcProgramId", {
         NcId: selectProductionReport.Ncid,
       })
       .then((response) => {
         const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
         setNC_Pgme_Part_ID(ncPgmePartId);
-
+  
         if (issuesets < 0) {
           toast.error("Enter a Positive Number", {
             position: toast.POSITION.TOP_CENTER,
           });
-        } else {
-          // Check if toCompareData is null or empty
-          if (!toCompareData || toCompareData.length === 0) {
-            toast.error("Parts Quantity  mismatch", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-            return;
+          return;
+        }
+  
+        if (!toCompareData || toCompareData.length === 0) {
+          toast.error("Parts Quantity mismatch", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          return;
+        }
+  
+        const flattenedToCompareData = toCompareData.flat();
+        let hasValidationError = false;
+        const newSendObject = [];
+  
+        // Group `servicedata` by PartId
+        const groupedByPartId = servicedata.reduce((acc, item) => {
+          if (!acc[item.PartId]) {
+            acc[item.PartId] = [];
+          }
+          acc[item.PartId].push(item);
+          return acc;
+        }, {});
+  
+        // Process each group for validation and updates
+        const updatedServiceData = Object.values(groupedByPartId).flatMap((group) => {
+          const match = flattenedToCompareData.find(
+            (data) => data.Cust_BOM_ListId === group[0].CustBOM_Id
+          );
+  
+          if (!match) {
+            return group; // No match, no update needed
+          }
+  
+          // Calculate useNow and distribute within the group
+          let useNow = issuesets * match.Quantity;
+          let remainingUseNow = useNow;
+  
+          const totalQtyIssued = group.reduce((sum, item) => sum + item.QtyIssued, 0);
+          let totalReturnedQty = 0;
+          if ((useNow > totalQtyIssued) || (rpTopData[0]?.QtyUsed + useNow + rpTopData[0]?.QtyReturned) > totalQtyIssued) {
+            hasValidationError = true;
           }
 
-          const flattenedToCompareData = toCompareData.flat();
-          let hasValidationError = false;
-
-          const updatedservicedata = servicedata.map((item) => {
-            const match = flattenedToCompareData.find(
-              (data) => data.Cust_BOM_ListId === item.CustBOM_Id
+  
+          const updatedGroup = group.map((item) => {
+            const availableQty = item.QtyIssued - item.QtyUsed; // Available for this part
+            const returnNowForItem = Math.min(availableQty, remainingUseNow); // How much to return for this part
+  
+            // Always update with ReturnNow, even if returnNowForItem is 0
+            remainingUseNow -= returnNowForItem;
+            totalReturnedQty += returnNowForItem;
+  
+            const updatedItem = {
+              ...item,
+              ReturnNow: returnNowForItem, // Explicitly include ReturnNow, even if it's 0
+              QtyReturned: (item.QtyReturned || 0) + returnNowForItem,
+            };
+  
+            // Update `sendobject` with the new values
+            const existingSendObjectIndex = sendobject.findIndex(
+              (obj) => obj.CustBOM_Id === item.CustBOM_Id
             );
-
-            if (match) {
-              const qtyToDistribute = issuesets * match.Quantity;
-              const useNow = issuesets * match.Quantity;
-
-              // Check if the quantity to be used exceeds the available quantity
-              const remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
-              // console.log("QtyIssued is",item.QtyIssued,"QtyUsed is",item.QtyUsed,"issuesets is",issuesets,"remainingQty is",remainingQty);
-              if (remainingQty < 0 || qtyToDistribute !== useNow) {
-                hasValidationError = true;
-                return item; // Do not update state if validation fails
-              }
-
-              const updatedItem = {
-                ...item,
-                qtyToDistribute: qtyToDistribute,
-                useNow: useNow,
-                QtyReturned: useNow,
+  
+            if (existingSendObjectIndex !== -1) {
+              sendobject[existingSendObjectIndex] = {
+                ...sendobject[existingSendObjectIndex],
+                ...updatedItem,
+                NC_Pgme_Part_ID: ncPgmePartId,
+                issuesets: issuesets,
+                NcId: selectProductionReport.Ncid,
               };
-
-              const existingSendObjectIndex = sendobject.findIndex(
-                (obj) => obj.CustBOM_Id === item.CustBOM_Id
-              );
-              if (existingSendObjectIndex !== -1) {
-                sendobject[existingSendObjectIndex] = {
-                  ...sendobject[existingSendObjectIndex],
-                  ...updatedItem,
-                  NC_Pgme_Part_ID: ncPgmePartId,
-                  issuesets: issuesets,
-                  NcId: selectProductionReport.Ncid,
-                };
-              } else {
-                sendobject.push({
-                  ...updatedItem,
-                  NC_Pgme_Part_ID: ncPgmePartId,
-                  issuesets: issuesets,
-                  NcId: selectProductionReport.Ncid,
-                });
-              }
-
-              return updatedItem;
             } else {
-              // console.log(`Row ${item.CustBOM_Id}: No match found`);
-              return item;
+              sendobject.push({
+                ...updatedItem,
+                NC_Pgme_Part_ID: ncPgmePartId,
+                issuesets: issuesets,
+                NcId: selectProductionReport.Ncid,
+              });
             }
+  
+            return updatedItem;
           });
 
-          // Display a single Toastify error message if there are errors
-          if (hasValidationError) {
-            toast.error("Parts Quantity mismatch", {
+  
+          return updatedGroup;
+        });
+  
+        // Display an error message if there are validation errors
+        if (hasValidationError) {
+          toast.error("Parts Quantity mismatch", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          return;
+        }
+        setSendObject(sendobject);
+  
+        // Proceed with the API call to mark as returned
+        axios
+          .post(baseURL + "/ShiftOperator/markasReturned", {
+            sendobject: updatedServiceData,
+          })
+          .then((response) => {
+            toast.success("Material Parts Returned", {
               position: toast.POSITION.TOP_CENTER,
             });
-            return;
-          }
-          setSendObject(sendobject);
-          axios
-            .post(baseURL + "/ShiftOperator/markasReturned", {
-              sendobject,
-            })
-            .then((response) => {
-              toast.success("Material Parts Returned", {
-                position: toast.POSITION.TOP_CENTER,
+  
+            // Refresh additional data
+            axios
+              .post(baseURL + "/ShiftOperator/MachineTasksService", {
+                NCId: selectProductionReport.Ncid,
+              })
+              .then((response) => {
+                setService(response?.data);
+                const data = response.data;
+                let count = 0;
+                let Qty = 0;
+  
+                data.forEach((item) => {
+                  if (selectProductionReport.HasBOM === 1) {
+                    count = item.QtyUsed + item.QtyReturned;
+                    Qty = item?.QtyIssued;
+                  }
+                });
+  
+                if (count === Qty) {
+                  setComplete(true);
+                } else {
+                  setComplete(false);
+                }
               });
-              // console.log(response.data);
-              axios
-                .post(baseURL + "/ShiftOperator/MachineTasksService", {
-                  NCId: selectProductionReport.Ncid,
-                })
-                .then((response) => {
-                  // console.log("required result", response.data);
-                  setService(response?.data);
-                  const data = response.data;
-                  let count = 0;
-                  let Qty = 0;
-
-                  console.log("rpTopData is", rpTopData);
-
-                  // Iterate through each object in the response data
-                  rpTopData.forEach((item) => {
-                    // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
-                    if (selectProductionReport.HasBOM === 1) {
-                      count = item.QtyUsed + item.QtyReturned;
-                      Qty = item?.QtyIssued;
-                      console.log(
-                        "item.QtyUsed+item.QtyReturned is",
-                        item.QtyUsed + item.QtyReturned
-                      );
-                      console.log(
-                        "item.QtyUsed is",
-                        item.QtyUsed,
-                        "item.QtyReturned is",
-                        item.QtyReturned
-                      );
-                    }
-                    console.log("item is", item);
+              setIssueSets("");
+            axios
+              .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
+                NCId: selectProductionReport?.Ncid,
+              })
+              .then((response) => {
+                setRptTopData(response.data);
+                axios
+                  .post(baseURL + "/ShiftOperator/getpartDetails", {
+                    selectProductionReport,
+                  })
+                  .then((response) => {
+                    setPartDetailsData(response.data);
                   });
-
-                  // If count equals selectProductionReport.Qty, setComplete(true)
-                  if (count === Qty) {
-                    setComplete(true);
-                  } else {
-                    setComplete(false);
-                  }
-
-                  // If count is greater than 0, another row is incremented
-                  if (count > 0) {
-                    // Increment another row
-                  }
-                });
-              axios
-                .post(baseURL + "/ShiftOperator/getTableTopDeatails", {
-                  NCId: selectProductionReport?.Ncid,
-                })
-                .then((response) => {
-                  // console.log(response.data);
-                  setRptTopData(response.data);
-                  axios
-                    .post(baseURL + "/ShiftOperator/getpartDetails", {
-                      selectProductionReport,
-                    })
-                    .then((response) => {
-                      // console.log("excuted data refresh func");
-                      setPartDetailsData(response.data);
-                    });
-                  getMachineTaskAfterMU();
-                });
-            });
-        }
+                getMachineTaskAfterMU();
+              });
+          })
+          .catch((error) => {
+            console.error("Error in marking parts as returned", error);
+          });
       })
       .catch((error) => {
-        console.error("Error in axios request", error);
+        console.error("Error in fetching NcProgramId", error);
       });
+    }
+   
   };
+  
+  
+  
 
   //sorting
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
@@ -533,6 +563,7 @@ export default function MaterialUsageService({
     const allRowsSelected = selectedRowService.length === servicedata.length;
     setSelectedRowService(allRowsSelected ? [] : servicedata);
   };
+
 
   return (
     <div>
@@ -603,6 +634,8 @@ export default function MaterialUsageService({
                       style={{ marginTop: "10px" }}
                       onChange={onChangeIssueSets}
                       type="number"
+                      value={issuesets}
+
                     />
                   </div>
 

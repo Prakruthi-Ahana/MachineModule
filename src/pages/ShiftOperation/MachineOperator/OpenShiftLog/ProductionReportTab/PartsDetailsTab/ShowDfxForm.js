@@ -48,7 +48,7 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
   };
 
   const onChnageReject = (index, field, value) => {
-    const updatedpartDetailsData = [...partDetailsData]; // Create a copy of the array
+    const updatedpartDetailsData = [...partDetailsData]; 
     updatedpartDetailsData[index] = {
       ...updatedpartDetailsData[index],
       [field]: value,
@@ -57,37 +57,57 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
   };
 
   const savePartDetails = () => {
-    // Check if there are any rows where QtyRejected > 0 and Remarks is null or empty
-    const hasErrors = partDetailsData.some((item) => {
+    // Check for any errors in partDetailsData
+    const updatedPartDetailsData = [...partDetailsData];
+    
+    const hasErrors = updatedPartDetailsData.some((item, index) => {
       const isInvalidRemark =
         !item.Remarks || item.Remarks.trim() === "" || item.Remarks === "null";
+  
+      // Check if QtyRejected is greater than the product of Sheets and QtyNested minus QtyCut
+      const totalQty = item.Sheets * item.QtyNested;
+      const isQtyRejectedExceeded = item.QtyRejected > (totalQty - item.QtyCut);
+  
       if (item.QtyRejected > 0 && isInvalidRemark) {
-        return true; 
-      }
-      return false; 
-    });
-
-    if (hasErrors) {
-      // Show error message and stop the function
-      toast.error("Please provide remarks for rejection", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      return;
-    } else {
-      axios
-        .post(baseURL + "/ShiftOperator/SaveprogramDetails", {
-          partDetailsData,
-        })
-        .then((response) => {
-          toast.success("Data Saved Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-          });
-        })
-        .catch((error) => {
-          console.log("Error saving data", error);
+        toast.error("Please provide remarks for rejection", {
+          position: toast.POSITION.TOP_CENTER,
         });
+        return true; // Stop if remarks are missing for rejected quantity
+      }
+  
+      if (isQtyRejectedExceeded) {
+        toast.error("Rejected quantity should not be greater than nested quantity", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        // Reset QtyRejected to 0 if it exceeds the allowed limit
+        setPartDetailsData(updatedPartDetailsData);
+        return true; // Stop if rejected quantity exceeds the limit
+      }
+  
+      return false; // No errors for this item
+    });
+  
+    if (hasErrors) {
+      // Stop the function if there are errors
+      return;
     }
+  
+    // Proceed with the API call if no errors
+    axios
+      .post(baseURL + "/ShiftOperator/SaveprogramDetails", {
+        partDetailsData: updatedPartDetailsData,
+      })
+      .then((response) => {
+        toast.success("Data Saved Successfully", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      })
+      .catch((error) => {
+        console.log("Error saving data", error);
+      });
   };
+  
+  
 
   //sorting
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
@@ -174,8 +194,19 @@ export default function ShowDfxForm({ openTable, selectProductionReport }) {
                     <td>
                       <input
                         className="table-cell-editor"
-                        value={value?.Remarks === "null" ? "" : value?.Remarks}
-                        onChange={(e) => onChnageReject(key, "Remarks", e.target.value)}
+                        value={value?.Remarks === null ? "" : value?.Remarks}
+                        maxLength={50}
+                        // onChange={(e) => onChnageReject(key, "Remarks", e.target.value)}
+                        onChange={(e) => {
+                          const newValue = e.target.value;
+                          if (newValue.length <= 50) {
+                            onChnageReject(key, "Remarks", newValue);
+                          } else {
+                            toast.error("Remarks cannot exceed 50 characters", {
+                              position: toast.POSITION.TOP_CENTER,
+                            });
+                          }
+                        }}
                       />
                     </td>
                   </tr>

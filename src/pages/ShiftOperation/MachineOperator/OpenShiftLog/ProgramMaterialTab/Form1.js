@@ -29,7 +29,7 @@ export default function Form1({
     pgmNo,
     setPgmNo,
     timeDiffInMinutes,
-    setTimeDiffInMinutes,
+    setTimeDiffInMinutes,setHasBOM,machineShiftStatus
   } = useGlobalContext();
   const [mismatchModal, setmismatchModal] = useState(false);
   const [loadProgram, setLoadProgram] = useState(false);
@@ -63,19 +63,61 @@ export default function Form1({
   //selecting table
   const [selectedMtrlTable, setSelectedMtrlTable] = useState([]);
 
+  // Set default selection if machineShiftStatus[0]?.MtrlID exists
+  // useEffect(() => {
+  //   // Check if machineShiftStatus[0]?.MtrlID is set and there's a matching row
+  //   const defaultRow = afterRefreshData.find(
+  //     (data) => data.ShapeMtrlID === machineShiftStatus[0]?.MtrlID
+  //   );
+
+  //   console.log("defaultRow is",defaultRow);
+  
+  //   if (defaultRow) {
+  //     // Check if selectedMtrlTable already contains an item with the same ShapeMtrlID
+  //     const isAlreadySelected = selectedMtrlTable.some(
+  //       (row) => row.ShapeMtrlID === defaultRow.ShapeMtrlID
+  //     );
+
+  //     console.log("isAlreadySelected is",isAlreadySelected);
+  
+  //     if (!isAlreadySelected) {
+  //       setSelectedMtrlTable((prev) => [...prev, defaultRow]); // Only add if not already in selectedMtrlTable
+  //     }
+  //   }
+  // }, [afterRefreshData, machineShiftStatus, selectedMtrlTable]);
+  
+
+  // Row selection function
   const rowSelectMtrlTable = (item, index) => {
     const selectedRowData = afterRefreshData[index];
-    const isSelected = selectedMtrlTable.includes(selectedRowData);
+    const isSelected = selectedMtrlTable.some((row) => row.NcPgmMtrlId === selectedRowData.NcPgmMtrlId);
+
     if (isSelected) {
-      // If the row is already selected, remove it from the selection
-      setSelectedMtrlTable(
-        selectedMtrlTable.filter((row) => row !== selectedRowData)
-      );
+        // If the row is already selected, remove it from the selection
+        setSelectedMtrlTable(
+            selectedMtrlTable.filter((row) => row.NcPgmMtrlId !== selectedRowData.NcPgmMtrlId)
+        );
     } else {
-      // If the row is not selected, add it to the selection
-      setSelectedMtrlTable([...selectedMtrlTable, selectedRowData]);
+        // If the row is not selected, add it to the selection
+        setSelectedMtrlTable([...selectedMtrlTable, selectedRowData]);
     }
-  };
+};
+
+
+  console.log("selectedMtrlTable is",selectedMtrlTable);
+
+
+const[newBOM,setNewBOM]=useState(false);
+
+  useEffect(()=>{
+    if(formdata.HasBOM=== 1){
+      setNewBOM(true);
+    }
+    else{
+      setNewBOM(false);
+    }
+  },[formdata])
+
 
   let ProgramNo = formdata?.NCProgramNo;
   const loadProgramSubmit = () => {
@@ -97,6 +139,7 @@ export default function Form1({
 
   // console.log("selectedMtrlTable is",selectedMtrlTable)
 
+  //Load Material Yes click
   const onclickofYes = () => {
     axios
       .post(baseURL + "/ShiftOperator/loadMaterial", {
@@ -110,7 +153,7 @@ export default function Form1({
       });
     setLoadProgram(false);
     getMachineShiftStatusForm();
-    // setSelectedMtrlTable([]);
+    setSelectedMtrlTable([]);
   };
 
   // Utility function to convert minutes to "hh:mm" format
@@ -305,7 +348,7 @@ export default function Form1({
         </div>
       </div>
 
-      {hasBOM === true ? (
+      {newBOM === true ? (
         <ProgrmMatrlTableService
           showTable={showTable}
           selectshifttable={selectshifttable}

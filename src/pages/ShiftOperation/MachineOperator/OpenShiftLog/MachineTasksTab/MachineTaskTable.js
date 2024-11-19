@@ -129,17 +129,37 @@ export default function MachineTaskTable({
   const selectProgramFun = (item, index) => {
     let list = { ...item, index: index };
     setSelectedProgram(list);
-    // console.log(list);
+  
     axios
       .post(baseURL + "/ShiftOperator/checkhasBOM", {
         NCId: list?.Ncid,
       })
       .then((response) => {
-        // console.log(response.data);
         setHasBOM(response.data);
       });
   };
-
+  
+  // UseEffect to update the selectedProgram when getMachinetaskdata changes
+  useEffect(() => {
+    if (getMachinetaskdata?.length > 0 && selectedProgram?.Ncid) {
+      // Find the matching item in getMachinetaskdata
+      const updatedItem = getMachinetaskdata.find(item => item.Ncid === selectedProgram.Ncid);
+      
+      if (updatedItem) {
+        const list = { ...updatedItem, index: getMachinetaskdata.indexOf(updatedItem) };
+        setSelectedProgram(list); 
+  
+        axios
+          .post(baseURL + "/ShiftOperator/checkhasBOM", {
+            NCId: list?.Ncid,
+          })
+          .then((response) => {
+            setHasBOM(response.data);
+          });
+      }
+    }
+  }, [getMachinetaskdata]);
+  
   useEffect(() => {
     if (getMachinetaskdata.length > 0 && !selectedProgram.NCProgramNo) {
       selectProgramFun(getMachinetaskdata[0], 0); // Select the first row

@@ -21,7 +21,6 @@ export default function FormAndTable({
   } = useGlobalContext();
   const [open, setOpen] = useState(false);
 
-  // console.log("shiftLogDetails",shiftLogDetails);
 
   const blockInvalidChar = (e) => {
   const invalidChars = [
@@ -76,7 +75,7 @@ export default function FormAndTable({
       });
     }
 
-    const updatedshiftLogDetails = [...shiftLogDetails]; // Create a copy of the array
+    const updatedshiftLogDetails = [...shiftLogDetails]; 
     // Update the specific item's field with the new value
     updatedshiftLogDetails[index] = {
       ...updatedshiftLogDetails[index],
@@ -105,7 +104,6 @@ export default function FormAndTable({
         }
       }
 
-    // console.log(shiftLogDetails);
     axios
       .post(baseURL + "/ShiftOperator/saveShiftLog", { shiftLogDetails })
       .then((response) => {
@@ -522,9 +520,6 @@ export default function FormAndTable({
                             "DD/MM/YYYY HH:mm:ss",
                             true
                           );
-
-                          // console.log("fromTime is", fromTime);
-                          // console.log("toTime is", toTime);
 
                           if (fromTime.isValid() && toTime.isValid()) {
                             const timeDiffInMinutes = Math.floor(

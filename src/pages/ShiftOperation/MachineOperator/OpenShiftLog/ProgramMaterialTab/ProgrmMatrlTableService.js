@@ -92,137 +92,120 @@ export default function ProgrmMatrlTableService({
 
  //mark as used button 
  let qtyToDistribute = "";
+
  const markAsUsed = () => {
-   axios
-     .post(baseURL + "/ShiftOperator/getNcProgramId", {
-       NcId: formdata?.Ncid,
-     })
-     .then((response) => {
-       // Explicitly set NC_Pgme_Part_ID to response data
-       const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
-       setNC_Pgme_Part_ID(ncPgmePartId);
+  console.log("issuesets is",issuesets);
+  if(!issuesets){
+    toast.error("Please Enter the number", {
+      position: toast.POSITION.TOP_CENTER,
+    });
+  }
+  else{
+    axios
+    .post(baseURL + "/ShiftOperator/getNcProgramId", {
+      NcId: formdata?.Ncid,
+    })
+    .then((response) => {
+      const ncPgmePartId = response.data[0].NC_Pgme_Part_ID;
+      setNC_Pgme_Part_ID(ncPgmePartId);
 
-       if (issuesets < 0) {
-         toast.error("Enter a Positive Number", {
-           position: toast.POSITION.TOP_CENTER,
-         });
-       } else {
-         // Check if toCompareData is null or empty
-         if (!toCompareData || toCompareData.length === 0) {
-           toast.error("Parts Quantity is null or mismatch", {
-             position: toast.POSITION.TOP_CENTER,
-           });
-           return;
-         }
+      if (issuesets < 0) {
+        toast.error("Enter a Positive Number", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        return;
+      }
 
-         // Flatten toCompareData array
-         const flattenedToCompareData = toCompareData.flat();
+      if (!toCompareData || toCompareData.length === 0) {
+        toast.error("Parts Quantity is null", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        return;
+      }
 
-         // Flag to check if any item violates the condition
-         let hasValidationError = false;
+      const flattenedToCompareData = toCompareData.flat();
 
-         // Declare remainingQty and useNow outside the loop
-         let remainingQty;
-         let useNow;
+      // Group afterloadService by PartId
+      const groupedByPartId = afterloadService.reduce((acc, item) => {
+        if (!acc[item.PartId]) {
+          acc[item.PartId] = [];
+        }
+        acc[item.PartId].push(item);
+        return acc;
+      }, {});
 
-         console.log("afterloadService",afterloadService);
-         console.log("flattenedToCompareData",flattenedToCompareData);
+      let hasValidationError = false;
+      const newSendObject = []; // Collect all updated objects here
 
-         // Calculate qtyToDistribute and useNow for each item in afterloadService
-         const updatedAfterloadService = afterloadService.map((item) => {
-           const match = flattenedToCompareData.find(
-             (data) => data.Cust_BOM_ListId === item.CustBOM_Id
-           );
+      // Process each group
+      const updatedAfterloadService = Object.values(groupedByPartId).flatMap(
+        (group) => {
+          const match = flattenedToCompareData.find(
+            (data) => data.Cust_BOM_ListId === group[0].CustBOM_Id
+          );
+          const totalUseNow = issuesets * match.Quantity;
 
-           console.log("match is",match);
+          let remainingUseNow = totalUseNow;
 
-           // console.log("afterloadService is",afterloadService);
+          // Distribute useNow across the group based on QtyIssued
+          const updatedGroup = group.map((item) => {
+            if (remainingUseNow <= 0) {
+              return item;
+            }
 
-           if (match) {
-             const qtyToDistribute = issuesets * match.Quantity;
-             useNow = issuesets * match.Quantity;
+            const availableQty = item.QtyIssued - item.QtyUsed;
+            const useNowForItem = Math.min(availableQty, remainingUseNow);
+            remainingUseNow -= useNowForItem;
 
-             console.log("qtyToDistribute is",qtyToDistribute,"issuesets",issuesets,"match.Quantity is",match.Quantity);
+            const updatedItem = {
+              ...item,
+              useNow: useNowForItem,
+              QtyReturned1: useNowForItem,
+            };
 
-             // Check if the quantity to be used exceeds the available quantity
-             remainingQty = item.QtyIssued - item.QtyUsed - issuesets;
-             if (remainingQty < 0 || qtyToDistribute !== useNow) {
-               hasValidationError = true;
-               return item; // Do not update state if validation fails
-             }
+            // Push all updated objects to newSendObject
+            newSendObject.push({
+              ...updatedItem,
+              NC_Pgme_Part_ID: ncPgmePartId,
+              issuesets: issuesets,
+              NcId: formdata?.Ncid,
+            });
 
-             // Update QtyReturned in afterloadService
-             const updatedItem = {
-               ...item,
-               qtyToDistribute: qtyToDistribute,
-               useNow: useNow,
-               QtyReturned1: useNow, 
-             };
+            return updatedItem;
+          });
 
-             // Add the relevant properties to sendobject based on CustBOM_Id
-             const existingSendObjectIndex = sendobject.findIndex(
-               (obj) => obj.CustBOM_Id === item.CustBOM_Id
-             );
-             if (existingSendObjectIndex !== -1) {
-               sendobject[existingSendObjectIndex] = {
-                 ...sendobject[existingSendObjectIndex],
-                 ...updatedItem,
-                 NC_Pgme_Part_ID: ncPgmePartId,
-                 issuesets: issuesets,
-                 NcId: formdata?.Ncid,
-               };
-             } else {
-               sendobject.push({
-                 ...updatedItem,
-                 NC_Pgme_Part_ID: ncPgmePartId,
-                 issuesets: issuesets,
-                 NcId: NcProgramId,
-               });
-             }
+          // If totalUseNow exceeds totalQtyIssued, set validation error
+          const totalQtyIssued = group.reduce((sum, item) => sum + item.QtyIssued, 0);
+          if ((totalUseNow > totalQtyIssued) || (servicetopData[0]?.QtyUsed + totalUseNow)  > totalQtyIssued) {
+            hasValidationError = true;
+          }
 
-             return updatedItem;
-           } else {
-             // console.log(Row ${item.CustBOM_Id}: No match found);
-             return item;
-           }
-         });
+          return updatedGroup;
+        }
+      );
 
-         // Display a single Toastify error message if there are errors
-         console.log("qtyToDistribute is",qtyToDistribute);
-         console.log("useNow is",useNow);
-         console.log("remainingQty is",remainingQty,);
+      if (hasValidationError) {
+        toast.error("Cannot Use More Parts than issued Quantity", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        return;
+      }
 
-         if (hasValidationError) {
-           if (remainingQty < 0 || qtyToDistribute !== useNow) {
-             toast.error("Cannot Use More Parts than issued Quantity", {
-               position: toast.POSITION.TOP_CENTER,
-             });
-           } else {
-             // toast.error("Parts Quantity mismatch", {
-             //   position: toast.POSITION.TOP_CENTER,
-             // });
-           }
-           return;
-         }
+      // Update the state with the new values
+      setAfterloadService(updatedAfterloadService);
 
-         // Update the state after calculating useNow and updating QtyReturned values
-         setAfterloadService(updatedAfterloadService);
-         // Set the updated sendobject state
-         setSendObject(sendobject);
+      // Update sendobject state with all updated objects
+      setSendObject(newSendObject);
 
-         console.log("sendobject is",sendobject);
-
-         // Open the modal if no errors
-         setModalOpen(true);
-         getMachineTaskAfterMU();
-       }
-     })
-     .catch((error) => {
-       console.error("Error in axios request", error);
-     });
- };
-  
-
+      // Open the modal if no errors
+      setModalOpen(true);
+      getMachineTaskAfterMU();
+    })
+    .catch((error) => {
+      console.error("Error in axios request", error);
+    });
+  }
+};
 
 
   //Onclcick of Yes button in mark as used modal
@@ -255,6 +238,29 @@ export default function ProgrmMatrlTableService({
             toast.success("Success", {
               position: toast.POSITION.TOP_CENTER,
             });
+            setIssueSets("");
+          });
+          axios
+          .post(baseURL + "/ShiftOperator/MachineTasksData", {
+            MachineName: Machine,
+          })
+          .then((response) => {
+            for (let i = 0; i < response.data.length; i++) {
+              if (response.data[i].Qty === 0) {
+                response.data[i].rowColor = "#DC143C";
+              } else if (response.data[i].QtyAllotted === 0) {
+                response.data[i].rowColor = "#E0FFFF";
+              } else if (response.data[i].QtyCut === 0) {
+                response.data[i].rowColor = "#778899";
+              } else if (response.data[i].QtyCut === response.data[i].Qty) {
+                response.data[i].rowColor = "#008000";
+              } else if (response.data[i].QtyCut === response.data[i].QtyAllotted) {
+                response.data[i].rowColor = "#ADFF2F";
+              } else if (response.data[i].Remarks !== null) {
+                response.data[i].rowColor = "#DC143C";
+              }
+            }
+            setMachinetaskdata(response.data);
           });
         axios
           .post(
@@ -395,6 +401,7 @@ export default function ProgrmMatrlTableService({
                       style={{ marginTop: "10px" }}
                       onChange={onChangeIssueSets}
                       type="number"
+                      value={issuesets}
                     />
                   </div>
 

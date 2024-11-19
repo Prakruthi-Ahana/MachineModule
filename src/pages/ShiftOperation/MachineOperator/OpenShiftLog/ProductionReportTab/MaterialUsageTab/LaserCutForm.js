@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import RejectModal from "./RejectModal";
 import MarkasUsedModal from "./MarkasUsedModal";
 import { useGlobalContext } from "../../../../../../Context/Context";
+import RejectedReasonModal from "../../ProgramMaterialTab/RejectedReasonModal";
 // import AltModal from '../../../AltModal';
 
 export default function LaserCutForm({
@@ -19,13 +20,13 @@ export default function LaserCutForm({
   setMachinetaskdata,
   setComplete,
 }) {
-  const { NcId, partDetailsData, setPartDetailsData } = useGlobalContext();
+  const { NcId, partDetailsData, setPartDetailsData, setShiftLogDetails } =
+    useGlobalContext();
 
   //  const[showModal,setShowModal]=useState(false);
   const [markasUsed, setMarkasUsed] = useState(false);
   const [rowsRejected, setRowsRejected] = useState(false);
   const [isCheckboxchecked, setIsCheckboxchecked] = useState(false);
-
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -76,29 +77,46 @@ export default function LaserCutForm({
     }
   };
 
+  //mark as rejected
+  const [openRejectionReason, setOpenRejectionReason] = useState(false);
   const handleRejectModal = () => {
-    const isAnyUsedOrRejected = selectdefaultRow.some(
-      (item) => item.Used === 1 || item.Rejected === 1
-    );
-    if (isAnyUsedOrRejected) {
-      toast.error("Once material used or Rejected Cannot be used again", {
+    if (selectdefaultRow.length === 0) {
+      toast.error("Please select material", {
         position: toast.POSITION.TOP_CENTER,
       });
+      return;
     } else {
-      setRowsRejected(true);
+      const isAnyUsedOrRejected = selectdefaultRow.some(
+        (item) => item.Used === 1 || item.Rejected === 1
+      );
+      if (isAnyUsedOrRejected) {
+        toast.error("Once material used or Rejected Cannot be used again", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        setOpenRejectionReason(true);
+        // setRowsRejected(true);
+      }
     }
   };
 
   const handlemarkasUsed = () => {
-    const isAnyUsedOrRejected = selectdefaultRow.some(
-      (item) => item.Used === 1 || item.Rejected === 1
-    );
-    if (isAnyUsedOrRejected) {
-      toast.error("Once material used or Rejected Cannot be used again", {
+    if (selectdefaultRow.length === 0) {
+      toast.error("Please select material", {
         position: toast.POSITION.TOP_CENTER,
       });
+      return;
     } else {
-      setMarkasUsed(true);
+      const isAnyUsedOrRejected = selectdefaultRow.some(
+        (item) => item.Used === 1 || item.Rejected === 1
+      );
+      if (isAnyUsedOrRejected) {
+        toast.error("Once material used or Rejected Cannot be used again", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        setMarkasUsed(true);
+      }
     }
   };
 
@@ -114,11 +132,13 @@ export default function LaserCutForm({
   const [isDataFiltered, setIsDataFiltered] = useState(false);
 
   const filterUnusedData = () => {
-    const filteredData = ProductionReportData.filter((data) => data.Used === 0 && data.Rejected===0);
+    const filteredData = ProductionReportData.filter(
+      (data) => data.Used === 0 && data.Rejected === 0
+    );
     setOriginalData(ProductionReportData); // Save the original data
     setProductionReportData(filteredData); // Update the filtered data
     setIsDataFiltered(true); // Set the flag to indicate data is filtered
-    setSelectdefaultRow([])
+    setSelectdefaultRow([]);
   };
 
   const resetData = () => {
@@ -157,13 +177,18 @@ export default function LaserCutForm({
         // Iterate through each object in the response data
         data.forEach((item) => {
           // Check if Used or Rejected is zero
-          if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
+          if (
+            item.Used === 1 ||
+            item.Rejected === 1 ||
+            item.QtyUsed === 1 ||
+            item.QtyReturned
+          ) {
             count++;
           }
         });
 
         // Output the count
-// 
+        //
 
         if (count === selectProductionReport.QtyAllotted) {
           // console.log("conditon 1")
@@ -199,11 +224,11 @@ export default function LaserCutForm({
     //   });
     // }
     // else{
-      axios
+    axios
       .post(baseURL + "/ShiftOperator/markAsUsedProductionReport", {
         selectdefaultRow,
         selectedMachine: selectshifttable?.Machine,
-        selectProductionReport
+        selectProductionReport,
       })
       .then((response) => {
         axios
@@ -213,10 +238,10 @@ export default function LaserCutForm({
           .then((response) => {
             // console.log("excuted data refresh func");
             setPartDetailsData(response.data);
-            setIsCheckboxchecked(false);    
-             toast.success("success", {
-          position: toast.POSITION.TOP_CENTER,
-        });          
+            setIsCheckboxchecked(false);
+            toast.success("success", {
+              position: toast.POSITION.TOP_CENTER,
+            });
           });
         getMachineTaskAfterMU();
         axios
@@ -231,14 +256,15 @@ export default function LaserCutForm({
             // Iterate through each object in the response data
             data.forEach((item) => {
               // Check if Used or Rejected is zero
-              if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
+              if (
+                item.Used === 1 ||
+                item.Rejected === 1 ||
+                item.QtyUsed === 1 ||
+                item.QtyReturned
+              ) {
                 count++;
               }
             });
-
-            // Output the count
-
-            // console.log("Number of objects with Used or Rejected as zero:", count);
 
             // If count equals selectProductionReport.Qty, setComplete(true)
             if (count === selectProductionReport.QtyAllotted) {
@@ -261,45 +287,53 @@ export default function LaserCutForm({
         console.log(err);
       });
     // }
-     
   };
 
   useEffect(() => {
     const data = ProductionReportData;
     let count = 0;
-     // Iterate through each object in the response data
-     data.forEach((item) => {
+    // Iterate through each object in the response data
+    data.forEach((item) => {
       // Check if Used or Rejected is equal to 1, or if QtyUsed is equal to 1 or QtyReturned is true
-       if ((item.Used === 1 || item.Rejected === 1) || (item.QtyUsed === 1 || item.QtyReturned)) {
-         count++;
-       }
-     });
-     // If count equals selectProductionReport.Qty, setComplete(true)
-     if (count === selectProductionReport.QtyAllotted) {
-       setComplete(true);
-     } else {
-       setComplete(false);
-     }
-     MaterialUsage();
+      if (
+        item.Used === 1 ||
+        item.Rejected === 1 ||
+        item.QtyUsed === 1 ||
+        item.QtyReturned
+      ) {
+        count++;
+      }
+    });
+    // If count equals selectProductionReport.Qty, setComplete(true)
+    if (count === selectProductionReport.QtyAllotted) {
+      setComplete(true);
+    } else {
+      setComplete(false);
+    }
+    MaterialUsage();
   }, []);
 
   //mark as Reject
   const [RejecteReason, setRejectReason] = useState({});
-  const onChangeInput = (key, e) => {
+  const onChangeInput = (e) => {
     const { value } = e.target;
-    setRejectReason((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
+    setRejectReason(value);
   };
+
   const valueSepertor = Object.values(RejecteReason);
   const newReason = valueSepertor.join(" ");
+
   const UpdateRejectedReason = () => {
-    if (!Object.values(RejecteReason).some((reason) => reason.trim() !== "")) {
+    const hasEmptyReason = selectdefaultRow.some(
+      (item, index) =>
+        !RejecteReason[index] || RejecteReason[index].trim() === ""
+    );
+
+    if (hasEmptyReason) {
       toast.error("Rejected Reason is empty", {
         position: toast.POSITION.TOP_CENTER,
       });
-      return; // Prevent further execution if the reason is empty
+      return;
     }
     axios
       .post(baseURL + "/ShiftOperator/markAsRejectedProductionReport", {
@@ -312,13 +346,31 @@ export default function LaserCutForm({
         });
         MaterialUsage();
         getMachineTaskAfterMU();
-        setIsCheckboxchecked(false);              
+        setIsCheckboxchecked(false);
       })
       .catch((err) => {
         toast.error("An error occurred while updating reject reason", {
           position: toast.POSITION.TOP_CENTER,
         });
       });
+  };
+
+  //onclick of yes for mark as rejected
+  const onclickofYes = () => {
+    const hasEmptyReason = selectdefaultRow.some(
+      (item, index) =>
+        !RejecteReason[index] || RejecteReason[index].trim() === ""
+    );
+
+    if (hasEmptyReason) {
+      toast.error("Rejected Reason is empty", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    } else {
+      setRowsRejected(true);
+      setOpenRejectionReason(false);
+    }
   };
 
   //sorting
@@ -463,7 +515,8 @@ export default function LaserCutForm({
                     </td>
 
                     <td>
-                      <div key={data.index}>
+                      {data.RejectionReason}
+                      {/* <div key={data.index}>
                         <input
                           className="table-cell-editor"
                           style={{ textAlign: "center", width: "150px" }}
@@ -475,7 +528,7 @@ export default function LaserCutForm({
                           readOnly={data.Rejected === 1}
                           onChange={(e) => onChangeInput(data.NcPgmMtrlId, e)}
                         />
-                      </div>
+                      </div> */}
                     </td>
                   </tr>
                 ))}
@@ -519,6 +572,13 @@ export default function LaserCutForm({
         allModal={allModal}
         setAllModal={setAllModal}
         resetData={resetData}
+      />
+
+      <RejectedReasonModal
+        openRejectionReason={openRejectionReason}
+        setOpenRejectionReason={setOpenRejectionReason}
+        onChangeInput={onChangeInput}
+        onclickofYes={onclickofYes}
       />
     </div>
   );

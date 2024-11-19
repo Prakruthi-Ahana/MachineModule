@@ -157,6 +157,31 @@ export default function MachineShiftStatusForm({
     getMachineShiftStatusForm();
   }, []);
 
+  //getCurrent date
+  const [currentDate, setCurrentDate] = useState("");
+  function getCurrentDate() {
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1; 
+    const formattedDate = `${day < 10 ? "0" : ""}${day}/${
+      month < 10 ? "0" : ""
+    }${month}`;
+    return formattedDate;
+  }
+
+    // Periodically update the time and date every second (1000 milliseconds)
+    useEffect(() => {
+      const intervalId = setInterval(() => {
+        // Update the time and date
+        setCurrentDate(getCurrentDate());
+      }, 1000);
+  
+      // Clean up the interval when the component is unmounted
+      return () => clearInterval(intervalId);
+    }, []); 
+
+
+    console.log("machineShiftStatus is",machineShiftStatus);
 
   return (
     <>
@@ -170,8 +195,8 @@ export default function MachineShiftStatusForm({
             width:'114%'
           }}
         >
-          <div style={{marginLeft:"20px"}}>
-            <label className="form-label">Machine {selectshifttable?.Shift} Shift Status</label>
+          <div style={{marginLeft:"50px"}}>
+            <label className="form-label">{currentDate} &nbsp; <span style={{color:"red"}}>{selectshifttable?.Shift}</span> &nbsp; Shift </label>
           </div>
 
           <div className="d-flex ms-4">
